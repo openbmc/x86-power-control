@@ -15,14 +15,16 @@
 */
 
 #pragma once
+#include "gpio.hpp"
+
 #include <fcntl.h>
 #include <linux/aspeed-lpc-sio.h>
 #include <unistd.h>
+
 #include <phosphor-logging/elog-errors.hpp>
 #include <xyz/openbmc_project/Chassis/Common/error.hpp>
 #include <xyz/openbmc_project/Chassis/Control/Power/server.hpp>
 #include <xyz/openbmc_project/Common/error.hpp>
-#include "gpio.hpp"
 
 static constexpr size_t POLLING_INTERVAL_MS = 500;
 

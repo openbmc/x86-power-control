@@ -14,17 +14,19 @@
 // limitations under the License.
 */
 
-#include <experimental/filesystem>
-#include <fcntl.h>
-#include <fstream>
-#include <phosphor-logging/elog-errors.hpp>
-#include <unistd.h>
-#include <xyz/openbmc_project/Common/error.hpp>
 #include "gpio.hpp"
 
-const static constexpr char *SYSMGR_SERVICE = "org.openbmc.managers.System";
-const static constexpr char *SYSMGR_OBJ_PATH = "/org/openbmc/managers/System";
-const static constexpr char *SYSMGR_INTERFACE = "org.openbmc.managers.System";
+#include <fcntl.h>
+#include <unistd.h>
+
+#include <experimental/filesystem>
+#include <fstream>
+#include <phosphor-logging/elog-errors.hpp>
+#include <xyz/openbmc_project/Common/error.hpp>
+
+const static constexpr char* SYSMGR_SERVICE = "org.openbmc.managers.System";
+const static constexpr char* SYSMGR_OBJ_PATH = "/org/openbmc/managers/System";
+const static constexpr char* SYSMGR_INTERFACE = "org.openbmc.managers.System";
 
 int closeGpio(int fd)
 {
@@ -35,7 +37,7 @@ int closeGpio(int fd)
     return 0;
 }
 
-int configGpio(const char *gpioName, int *fd, sdbusplus::bus::bus &bus)
+int configGpio(const char* gpioName, int* fd, sdbusplus::bus::bus& bus)
 {
     sdbusplus::message::message method = bus.new_method_call(
         SYSMGR_SERVICE, SYSMGR_OBJ_PATH, SYSMGR_INTERFACE, "gpioInit");
@@ -124,7 +126,7 @@ int configGpio(const char *gpioName, int *fd, sdbusplus::bus::bus &bus)
         stream >> currentValue;
         stream.close();
 
-        const char *direction = currentValue ? "high" : "low";
+        const char* direction = currentValue ? "high" : "low";
 
         devPath = gpioDev + "/gpio" + std::to_string(gpioNum) + "/direction";
 

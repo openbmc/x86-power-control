@@ -31,12 +31,11 @@ int32_t PowerControl::setPowerState(int32_t newState)
             phosphor::logging::entry("NEWSTATE=%d", newState));
         return 0;
     }
-    
+
     ret = ::lseek(power_up_fd, 0, SEEK_SET);
     if (ret < 0)
     {
-        phosphor::logging::log<phosphor::logging::level::ERR>(
-                                                     "lseek error!");
+        phosphor::logging::log<phosphor::logging::level::ERR>("lseek error!");
         throw sdbusplus::xyz::openbmc_project::Chassis::Common::Error::
             IOError();
     }
@@ -54,20 +53,20 @@ int32_t PowerControl::setPowerState(int32_t newState)
     if (ret < 0)
     {
         phosphor::logging::log<phosphor::logging::level::ERR>(
-                                       "write error for setting 0 !");
+            "write error for setting 0 !");
         throw sdbusplus::xyz::openbmc_project::Chassis::Common::Error::
             IOError();
     }
 
     std::this_thread::sleep_for(
-            std::chrono::milliseconds(POWER_UP_PIN_PULSE_TIME_MS));
+        std::chrono::milliseconds(POWER_UP_PIN_PULSE_TIME_MS));
 
     buf = '1';
     ret = ::write(power_up_fd, &buf, sizeof(buf));
     if (ret < 0)
     {
         phosphor::logging::log<phosphor::logging::level::ERR>(
-                                       "write error for setting 1 !");
+            "write error for setting 1 !");
         throw sdbusplus::xyz::openbmc_project::Chassis::Common::Error::
             IOError();
     }
