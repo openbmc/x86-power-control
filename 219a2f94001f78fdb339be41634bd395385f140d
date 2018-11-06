@@ -1,0 +1,8 @@
+Code-Review+2: James Feist <james.feist@linux.intel.com>
+Ok-To-Test+1: James Feist <james.feist@linux.intel.com>
+Verified+1: James Feist <james.feist@linux.intel.com>
+Submitted-by: James Feist <james.feist@linux.intel.com>
+Submitted-at: Tue, 06 Nov 2018 16:53:43 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/15328
+Project: openbmc/x86-power-control
+Branch: refs/heads/master
