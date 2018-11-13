@@ -18,7 +18,6 @@
 #include "gpio.hpp"
 
 #include <fcntl.h>
-#include <linux/aspeed-lpc-sio.h>
 #include <unistd.h>
 
 #include <phosphor-logging/elog-errors.hpp>
@@ -26,18 +25,23 @@
 #include <xyz/openbmc_project/Chassis/Control/Power/server.hpp>
 #include <xyz/openbmc_project/Common/error.hpp>
 
-static constexpr size_t POLLING_INTERVAL_MS = 500;
+//static constexpr size_t POLLING_INTERVAL_MS = 500;
 
-const static constexpr char* LPC_SIO_DEVPATH = "/dev/lpc-sio";
 const static constexpr char* PGOOD_PIN = "PGOOD";
 const static constexpr char* POWER_UP_PIN = "POWER_UP_PIN";
 
-const static constexpr size_t PCH_DEVICE_BUS_ADDRESS = 3;
-const static constexpr size_t PCH_DEVICE_SLAVE_ADDRESS = 0x44;
-const static constexpr size_t PCH_CMD_REGISTER = 0;
-const static constexpr size_t PCH_POWER_DOWN_CMD = 0x02;
-
 const static constexpr size_t POWER_UP_PIN_PULSE_TIME_MS = 200;
+
+struct EventDeleter
+{
+    void operator()(sd_event *event) const
+    {
+        event = sd_event_unref(event);
+    }
+};
+
+using EventPtr = std::unique_ptr<sd_event, EventDeleter>;
+
 
 using pwr_control =
     sdbusplus::xyz::openbmc_project::Chassis::Control::server::Power;
@@ -45,7 +49,8 @@ using pwr_control =
 struct PowerControl : sdbusplus::server::object_t<pwr_control>
 {
     PowerControl(sdbusplus::bus::bus& bus, const char* path,
-                 phosphor::watchdog::EventPtr event,
+                 EventPtr &event,
+                 //phosphor::watchdog::EventPtr event,
                  sd_event_io_handler_t handler = PowerControl::EventHandler) :
         sdbusplus::server::object_t<pwr_control>(bus, path),
         bus(bus), callbackHandler(handler)
@@ -66,7 +71,7 @@ struct PowerControl : sdbusplus::server::object_t<pwr_control>
             closeGpio(pgood_fd);
             throw std::runtime_error("failed to config POWER_UP_PIN");
         }
-
+/*
         ret = sd_event_add_io(event.get(), nullptr, pgood_fd, EPOLLPRI,
                               callbackHandler, this);
         if (ret < 0)
@@ -80,6 +85,7 @@ struct PowerControl : sdbusplus::server::object_t<pwr_control>
             std::chrono::milliseconds(POLLING_INTERVAL_MS)));
         timer.setEnabled<std::true_type>();
         phosphor::logging::log<phosphor::logging::level::DEBUG>("Enable timer");
+*/
     }
 
     ~PowerControl()
@@ -132,7 +138,7 @@ struct PowerControl : sdbusplus::server::object_t<pwr_control>
         if (buf == '0')
         {
             powercontrol->state(0);
-            powercontrol->pgood(0);
+            powercontrol->pGood(0);
 
             if (first_event)
             {
@@ -140,26 +146,27 @@ struct PowerControl : sdbusplus::server::object_t<pwr_control>
             }
             else
             {
-                powercontrol->powerLost();
+                //powercontrol->powerLost();
             }
         }
         else
         {
             powercontrol->state(1);
-            powercontrol->pgood(1);
+            powercontrol->pGood(1);
             if (first_event)
             {
                 first_event = false;
             }
             else
             {
-                powercontrol->powerGood();
+//                powercontrol->powerGood();
             }
         }
 
         return 0;
     }
 
+    int32_t forcePowerOff() override;
     int32_t setPowerState(int32_t newState) override;
     int32_t getPowerState() override;
 
