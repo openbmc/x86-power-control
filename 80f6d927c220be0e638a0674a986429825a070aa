@@ -1,0 +1,8 @@
+Ok-To-Test+1: Kuiying Wang <kuiying.wang@intel.com>
+Code-Review+2: Kuiying Wang <kuiying.wang@intel.com>
+Verified+1: Kuiying Wang <kuiying.wang@intel.com>
+Submitted-by: Kuiying Wang <kuiying.wang@intel.com>
+Submitted-at: Mon, 19 Nov 2018 01:56:22 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/15754
+Project: openbmc/x86-power-control
+Branch: refs/heads/master
