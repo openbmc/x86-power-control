@@ -166,13 +166,12 @@ struct PowerControl : sdbusplus::server::object_t<pwr_control>
         return 0;
     }
 
-    int32_t forcePowerOff() override;
-    int32_t setPowerState(int32_t newState) override;
-    int32_t getPowerState() override;
+    bool forcePowerOff() override;
 
   private:
     int power_up_fd;
     int pgood_fd;
     sdbusplus::bus::bus& bus;
     sd_event_io_handler_t callbackHandler;
+    int32_t setPowerState(int32_t newState) ;
 };
