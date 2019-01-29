@@ -25,12 +25,29 @@
 #include <xyz/openbmc_project/Chassis/Control/Power/server.hpp>
 #include <xyz/openbmc_project/Common/error.hpp>
 
-// static constexpr size_t POLLING_INTERVAL_MS = 500;
-
+static constexpr size_t POLLING_INTERVAL_MS = 500;
 const static constexpr char* PGOOD_PIN = "PGOOD";
 const static constexpr char* POWER_UP_PIN = "POWER_UP_PIN";
 
-const static constexpr size_t POWER_UP_PIN_PULSE_TIME_MS = 200;
+const static constexpr size_t POWER_PULSE_TIME_MS = 200;
+const static constexpr size_t RESET_PULSE_TIME_MS = 500;
+const static constexpr char* PowerControlPath =
+    "/xyz/openbmc_project/Chassis/Control/Power0";
+const static constexpr char* PowerControlIntf =
+    "xyz.openbmc_project.Chassis.Control.Power";
+const static constexpr char* PowerButtonPath =
+    "/xyz/openbmc_project/Chassis/Buttons/Power0";
+const static constexpr char* PowerButtonIntf =
+    "xyz.openbmc_project.Chassis.Buttons.Power";
+const static constexpr char* ResetButtonPath =
+    "/xyz/openbmc_project/Chassis/Buttons/Reset0";
+const static constexpr char* ResetButtonIntf =
+    "xyz.openbmc_project.Chassis.Buttons.Reset";
+
+const static constexpr int32_t powerStateOff = 0;
+const static constexpr int32_t powerStateOn = 1;
+const static constexpr int32_t powerStateReset = 2;
+const static constexpr int32_t powerStateMax = 3;
 
 struct EventDeleter
 {
@@ -51,7 +68,69 @@ struct PowerControl : sdbusplus::server::object_t<pwr_control>
                  // phosphor::watchdog::EventPtr event,
                  sd_event_io_handler_t handler = PowerControl::EventHandler) :
         sdbusplus::server::object_t<pwr_control>(bus, path),
-        bus(bus), callbackHandler(handler)
+        bus(bus), callbackHandler(handler),
+        powerButtonPressedSignal(
+            bus,
+            sdbusplus::bus::match::rules::type::signal() +
+                sdbusplus::bus::match::rules::member("Pressed") +
+                sdbusplus::bus::match::rules::path(PowerButtonPath) +
+                sdbusplus::bus::match::rules::interface(PowerButtonIntf),
+            [this](sdbusplus::message::message& msg) {
+                phosphor::logging::log<phosphor::logging::level::INFO>(
+                    "powerButtonPressed callback function is called...");
+                if (powerStateOn == this->state())
+                {
+                    this->state(powerStateOff);
+                }
+                else if (powerStateOff == this->state())
+                {
+                    this->state(powerStateOn);
+                }
+                else
+                {
+                    phosphor::logging::log<phosphor::logging::level::ERR>(
+                        "UNKNOWN power state");
+                }
+                return;
+            }),
+        resetButtonPressedSignal(
+            bus,
+            sdbusplus::bus::match::rules::type::signal() +
+                sdbusplus::bus::match::rules::member("Pressed") +
+                sdbusplus::bus::match::rules::path(ResetButtonPath) +
+                sdbusplus::bus::match::rules::interface(ResetButtonIntf),
+            [this](sdbusplus::message::message& msg) {
+                phosphor::logging::log<phosphor::logging::level::INFO>(
+                    "resetButtonPressed callback function is called...");
+                this->state(powerStateReset);
+                return;
+            }),
+        propertiesChangedSignal(
+            bus,
+            sdbusplus::bus::match::rules::type::signal() +
+                sdbusplus::bus::match::rules::member("PropertiesChanged") +
+                sdbusplus::bus::match::rules::path(PowerControlPath) +
+                sdbusplus::bus::match::rules::interface(PowerControlIntf),
+            [this](sdbusplus::message::message& msg) {
+                phosphor::logging::log<phosphor::logging::level::INFO>(
+                    "PowerControl propertiesChangedSignal callback function is "
+                    "called...");
+                std::string objectName;
+                std::map<std::string,
+                         sdbusplus::message::variant<int, bool, std::string>>
+                    msgData;
+                msg.read(objectName, msgData);
+                // Check if it was the Value property that changed.
+                auto valPropMap = msgData.find("State");
+                {
+                    if (valPropMap != msgData.end())
+                    {
+                        this->setPowerState(
+                            sdbusplus::message::variant_ns::get<int>(
+                                valPropMap->second));
+                    }
+                }
+            })
     {
         int ret = -1;
         char buf = '0';
@@ -166,13 +245,16 @@ struct PowerControl : sdbusplus::server::object_t<pwr_control>
     }
 
     bool forcePowerOff() override;
-    // todo: when dbus interfaces is fixed, these should be override
-    int32_t setPowerState(int32_t newState); // override;
-    int32_t getPowerState();                 // override;
 
   private:
+    int reset_out_fd;
     int power_up_fd;
     int pgood_fd;
     sdbusplus::bus::bus& bus;
     sd_event_io_handler_t callbackHandler;
+    int32_t setPowerState(int newState);
+    int32_t triggerReset();
+    sdbusplus::bus::match_t propertiesChangedSignal;
+    sdbusplus::bus::match_t powerButtonPressedSignal;
+    sdbusplus::bus::match_t resetButtonPressedSignal;
 };
