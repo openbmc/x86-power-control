@@ -15,11 +15,9 @@
 */
 #include "power_control.hpp"
 
-int32_t PowerControl::forcePowerOff()
+bool PowerControl::forcePowerOff()
 {
-    int ret = 0;
-
-    return ret;
+    return true;
 }
 
 int32_t PowerControl::setPowerState(int32_t newState)

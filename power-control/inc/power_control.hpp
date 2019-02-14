@@ -166,9 +166,10 @@ struct PowerControl : sdbusplus::server::object_t<pwr_control>
         return 0;
     }
 
-    int32_t forcePowerOff() override;
-    int32_t setPowerState(int32_t newState) override;
-    int32_t getPowerState() override;
+    bool forcePowerOff() override;
+    // todo: when dbus interfaces is fixed, these should be override
+    int32_t setPowerState(int32_t newState); // override;
+    int32_t getPowerState(); //override;
 
   private:
     int power_up_fd;
