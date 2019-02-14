@@ -25,7 +25,7 @@
 #include <xyz/openbmc_project/Chassis/Control/Power/server.hpp>
 #include <xyz/openbmc_project/Common/error.hpp>
 
-//static constexpr size_t POLLING_INTERVAL_MS = 500;
+// static constexpr size_t POLLING_INTERVAL_MS = 500;
 
 const static constexpr char* PGOOD_PIN = "PGOOD";
 const static constexpr char* POWER_UP_PIN = "POWER_UP_PIN";
@@ -34,7 +34,7 @@ const static constexpr size_t POWER_UP_PIN_PULSE_TIME_MS = 200;
 
 struct EventDeleter
 {
-    void operator()(sd_event *event) const
+    void operator()(sd_event* event) const
     {
         event = sd_event_unref(event);
     }
@@ -42,15 +42,13 @@ struct EventDeleter
 
 using EventPtr = std::unique_ptr<sd_event, EventDeleter>;
 
-
 using pwr_control =
     sdbusplus::xyz::openbmc_project::Chassis::Control::server::Power;
 
 struct PowerControl : sdbusplus::server::object_t<pwr_control>
 {
-    PowerControl(sdbusplus::bus::bus& bus, const char* path,
-                 EventPtr &event,
-                 //phosphor::watchdog::EventPtr event,
+    PowerControl(sdbusplus::bus::bus& bus, const char* path, EventPtr& event,
+                 // phosphor::watchdog::EventPtr event,
                  sd_event_io_handler_t handler = PowerControl::EventHandler) :
         sdbusplus::server::object_t<pwr_control>(bus, path),
         bus(bus), callbackHandler(handler)
@@ -71,21 +69,22 @@ struct PowerControl : sdbusplus::server::object_t<pwr_control>
             closeGpio(pgood_fd);
             throw std::runtime_error("failed to config POWER_UP_PIN");
         }
-/*
-        ret = sd_event_add_io(event.get(), nullptr, pgood_fd, EPOLLPRI,
-                              callbackHandler, this);
-        if (ret < 0)
-        {
-            closeGpio(pgood_fd);
-            closeGpio(power_up_fd);
-            throw std::runtime_error("failed to add to event loop");
-        }
+        /*
+                ret = sd_event_add_io(event.get(), nullptr, pgood_fd, EPOLLPRI,
+                                      callbackHandler, this);
+                if (ret < 0)
+                {
+                    closeGpio(pgood_fd);
+                    closeGpio(power_up_fd);
+                    throw std::runtime_error("failed to add to event loop");
+                }
 
-        timer.start(std::chrono::duration_cast<std::chrono::microseconds>(
-            std::chrono::milliseconds(POLLING_INTERVAL_MS)));
-        timer.setEnabled<std::true_type>();
-        phosphor::logging::log<phosphor::logging::level::DEBUG>("Enable timer");
-*/
+                timer.start(std::chrono::duration_cast<std::chrono::microseconds>(
+                    std::chrono::milliseconds(POLLING_INTERVAL_MS)));
+                timer.setEnabled<std::true_type>();
+                phosphor::logging::log<phosphor::logging::level::DEBUG>("Enable
+           timer");
+        */
     }
 
     ~PowerControl()
@@ -146,7 +145,7 @@ struct PowerControl : sdbusplus::server::object_t<pwr_control>
             }
             else
             {
-                //powercontrol->powerLost();
+                // powercontrol->powerLost();
             }
         }
         else
@@ -159,16 +158,17 @@ struct PowerControl : sdbusplus::server::object_t<pwr_control>
             }
             else
             {
-//                powercontrol->powerGood();
+                //                powercontrol->powerGood();
             }
         }
 
         return 0;
     }
 
-    int32_t forcePowerOff() override;
-    int32_t setPowerState(int32_t newState) override;
-    int32_t getPowerState() override;
+    bool forcePowerOff() override;
+    // todo: when dbus interfaces is fixed, these should be override
+    int32_t setPowerState(int32_t newState); // override;
+    int32_t getPowerState();                 // override;
 
   private:
     int power_up_fd;

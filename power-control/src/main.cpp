@@ -30,8 +30,8 @@ int main(int argc, char* argv[])
             "Error creating a default sd_event handler");
         return ret;
     }
-    //phosphor::watchdog::EventPtr eventP{event,
-      //                                  phosphor::watchdog::EventDeleter()};
+    // phosphor::watchdog::EventPtr eventP{event,
+    //                                  phosphor::watchdog::EventDeleter()};
     EventPtr eventP{event};
     event = nullptr;
 
