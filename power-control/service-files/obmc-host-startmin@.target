@@ -1,6 +1,6 @@
 [Unit]
 Description=Start Host%i Minimum
-Wants=obmc-standby.target
-After=obmc-standby.target
+Wants=multi-user.target
+After=multi-user.target
 Wants=mapper-wait@-xyz-openbmc_project-Chassis-Control-Power%i.service
 After=mapper-wait@-xyz-openbmc_project-Chassis-Control-Power%i.service

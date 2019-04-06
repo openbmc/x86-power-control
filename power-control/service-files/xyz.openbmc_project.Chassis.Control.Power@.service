@@ -13,5 +13,5 @@ Type=dbus
 BusName=xyz.openbmc_project.Chassis.Control.Power
 
 [Install]
-WantedBy=obmc-standby.target
+WantedBy=multi-user.target
 

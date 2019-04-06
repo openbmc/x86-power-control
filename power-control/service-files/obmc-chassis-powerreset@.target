@@ -4,4 +4,4 @@ Conflicts=obmc-chassis-poweroff@%i.target
 RefuseManualStop=yes
 
 [Install]
-WantedBy=obmc-standby.target
+WantedBy=multi-user.target
