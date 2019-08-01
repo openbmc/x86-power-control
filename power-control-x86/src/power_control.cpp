@@ -477,6 +477,24 @@ static void setRestartCause(const RestartCause cause)
         std::variant<std::string>(getRestartCause(cause)));
 }
 
+static void systemPowerGoodFailedLog()
+{
+    sd_journal_send(
+        "MESSAGE=PowerControl: system power good failed to assert (VR failure)",
+        "PRIORITY=%i", LOG_INFO, "REDFISH_MESSAGE_ID=%s",
+        "OpenBMC.0.1.SystemPowerGoodFailed", "REDFISH_MESSAGE_ARGS=%d",
+        sioPowerGoodWatchdogTimeMs, NULL);
+}
+
+static void psPowerOKFailedLog()
+{
+    sd_journal_send(
+        "MESSAGE=PowerControl: power supply power good failed to assert",
+        "PRIORITY=%i", LOG_INFO, "REDFISH_MESSAGE_ID=%s",
+        "OpenBMC.0.1.PowerSupplyPowerGoodFailed", "REDFISH_MESSAGE_ARGS=%d",
+        psPowerOKWatchdogTimeMs, NULL);
+}
+
 static void powerRestorePolicyLog()
 {
     sd_journal_send("MESSAGE=PowerControl: power restore policy applied",
@@ -1253,6 +1271,7 @@ static void powerStateWaitForPSPowerOK(const Event event)
             break;
         case Event::psPowerOKWatchdogTimerExpired:
             setPowerState(PowerState::failedTransitionToOn);
+            psPowerOKFailedLog();
             break;
         case Event::sioPowerGoodAssert:
             psPowerOKWatchdogTimer.cancel();
@@ -1275,6 +1294,7 @@ static void powerStateWaitForSIOPowerGood(const Event event)
             break;
         case Event::sioPowerGoodWatchdogTimerExpired:
             setPowerState(PowerState::failedTransitionToOn);
+            systemPowerGoodFailedLog();
             forcePowerOff();
             break;
         default:
