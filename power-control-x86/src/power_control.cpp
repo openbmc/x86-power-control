@@ -43,7 +43,6 @@ static std::shared_ptr<sdbusplus::asio::dbus_interface> nmiOutIface;
 static gpiod::line powerButtonMask;
 static gpiod::line resetButtonMask;
 static bool nmiButtonMasked = false;
-static bool resetInProgress = false;
 
 const static constexpr int powerPulseTimeMs = 200;
 const static constexpr int forceOffPulseTimeMs = 15000;
@@ -52,6 +51,7 @@ const static constexpr int powerCycleTimeMs = 1000;
 const static constexpr int sioPowerGoodWatchdogTimeMs = 1000;
 const static constexpr int psPowerOKWatchdogTimeMs = 8000;
 const static constexpr int gracefulPowerOffTimeMs = 60000;
+const static constexpr int warmResetCheckTimeMs = 500;
 const static constexpr int buttonMaskTimeMs = 60000;
 const static constexpr int powerOffSaveTimeMs = 7000;
 
@@ -70,6 +70,8 @@ static boost::asio::steady_timer gpioAssertTimer(io);
 static boost::asio::steady_timer powerCycleTimer(io);
 // Time OS gracefully powering off
 static boost::asio::steady_timer gracefulPowerOffTimer(io);
+// Time the warm reset check
+static boost::asio::steady_timer warmResetCheckTimer(io);
 // Time power supply power OK assertion on power-on
 static boost::asio::steady_timer psPowerOKWatchdogTimer(io);
 // Time SIO power good assertion on power-on
@@ -132,6 +134,7 @@ enum class PowerState
     cycleOff,
     transitionToCycleOff,
     gracefulTransitionToCycleOff,
+    checkForWarmReset,
 };
 static PowerState powerState;
 static std::string getPowerStateName(PowerState state)
@@ -168,6 +171,9 @@ static std::string getPowerStateName(PowerState state)
         case PowerState::gracefulTransitionToCycleOff:
             return "Graceful Transition to Power Cycle Off";
             break;
+        case PowerState::checkForWarmReset:
+            return "Check for Warm Reset";
+            break;
         default:
             return "unknown state: " + std::to_string(static_cast<int>(state));
             break;
@@ -186,7 +192,10 @@ enum class Event
     sioPowerGoodDeAssert,
     sioS5Assert,
     sioS5DeAssert,
+    postCompleteAssert,
+    postCompleteDeAssert,
     powerButtonPressed,
+    resetButtonPressed,
     powerCycleTimerExpired,
     psPowerOKWatchdogTimerExpired,
     sioPowerGoodWatchdogTimerExpired,
@@ -197,6 +206,7 @@ enum class Event
     resetRequest,
     gracefulPowerOffRequest,
     gracefulPowerCycleRequest,
+    warmResetDetected,
 };
 static std::string getEventName(Event event)
 {
@@ -220,8 +230,17 @@ static std::string getEventName(Event event)
         case Event::sioS5DeAssert:
             return "SIO S5 de-assert";
             break;
+        case Event::postCompleteAssert:
+            return "POST Complete assert";
+            break;
+        case Event::postCompleteDeAssert:
+            return "POST Complete de-assert";
+            break;
         case Event::powerButtonPressed:
             return "power button pressed";
+            break;
+        case Event::resetButtonPressed:
+            return "reset button pressed";
             break;
         case Event::powerCycleTimerExpired:
             return "power cycle timer expired";
@@ -253,6 +272,9 @@ static std::string getEventName(Event event)
         case Event::gracefulPowerCycleRequest:
             return "graceful power-cycle request";
             break;
+        case Event::warmResetDetected:
+            return "warm reset detected";
+            break;
         default:
             return "unknown event: " + std::to_string(static_cast<int>(event));
             break;
@@ -275,6 +297,7 @@ static void powerStateGracefulTransitionToOff(const Event event);
 static void powerStateCycleOff(const Event event);
 static void powerStateTransitionToCycleOff(const Event event);
 static void powerStateGracefulTransitionToCycleOff(const Event event);
+static void powerStateCheckForWarmReset(const Event event);
 
 static std::function<void(const Event)> getPowerStateHandler(PowerState state)
 {
@@ -309,6 +332,9 @@ static std::function<void(const Event)> getPowerStateHandler(PowerState state)
             break;
         case PowerState::gracefulTransitionToCycleOff:
             return powerStateGracefulTransitionToCycleOff;
+            break;
+        case PowerState::checkForWarmReset:
+            return powerStateCheckForWarmReset;
             break;
         default:
             return std::function<void(const Event)>{};
@@ -347,9 +373,7 @@ static constexpr std::string_view getHostState(const PowerState state)
     switch (state)
     {
         case PowerState::on:
-        case PowerState::transitionToOff:
         case PowerState::gracefulTransitionToOff:
-        case PowerState::transitionToCycleOff:
         case PowerState::gracefulTransitionToCycleOff:
             return "xyz.openbmc_project.State.Host.HostState.Running";
             break;
@@ -357,7 +381,10 @@ static constexpr std::string_view getHostState(const PowerState state)
         case PowerState::waitForSIOPowerGood:
         case PowerState::failedTransitionToOn:
         case PowerState::off:
+        case PowerState::transitionToOff:
+        case PowerState::transitionToCycleOff:
         case PowerState::cycleOff:
+        case PowerState::checkForWarmReset:
             return "xyz.openbmc_project.State.Host.HostState.Off";
             break;
         default:
@@ -374,6 +401,7 @@ static constexpr std::string_view getChassisState(const PowerState state)
         case PowerState::gracefulTransitionToOff:
         case PowerState::transitionToCycleOff:
         case PowerState::gracefulTransitionToCycleOff:
+        case PowerState::checkForWarmReset:
             return "xyz.openbmc_project.State.Chassis.PowerState.On";
             break;
         case PowerState::waitForPSPowerOK:
@@ -1088,6 +1116,29 @@ static void psPowerOKWatchdogTimerStart()
         });
 }
 
+static void warmResetCheckTimerStart()
+{
+    std::cerr << "Warm reset check timer started\n";
+    warmResetCheckTimer.expires_after(
+        std::chrono::milliseconds(warmResetCheckTimeMs));
+    warmResetCheckTimer.async_wait([](const boost::system::error_code ec) {
+        if (ec)
+        {
+            // operation_aborted is expected if timer is canceled before
+            // completion.
+            if (ec != boost::asio::error::operation_aborted)
+            {
+                std::cerr << "Warm reset check async_wait failed: "
+                          << ec.message() << "\n";
+            }
+            std::cerr << "Warm reset check timer canceled\n";
+            return;
+        }
+        std::cerr << "Warm reset check timer completed\n";
+        sendPowerControlEvent(Event::warmResetDetected);
+    });
+}
+
 static void pohCounterTimerStart()
 {
     std::cerr << "POH timer started\n";
@@ -1227,9 +1278,18 @@ static void powerStateOn(const Event event)
             setPowerState(PowerState::transitionToOff);
             setRestartCause(RestartCause::softReset);
             break;
+        case Event::postCompleteDeAssert:
+            setPowerState(PowerState::checkForWarmReset);
+            setRestartCause(RestartCause::softReset);
+            warmResetCheckTimerStart();
+            break;
         case Event::powerButtonPressed:
             setPowerState(PowerState::gracefulTransitionToOff);
             gracefulPowerOffTimerStart();
+            break;
+        case Event::resetButtonPressed:
+            setPowerState(PowerState::checkForWarmReset);
+            warmResetCheckTimerStart();
             break;
         case Event::powerOffRequest:
             setPowerState(PowerState::transitionToOff);
@@ -1445,6 +1505,24 @@ static void powerStateGracefulTransitionToCycleOff(const Event event)
     }
 }
 
+static void powerStateCheckForWarmReset(const Event event)
+{
+    logEvent(__FUNCTION__, event);
+    switch (event)
+    {
+        case Event::sioS5Assert:
+            warmResetCheckTimer.cancel();
+            setPowerState(PowerState::transitionToOff);
+            break;
+        case Event::warmResetDetected:
+            setPowerState(PowerState::on);
+            break;
+        default:
+            std::cerr << "No action taken.\n";
+            break;
+    }
+}
+
 static void psPowerOKHandler()
 {
     gpiod::line_event gpioLineEvent = psPowerOKLine.event_read();
@@ -1578,7 +1656,7 @@ static void resetButtonHandler()
         resetButtonIface->set_property("ButtonPressed", true);
         if (!resetButtonMask)
         {
-            resetInProgress = true;
+            sendPowerControlEvent(Event::resetButtonPressed);
             setRestartCause(RestartCause::resetButton);
         }
         else
@@ -1771,21 +1849,15 @@ static void postCompleteHandler()
 
     bool postComplete =
         gpioLineEvent.event_type == gpiod::line_event::FALLING_EDGE;
-    std::cerr << "POST complete value changed: " << postComplete << "\n";
     if (postComplete)
     {
+        sendPowerControlEvent(Event::postCompleteAssert);
         osIface->set_property("OperatingSystemState", std::string("Standby"));
-        resetInProgress = false;
     }
     else
     {
+        sendPowerControlEvent(Event::postCompleteDeAssert);
         osIface->set_property("OperatingSystemState", std::string("Inactive"));
-        // Set the restart cause if POST complete de-asserted by host software
-        if (powerState == PowerState::on && !resetInProgress)
-        {
-            resetInProgress = true;
-            setRestartCause(RestartCause::softReset);
-        }
     }
     postCompleteEvent.async_wait(
         boost::asio::posix::stream_descriptor::wait_read,
