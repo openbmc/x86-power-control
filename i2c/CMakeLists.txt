@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.10 FATAL_ERROR)
-project(chassisgpio CXX)
+project(chassisi2c CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -15,7 +15,7 @@ set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR})
 include(GNUInstallDirs)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/inc)
 
-add_library(${PROJECT_NAME} SHARED src/gpio.cpp)
+add_library(${PROJECT_NAME} SHARED src/i2c.cpp)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "0.1.0")
 set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION "0")
@@ -27,7 +27,7 @@ install(TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION "${INSTALL_LIB_DIR}" COMPONENT stlib
   COMPONENT dev)
 
-install(FILES "inc/gpio.hpp"
+install(FILES "inc/i2c.hpp"
   DESTINATION "${INSTALL_INCLUDE_DIR}/" )
 
 install(EXPORT "${PROJECT_NAME}EXPORT"
