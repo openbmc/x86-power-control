@@ -38,6 +38,7 @@ static std::shared_ptr<sdbusplus::asio::dbus_interface> resetButtonIface;
 static std::shared_ptr<sdbusplus::asio::dbus_interface> nmiButtonIface;
 static std::shared_ptr<sdbusplus::asio::dbus_interface> osIface;
 static std::shared_ptr<sdbusplus::asio::dbus_interface> idButtonIface;
+static std::shared_ptr<sdbusplus::asio::dbus_interface> nmiOutIface;
 
 static gpiod::line powerButtonMask;
 static gpiod::line resetButtonMask;
@@ -1812,6 +1813,7 @@ int main(int argc, char* argv[])
     power_control::conn->request_name(
         "xyz.openbmc_project.State.OperatingSystem");
     power_control::conn->request_name("xyz.openbmc_project.Chassis.Buttons");
+    power_control::conn->request_name("xyz.openbmc_project.Control.Host.NMI");
 
     // Request PS_PWROK GPIO events
     if (!power_control::requestGPIOEvents(
@@ -2151,6 +2153,17 @@ int main(int argc, char* argv[])
                                                      nmiButtonPressed);
 
     power_control::nmiButtonIface->initialize();
+
+    // NMI out Service
+    sdbusplus::asio::object_server nmiOutServer =
+        sdbusplus::asio::object_server(power_control::conn);
+
+    // NMI out Interface
+    power_control::nmiOutIface =
+        nmiOutServer.add_interface("/xyz/openbmc_project/control/host0/nmi",
+                                   "xyz.openbmc_project.Control.Host.NMI");
+    power_control::nmiOutIface->register_method("NMI", power_control::nmiReset);
+    power_control::nmiOutIface->initialize();
 
     // ID Button Interface
     power_control::idButtonIface =
