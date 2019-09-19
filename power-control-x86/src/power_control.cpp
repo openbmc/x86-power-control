@@ -20,6 +20,7 @@
 
 #include <boost/asio/posix/stream_descriptor.hpp>
 #include <boost/container/flat_map.hpp>
+#include <boost/container/flat_set.hpp>
 #include <filesystem>
 #include <fstream>
 #include <gpiod.hpp>
@@ -39,6 +40,7 @@ static std::shared_ptr<sdbusplus::asio::dbus_interface> nmiButtonIface;
 static std::shared_ptr<sdbusplus::asio::dbus_interface> osIface;
 static std::shared_ptr<sdbusplus::asio::dbus_interface> idButtonIface;
 static std::shared_ptr<sdbusplus::asio::dbus_interface> nmiOutIface;
+static std::shared_ptr<sdbusplus::asio::dbus_interface> restartCauseIface;
 
 static gpiod::line powerButtonMask;
 static gpiod::line resetButtonMask;
@@ -80,6 +82,8 @@ static boost::asio::steady_timer sioPowerGoodWatchdogTimer(io);
 static boost::asio::steady_timer powerStateSaveTimer(io);
 // POH timer
 static boost::asio::steady_timer pohCounterTimer(io);
+// Time when to allow restart cause updates
+static boost::asio::steady_timer restartCauseTimer(io);
 
 // GPIO Lines and Event Descriptors
 static gpiod::line psPowerOKLine;
@@ -457,10 +461,12 @@ enum class RestartCause
     command,
     resetButton,
     powerButton,
+    watchdog,
     powerPolicyOn,
     powerPolicyRestore,
     softReset,
 };
+static boost::container::flat_set<RestartCause> causeSet;
 static std::string getRestartCause(RestartCause cause)
 {
     switch (cause)
@@ -473,6 +479,9 @@ static std::string getRestartCause(RestartCause cause)
             break;
         case RestartCause::powerButton:
             return "xyz.openbmc_project.State.Host.RestartCause.PowerButton";
+            break;
+        case RestartCause::watchdog:
+            return "xyz.openbmc_project.State.Host.RestartCause.WatchdogTimer";
             break;
         case RestartCause::powerPolicyOn:
             return "xyz.openbmc_project.State.Host.RestartCause."
@@ -490,20 +499,56 @@ static std::string getRestartCause(RestartCause cause)
             break;
     }
 }
-static void setRestartCause(const RestartCause cause)
+static void addRestartCause(const RestartCause cause)
 {
-    conn->async_method_call(
-        [](boost::system::error_code ec) {
-            if (ec)
-            {
-                std::cerr << "failed to set RestartCause\n";
-            }
-        },
-        "xyz.openbmc_project.Settings",
-        "/xyz/openbmc_project/control/host0/restart_cause",
-        "org.freedesktop.DBus.Properties", "Set",
-        "xyz.openbmc_project.Common.RestartCause", "RestartCause",
-        std::variant<std::string>(getRestartCause(cause)));
+    // Add this to the set of causes for this restart
+    causeSet.insert(cause);
+}
+static void clearRestartCause()
+{
+    // Clear the set for the next restart
+    causeSet.clear();
+}
+static void setRestartCauseProperty(const std::string& cause)
+{
+    std::cerr << "RestartCause set to " << cause << "\n";
+    restartCauseIface->set_property("RestartCause", cause);
+}
+static void setRestartCause()
+{
+    // Determine the actual restart cause based on the set of causes
+    std::string restartCause =
+        "xyz.openbmc_project.State.Host.RestartCause.Unknown";
+    if (causeSet.contains(RestartCause::watchdog))
+    {
+        restartCause = getRestartCause(RestartCause::watchdog);
+    }
+    else if (causeSet.contains(RestartCause::command))
+    {
+        restartCause = getRestartCause(RestartCause::command);
+    }
+    else if (causeSet.contains(RestartCause::resetButton))
+    {
+        restartCause = getRestartCause(RestartCause::resetButton);
+    }
+    else if (causeSet.contains(RestartCause::powerButton))
+    {
+        restartCause = getRestartCause(RestartCause::powerButton);
+    }
+    else if (causeSet.contains(RestartCause::powerPolicyOn))
+    {
+        restartCause = getRestartCause(RestartCause::powerPolicyOn);
+    }
+    else if (causeSet.contains(RestartCause::powerPolicyRestore))
+    {
+        restartCause = getRestartCause(RestartCause::powerPolicyRestore);
+    }
+    else if (causeSet.contains(RestartCause::softReset))
+    {
+        restartCause = getRestartCause(RestartCause::softReset);
+    }
+
+    setRestartCauseProperty(restartCause);
 }
 
 static void systemPowerGoodFailedLog()
@@ -610,7 +655,7 @@ static void invokePowerRestorePolicy(const std::string& policy)
         "xyz.openbmc_project.Control.Power.RestorePolicy.Policy.AlwaysOn")
     {
         sendPowerControlEvent(Event::powerOnRequest);
-        setRestartCause(RestartCause::powerPolicyOn);
+        setRestartCauseProperty(getRestartCause(RestartCause::powerPolicyOn));
     }
     else if (policy == "xyz.openbmc_project.Control.Power.RestorePolicy."
                        "Policy.Restore")
@@ -619,7 +664,8 @@ static void invokePowerRestorePolicy(const std::string& policy)
         {
             std::cerr << "Power was dropped, restoring Host On state\n";
             sendPowerControlEvent(Event::powerOnRequest);
-            setRestartCause(RestartCause::powerPolicyRestore);
+            setRestartCauseProperty(
+                getRestartCause(RestartCause::powerPolicyRestore));
         }
         else
         {
@@ -1235,10 +1281,14 @@ static void currentHostStateMonitor()
                 "xyz.openbmc_project.State.Host.HostState.Running")
             {
                 pohCounterTimerStart();
+                // Clear the restart cause set for the next restart
+                clearRestartCause();
             }
             else
             {
                 pohCounterTimer.cancel();
+                // Set the restart cause set for this restart
+                setRestartCause();
             }
         });
 }
@@ -1279,11 +1329,11 @@ static void powerStateOn(const Event event)
             break;
         case Event::sioS5Assert:
             setPowerState(PowerState::transitionToOff);
-            setRestartCause(RestartCause::softReset);
+            addRestartCause(RestartCause::softReset);
             break;
         case Event::postCompleteDeAssert:
             setPowerState(PowerState::checkForWarmReset);
-            setRestartCause(RestartCause::softReset);
+            addRestartCause(RestartCause::softReset);
             warmResetCheckTimerStart();
             break;
         case Event::powerButtonPressed:
@@ -1625,7 +1675,7 @@ static void powerButtonHandler()
         if (!powerButtonMask)
         {
             sendPowerControlEvent(Event::powerButtonPressed);
-            setRestartCause(RestartCause::powerButton);
+            addRestartCause(RestartCause::powerButton);
         }
         else
         {
@@ -1660,7 +1710,7 @@ static void resetButtonHandler()
         if (!resetButtonMask)
         {
             sendPowerControlEvent(Event::resetButtonPressed);
-            setRestartCause(RestartCause::resetButton);
+            addRestartCause(RestartCause::resetButton);
         }
         else
         {
@@ -1889,6 +1939,8 @@ int main(int argc, char* argv[])
         "xyz.openbmc_project.State.OperatingSystem");
     power_control::conn->request_name("xyz.openbmc_project.Chassis.Buttons");
     power_control::conn->request_name("xyz.openbmc_project.Control.Host.NMI");
+    power_control::conn->request_name(
+        "xyz.openbmc_project.Control.Host.RestartCause");
 
     // Request PS_PWROK GPIO events
     if (!power_control::requestGPIOEvents(
@@ -2022,19 +2074,20 @@ int main(int argc, char* argv[])
             {
                 sendPowerControlEvent(
                     power_control::Event::gracefulPowerOffRequest);
+                addRestartCause(power_control::RestartCause::command);
             }
             else if (requested ==
                      "xyz.openbmc_project.State.Host.Transition.On")
             {
                 sendPowerControlEvent(power_control::Event::powerOnRequest);
-                setRestartCause(power_control::RestartCause::command);
+                addRestartCause(power_control::RestartCause::command);
             }
             else if (requested ==
                      "xyz.openbmc_project.State.Host.Transition.Reboot")
             {
                 sendPowerControlEvent(
                     power_control::Event::gracefulPowerCycleRequest);
-                setRestartCause(power_control::RestartCause::command);
+                addRestartCause(power_control::RestartCause::command);
             }
             else
             {
@@ -2069,23 +2122,24 @@ int main(int argc, char* argv[])
             if (requested == "xyz.openbmc_project.State.Chassis.Transition.Off")
             {
                 sendPowerControlEvent(power_control::Event::powerOffRequest);
+                addRestartCause(power_control::RestartCause::command);
             }
             else if (requested ==
                      "xyz.openbmc_project.State.Chassis.Transition.On")
             {
                 sendPowerControlEvent(power_control::Event::powerOnRequest);
-                setRestartCause(power_control::RestartCause::command);
+                addRestartCause(power_control::RestartCause::command);
             }
             else if (requested ==
                      "xyz.openbmc_project.State.Chassis.Transition.PowerCycle")
             {
                 sendPowerControlEvent(power_control::Event::powerCycleRequest);
-                setRestartCause(power_control::RestartCause::command);
+                addRestartCause(power_control::RestartCause::command);
             }
             else if (requested ==
                      "xyz.openbmc_project.State.Chassis.Transition.Reset")
             {
-                setRestartCause(power_control::RestartCause::command);
+                addRestartCause(power_control::RestartCause::command);
                 sendPowerControlEvent(power_control::Event::resetRequest);
             }
             else
@@ -2272,6 +2326,43 @@ int main(int argc, char* argv[])
                                               std::string(osState));
 
     power_control::osIface->initialize();
+
+    // Restart Cause Service
+    sdbusplus::asio::object_server restartCauseServer =
+        sdbusplus::asio::object_server(power_control::conn);
+
+    // Restart Cause Interface
+    power_control::restartCauseIface = restartCauseServer.add_interface(
+        "/xyz/openbmc_project/control/host0/restart_cause",
+        "xyz.openbmc_project.Control.Host.RestartCause");
+
+    power_control::restartCauseIface->register_property(
+        "RestartCause",
+        std::string("xyz.openbmc_project.State.Host.RestartCause.Unknown"));
+
+    power_control::restartCauseIface->register_property(
+        "RequestedRestartCause",
+        std::string("xyz.openbmc_project.State.Host.RestartCause.Unknown"),
+        [](const std::string& requested, std::string& resp) {
+            if (requested ==
+                "xyz.openbmc_project.State.Host.RestartCause.WatchdogTimer")
+            {
+                power_control::addRestartCause(
+                    power_control::RestartCause::watchdog);
+            }
+            else
+            {
+                throw std::invalid_argument(
+                    "Unrecognized RestartCause Request");
+                return 0;
+            }
+
+            std::cerr << "RestartCause requested: " << requested << "\n";
+            resp = requested;
+            return 1;
+        });
+
+    power_control::restartCauseIface->initialize();
 
     power_control::io.run();
 
