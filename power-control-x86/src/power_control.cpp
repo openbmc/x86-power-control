@@ -624,6 +624,9 @@ static void invokePowerRestorePolicy(const std::string& policy)
             std::cerr << "No power drop, restoring Host Off state\n";
         }
     }
+    // We're done with the previous power state for the restore policy, so store
+    // the current state
+    savePowerState(powerState);
 }
 
 static void powerRestorePolicyDelay(int delay)
