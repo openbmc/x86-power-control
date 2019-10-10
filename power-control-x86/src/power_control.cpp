@@ -2308,6 +2308,21 @@ int main(int argc, char* argv[])
         power_control::idButtonIface->initialize();
     }
 
+    // set Chassis CapabilitiesFlags Property with 0x06: front panel(0x2) and
+    // NMI out(0x4)
+    power_control::conn->async_method_call(
+        [](boost::system::error_code ec) {
+            if (ec)
+            {
+                std::cerr << "failed to set Chassis CapabilitiesFlags\n";
+            }
+        },
+        "xyz.openbmc_project.Settings",
+        "/xyz/openbmc_project/control/chassis_capabilities_config",
+        "org.freedesktop.DBus.Properties", "Set",
+        "xyz.openbmc_project.Control.ChassisCapabilities", "CapabilitiesFlags",
+        std::variant<uint8_t>(0x06));
+
     // OS State Service
     sdbusplus::asio::object_server osServer =
         sdbusplus::asio::object_server(power_control::conn);
