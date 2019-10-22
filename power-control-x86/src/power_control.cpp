@@ -1254,6 +1254,10 @@ static void powerStateWaitForPSPowerOK(const Event event)
         case Event::psPowerOKWatchdogTimerExpired:
             setPowerState(PowerState::failedTransitionToOn);
             break;
+        case Event::sioPowerGoodAssert:
+            psPowerOKWatchdogTimer.cancel();
+            setPowerState(PowerState::on);
+            break;
         default:
             std::cerr << "No action taken.\n";
             break;
