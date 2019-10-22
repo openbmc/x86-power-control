@@ -921,13 +921,20 @@ static int setGPIOOutputForMs(const std::string& name, const int value,
 
     // No mask set, so request and set the GPIO normally
     gpiod::line gpioLine;
-    if (!setGPIOOutput(name, value, gpioLine))
+
+    // Initialize gpio to output
+    if (!setGPIOOutput(name, 1, gpioLine))
     {
         return -1;
     }
+    gpioLine.set_value(value);
+    std::cerr << name << " set to " << std::to_string(value) << "\n";
+
     gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
     gpioAssertTimer.async_wait(
-        [gpioLine, name](const boost::system::error_code ec) {
+        [gpioLine, value, name](const boost::system::error_code ec) {
+            // Set the GPIO line back to the opposite value
+            gpioLine.set_value(!value);
             std::cerr << name << " released\n";
             if (ec)
             {
