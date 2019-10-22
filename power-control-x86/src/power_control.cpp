@@ -59,6 +59,8 @@ const static constexpr std::string_view powerStateFile = "power-state";
 
 static bool nmiEnabled = true;
 static constexpr const char* nmiOutName = "NMI_OUT";
+static constexpr const char* powerOutName = "POWER_OUT";
+static constexpr const char* resetOutName = "RESET_OUT";
 
 // Timers
 // Time holding GPIOs asserted
@@ -908,12 +910,12 @@ static int setGPIOOutputForMs(const std::string& name, const int value,
                               const int durationMs)
 {
     // If the requested GPIO is masked, use the mask line to set the output
-    if (powerButtonMask && name == "POWER_OUT")
+    if (powerButtonMask && name == power_control::powerOutName)
     {
         return setMaskedGPIOOutputForMs(powerButtonMask, name, value,
                                         durationMs);
     }
-    if (resetButtonMask && name == "RESET_OUT")
+    if (resetButtonMask && name == power_control::resetOutName)
     {
         return setMaskedGPIOOutputForMs(resetButtonMask, name, value,
                                         durationMs);
@@ -927,7 +929,9 @@ static int setGPIOOutputForMs(const std::string& name, const int value,
     }
     gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
     gpioAssertTimer.async_wait(
-        [gpioLine, name](const boost::system::error_code ec) {
+        [gpioLine, value, name](const boost::system::error_code ec) {
+            // Set the GPIO line back to the opposite value
+            gpioLine.set_value(!value);
             std::cerr << name << " released\n";
             if (ec)
             {
@@ -945,17 +949,18 @@ static int setGPIOOutputForMs(const std::string& name, const int value,
 
 static void powerOn()
 {
-    setGPIOOutputForMs("POWER_OUT", 0, powerPulseTimeMs);
+    setGPIOOutputForMs(power_control::powerOutName, 0, powerPulseTimeMs);
 }
 
 static void gracefulPowerOff()
 {
-    setGPIOOutputForMs("POWER_OUT", 0, powerPulseTimeMs);
+    setGPIOOutputForMs(power_control::powerOutName, 0, powerPulseTimeMs);
 }
 
 static void forcePowerOff()
 {
-    if (setGPIOOutputForMs("POWER_OUT", 0, forceOffPulseTimeMs) < 0)
+    if (setGPIOOutputForMs(power_control::powerOutName, 0,
+                           forceOffPulseTimeMs) < 0)
     {
         return;
     }
@@ -991,7 +996,7 @@ static void forcePowerOff()
 
 static void reset()
 {
-    setGPIOOutputForMs("RESET_OUT", 0, resetPulseTimeMs);
+    setGPIOOutputForMs(power_control::resetOutName, 0, resetPulseTimeMs);
 }
 
 static void gracefulPowerOffTimerStart()
@@ -1863,6 +1868,21 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+    // Initialize POWER_OUT and RESET_OUT GPIO.
+    gpiod::line line;
+    if (!power_control::setGPIOOutput(power_control::powerOutName, 1, line))
+    {
+        return -1;
+    }
+
+    if (!power_control::setGPIOOutput(power_control::resetOutName, 1, line))
+    {
+        return -1;
+    }
+
+    // Release line
+    line.reset();
+
     // Initialize the power state
     power_control::powerState = power_control::PowerState::off;
     // Check power good
@@ -2002,7 +2022,8 @@ int main(int argc, char* argv[])
                     return 1;
                 }
                 if (!power_control::setGPIOOutput(
-                        "POWER_OUT", 1, power_control::powerButtonMask))
+                        power_control::powerOutName, 1,
+                        power_control::powerButtonMask))
                 {
                     throw std::runtime_error("Failed to request GPIO");
                     return 0;
@@ -2044,7 +2065,8 @@ int main(int argc, char* argv[])
                     return 1;
                 }
                 if (!power_control::setGPIOOutput(
-                        "RESET_OUT", 1, power_control::resetButtonMask))
+                        power_control::resetOutName, 1,
+                        power_control::resetButtonMask))
                 {
                     throw std::runtime_error("Failed to request GPIO");
                     return 0;
