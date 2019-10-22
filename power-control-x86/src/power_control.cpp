@@ -1256,6 +1256,10 @@ static void powerStateWaitForPSPowerOK(const Event event)
         case Event::psPowerOKWatchdogTimerExpired:
             setPowerState(PowerState::failedTransitionToOn);
             break;
+        case Event::sioPowerGoodAssert:
+            psPowerOKWatchdogTimer.cancel();
+            setPowerState(PowerState::on);
+            break;
         default:
             std::cerr << "No action taken.\n";
             break;
@@ -1358,6 +1362,8 @@ static void powerStateGracefulTransitionToOff(const Event event)
     switch (event)
     {
         case Event::psPowerOKDeAssert:
+            /* Cancel any GPIO assertions held during the transition */
+            gpioAssertTimer.cancel();
             gracefulPowerOffTimer.cancel();
             setPowerState(PowerState::off);
             break;
@@ -1409,6 +1415,8 @@ static void powerStateGracefulTransitionToCycleOff(const Event event)
     switch (event)
     {
         case Event::psPowerOKDeAssert:
+            /* Cancel any GPIO assertions held during the transition */
+            gpioAssertTimer.cancel();
             gracefulPowerOffTimer.cancel();
             setPowerState(PowerState::cycleOff);
             powerCycleTimerStart();
