@@ -1366,7 +1366,7 @@ static void powerStateOn(const Event event)
             reset();
             break;
         default:
-            std::cerr << "No action taken.\n";
+            std::cerr << __FUNCTION__ << ": No action taken.\n";
             break;
     }
 }
@@ -1392,7 +1392,7 @@ static void powerStateWaitForPSPowerOK(const Event event)
             setPowerState(PowerState::on);
             break;
         default:
-            std::cerr << "No action taken.\n";
+            std::cerr << __FUNCTION__ << ": No action taken.\n";
             break;
     }
 }
@@ -1412,7 +1412,7 @@ static void powerStateWaitForSIOPowerGood(const Event event)
             forcePowerOff();
             break;
         default:
-            std::cerr << "No action taken.\n";
+            std::cerr << __FUNCTION__ << ": No action taken.\n";
             break;
     }
 }
@@ -1441,7 +1441,7 @@ static void powerStateFailedTransitionToOn(const Event event)
             powerOn();
             break;
         default:
-            std::cerr << "No action taken.\n";
+            std::cerr << __FUNCTION__ << ": No action taken.\n";
             break;
     }
 }
@@ -1467,7 +1467,7 @@ static void powerStateOff(const Event event)
             powerOn();
             break;
         default:
-            std::cerr << "No action taken.\n";
+            std::cerr << __FUNCTION__ << ": No action taken.\n";
             break;
     }
 }
@@ -1483,7 +1483,7 @@ static void powerStateTransitionToOff(const Event event)
             setPowerState(PowerState::off);
             break;
         default:
-            std::cerr << "No action taken.\n";
+            std::cerr << __FUNCTION__ << ": No action taken.\n";
             break;
     }
 }
@@ -1501,7 +1501,7 @@ static void powerStateGracefulTransitionToOff(const Event event)
             setPowerState(PowerState::on);
             break;
         default:
-            std::cerr << "No action taken.\n";
+            std::cerr << __FUNCTION__ << ": No action taken.\n";
             break;
     }
 }
@@ -1517,7 +1517,7 @@ static void powerStateCycleOff(const Event event)
             powerOn();
             break;
         default:
-            std::cerr << "No action taken.\n";
+            std::cerr << __FUNCTION__ << ": No action taken.\n";
             break;
     }
 }
@@ -1534,7 +1534,7 @@ static void powerStateTransitionToCycleOff(const Event event)
             powerCycleTimerStart();
             break;
         default:
-            std::cerr << "No action taken.\n";
+            std::cerr << __FUNCTION__ << ": No action taken.\n";
             break;
     }
 }
@@ -1553,7 +1553,7 @@ static void powerStateGracefulTransitionToCycleOff(const Event event)
             setPowerState(PowerState::on);
             break;
         default:
-            std::cerr << "No action taken.\n";
+            std::cerr << __FUNCTION__ << ": No action taken.\n";
             break;
     }
 }
@@ -1571,7 +1571,7 @@ static void powerStateCheckForWarmReset(const Event event)
             setPowerState(PowerState::on);
             break;
         default:
-            std::cerr << "No action taken.\n";
+            std::cerr << __FUNCTION__ << ": No action taken.\n";
             break;
     }
 }
