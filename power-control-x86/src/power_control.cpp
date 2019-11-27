@@ -1570,6 +1570,12 @@ static void powerStateCheckForWarmReset(const Event event)
         case Event::warmResetDetected:
             setPowerState(PowerState::on);
             break;
+        case Event::psPowerOKDeAssert:
+            warmResetCheckTimer.cancel();
+            setPowerState(PowerState::off);
+            // DC power is unexpectedly lost, beep
+            beep(beepPowerFail);
+            break;
         default:
             std::cerr << "No action taken.\n";
             break;
