@@ -2062,6 +2062,9 @@ int main(int argc, char* argv[])
     power_control::hostIface = hostServer.add_interface(
         "/xyz/openbmc_project/state/host0", "xyz.openbmc_project.State.Host");
 
+    power_control::hostIface->register_property("RunningState",
+                                                std::string("starting"));
+
     power_control::hostIface->register_property(
         "RequestedHostTransition",
         std::string("xyz.openbmc_project.State.Host.Transition.Off"),
@@ -2384,6 +2387,9 @@ int main(int argc, char* argv[])
         });
 
     power_control::restartCauseIface->initialize();
+
+    power_control::hostIface->set_property("RunningState",
+                                           std::string("started"));
 
     power_control::io.run();
 
