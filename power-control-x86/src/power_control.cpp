@@ -442,6 +442,25 @@ static void savePowerState(const PowerState state)
 }
 static void setPowerState(const PowerState state)
 {
+    // Log the DC On/Off redfish messages
+    if (getHostState(powerState) != getHostState(state))
+    {
+        if (getHostState(state) ==
+            "xyz.openbmc_project.State.Host.HostState.Off")
+        {
+            sd_journal_send("MESSAGE=Host system DC power is off",
+                            "PRIORITY=%i", LOG_INFO, "REDFISH_MESSAGE_ID=%s",
+                            "OpenBMC.0.1.DCPowerOff", NULL);
+        }
+        else if (getHostState(state) ==
+                 "xyz.openbmc_project.State.Host.HostState.Running")
+        {
+            sd_journal_send("MESSAGE=Host system DC power is on", "PRIORITY=%i",
+                            LOG_INFO, "REDFISH_MESSAGE_ID=%s",
+                            "OpenBMC.0.1.DCPowerOn", NULL);
+        }
+    }
+
     powerState = state;
     logStateTransition(state);
 
