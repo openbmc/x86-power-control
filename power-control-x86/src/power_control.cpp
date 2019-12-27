@@ -1253,6 +1253,8 @@ static void pohCounterTimerStart()
 
 static void currentHostStateMonitor()
 {
+    static bool firstHostStateChanged = true;
+
     static auto match = sdbusplus::bus::match::match(
         *conn,
         "type='signal',member='PropertiesChanged', "
@@ -1283,13 +1285,28 @@ static void currentHostStateMonitor()
                 pohCounterTimerStart();
                 // Clear the restart cause set for the next restart
                 clearRestartCause();
+                if (!firstHostStateChanged)
+                {
+                    sd_journal_send("MESSAGE=Host system DC power is on",
+                                    "PRIORITY=%i", LOG_INFO,
+                                    "REDFISH_MESSAGE_ID=%s",
+                                    "OpenBMC.0.1.DCPowerOn", NULL);
+                }
             }
             else
             {
                 pohCounterTimer.cancel();
                 // Set the restart cause set for this restart
                 setRestartCause();
+                if (!firstHostStateChanged)
+                {
+                    sd_journal_send("MESSAGE=Host system DC power is off",
+                                    "PRIORITY=%i", LOG_INFO,
+                                    "REDFISH_MESSAGE_ID=%s",
+                                    "OpenBMC.0.1.DCPowerOff", NULL);
+                }
             }
+            firstHostStateChanged = false;
         });
 }
 
