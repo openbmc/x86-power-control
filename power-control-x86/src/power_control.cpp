@@ -1253,6 +1253,20 @@ static void pohCounterTimerStart()
 
 static void currentHostStateMonitor()
 {
+    if (getHostState(powerState) ==
+        "xyz.openbmc_project.State.Host.HostState.Running")
+    {
+        pohCounterTimerStart();
+        // Clear the restart cause set for the next restart
+        clearRestartCause();
+    }
+    else
+    {
+        pohCounterTimer.cancel();
+        // Set the restart cause set for this restart
+        setRestartCause();
+    }
+
     static auto match = sdbusplus::bus::match::match(
         *conn,
         "type='signal',member='PropertiesChanged', "
@@ -1283,12 +1297,20 @@ static void currentHostStateMonitor()
                 pohCounterTimerStart();
                 // Clear the restart cause set for the next restart
                 clearRestartCause();
+                sd_journal_send("MESSAGE=Host system DC power is on",
+                                "PRIORITY=%i", LOG_INFO,
+                                "REDFISH_MESSAGE_ID=%s",
+                                "OpenBMC.0.1.DCPowerOn", NULL);
             }
             else
             {
                 pohCounterTimer.cancel();
                 // Set the restart cause set for this restart
                 setRestartCause();
+                sd_journal_send("MESSAGE=Host system DC power is off",
+                                "PRIORITY=%i", LOG_INFO,
+                                "REDFISH_MESSAGE_ID=%s",
+                                "OpenBMC.0.1.DCPowerOff", NULL);
             }
         });
 }
@@ -2098,8 +2120,6 @@ int main(int argc, char* argv[])
         "CurrentHostState",
         std::string(power_control::getHostState(power_control::powerState)));
 
-    power_control::currentHostStateMonitor();
-
     power_control::hostIface->initialize();
 
     // Chassis Control Service
@@ -2384,6 +2404,8 @@ int main(int argc, char* argv[])
         });
 
     power_control::restartCauseIface->initialize();
+
+    power_control::currentHostStateMonitor();
 
     power_control::io.run();
 
