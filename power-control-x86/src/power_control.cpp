@@ -445,12 +445,21 @@ static void setPowerState(const PowerState state)
     powerState = state;
     logStateTransition(state);
 
-    hostIface->set_property("CurrentHostState",
-                            std::string(getHostState(powerState)));
+    std::string hostState(getHostState(powerState));
+    hostIface->set_property("CurrentHostState", hostState);
 
     chassisIface->set_property("CurrentPowerState",
                                std::string(getChassisState(powerState)));
     chassisIface->set_property("LastStateChangeTime", getCurrentTimeMs());
+
+    // POST_COMPLETE GPIO event is not working in some platforms
+    // when power state is changed to OFF. This is causing the OSState
+    // set to Standby even though system is OFF. Checking HostState for
+    // Off and updating 'OperatingSystemState' to Inactive.
+    if (hostState == "xyz.openbmc_project.State.Host.HostState.Off")
+    {
+        osIface->set_property("OperatingSystemState", std::string("Inactive"));
+    }
 
     // Save the power state for the restore policy
     savePowerState(state);
