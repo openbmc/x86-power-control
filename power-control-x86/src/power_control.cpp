@@ -1305,6 +1305,14 @@ static void currentHostStateMonitor()
             else
             {
                 pohCounterTimer.cancel();
+                // POST_COMPLETE GPIO event is not working in some platforms
+                // when power state is changed to OFF. This resulted in
+                // 'OperatingSystemState' to stay at 'Standby', even though
+                // system is OFF. Set 'OperatingSystemState' to 'Inactive'
+                // if HostState is trurned to OFF.
+                osIface->set_property("OperatingSystemState",
+                                      std::string("Inactive"));
+
                 // Set the restart cause set for this restart
                 setRestartCause();
                 sd_journal_send("MESSAGE=Host system DC power is off",
