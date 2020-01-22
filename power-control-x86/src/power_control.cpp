@@ -456,6 +456,23 @@ static void setPowerState(const PowerState state)
     savePowerState(state);
 }
 
+static void acBootResetProperty()
+{
+
+    conn->async_method_call(
+        [](boost::system::error_code ec) {
+            if (ec)
+            {
+                std::cerr << "failed to reset ACBoot property\n";
+            }
+        },
+        "xyz.openbmc_project.Settings",
+        "/xyz/openbmc_project/control/host0/ac_boot",
+        "org.freedesktop.DBus.Properties", "Set",
+        "xyz.openbmc_project.Common.ACBoot", "ACBoot",
+        std::variant<std::string>{"False"});
+}
+
 enum class RestartCause
 {
     command,
@@ -526,6 +543,7 @@ static void setRestartCause()
     else if (causeSet.contains(RestartCause::command))
     {
         restartCause = getRestartCause(RestartCause::command);
+        acBootResetProperty();
     }
     else if (causeSet.contains(RestartCause::resetButton))
     {
@@ -546,6 +564,7 @@ static void setRestartCause()
     else if (causeSet.contains(RestartCause::softReset))
     {
         restartCause = getRestartCause(RestartCause::softReset);
+        acBootResetProperty();
     }
 
     setRestartCauseProperty(restartCause);
