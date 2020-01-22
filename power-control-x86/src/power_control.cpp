@@ -514,6 +514,27 @@ static void setRestartCauseProperty(const std::string& cause)
     std::cerr << "RestartCause set to " << cause << "\n";
     restartCauseIface->set_property("RestartCause", cause);
 }
+
+static void resetACBootProperty()
+{
+    if ((causeSet.contains(RestartCause::command)) ||
+        (causeSet.contains(RestartCause::softReset)))
+    {
+        conn->async_method_call(
+            [](boost::system::error_code ec) {
+                if (ec)
+                {
+                    std::cerr << "failed to reset ACBoot property\n";
+                }
+            },
+            "xyz.openbmc_project.Settings",
+            "/xyz/openbmc_project/control/host0/ac_boot",
+            "org.freedesktop.DBus.Properties", "Set",
+            "xyz.openbmc_project.Common.ACBoot", "ACBoot",
+            std::variant<std::string>{"False"});
+    }
+}
+
 static void setRestartCause()
 {
     // Determine the actual restart cause based on the set of causes
@@ -1315,6 +1336,7 @@ static void currentHostStateMonitor()
 
                 // Set the restart cause set for this restart
                 setRestartCause();
+                resetACBootProperty();
                 sd_journal_send("MESSAGE=Host system DC power is off",
                                 "PRIORITY=%i", LOG_INFO,
                                 "REDFISH_MESSAGE_ID=%s",
