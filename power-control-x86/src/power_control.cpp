@@ -2121,6 +2121,11 @@ int main(int argc, char* argv[])
                     power_control::Event::gracefulPowerCycleRequest);
                 addRestartCause(power_control::RestartCause::command);
             }
+            else if (requested ==
+                     "xyz.openbmc_project.State.Host.Transition.PBO")
+            {
+                power_control::forcePowerOff();
+            }
             else
             {
                 std::cerr << "Unrecognized host state transition request.\n";
