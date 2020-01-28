@@ -1470,6 +1470,10 @@ static void powerStateFailedTransitionToOn(const Event event)
             setPowerState(PowerState::waitForPSPowerOK);
             powerOn();
             break;
+        case Event::powerOffRequest:
+            setPowerState(PowerState::transitionToOff);
+            forcePowerOff();
+            break;
         default:
             std::cerr << "No action taken.\n";
             break;
@@ -1495,6 +1499,10 @@ static void powerStateOff(const Event event)
             psPowerOKWatchdogTimerStart();
             setPowerState(PowerState::waitForPSPowerOK);
             powerOn();
+            break;
+        case Event::powerOffRequest:
+            setPowerState(PowerState::transitionToOff);
+            forcePowerOff();
             break;
         default:
             std::cerr << "No action taken.\n";
@@ -2119,6 +2127,12 @@ int main(int argc, char* argv[])
             {
                 sendPowerControlEvent(
                     power_control::Event::gracefulPowerCycleRequest);
+                addRestartCause(power_control::RestartCause::command);
+            }
+            else if (requested ==
+                     "xyz.openbmc_project.State.Host.Transition.ForceOff")
+            {
+                sendPowerControlEvent(power_control::Event::powerOffRequest);
                 addRestartCause(power_control::RestartCause::command);
             }
             else
