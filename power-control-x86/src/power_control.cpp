@@ -2139,8 +2139,20 @@ int main(int argc, char* argv[])
             else if (requested ==
                      "xyz.openbmc_project.State.Host.Transition.Reboot")
             {
+                sendPowerControlEvent(power_control::Event::powerCycleRequest);
+                addRestartCause(power_control::RestartCause::command);
+            }
+            else if (requested == "xyz.openbmc_project.State.Host.Transition."
+                                  "GracefulWarmReboot")
+            {
                 sendPowerControlEvent(
                     power_control::Event::gracefulPowerCycleRequest);
+                addRestartCause(power_control::RestartCause::command);
+            }
+            else if (requested == "xyz.openbmc_project.State.Host.Transition."
+                                  "ForceWarmReboot")
+            {
+                sendPowerControlEvent(power_control::Event::resetRequest);
                 addRestartCause(power_control::RestartCause::command);
             }
             else
@@ -2187,12 +2199,6 @@ int main(int argc, char* argv[])
             {
                 sendPowerControlEvent(power_control::Event::powerCycleRequest);
                 addRestartCause(power_control::RestartCause::command);
-            }
-            else if (requested ==
-                     "xyz.openbmc_project.State.Chassis.Transition.Reset")
-            {
-                addRestartCause(power_control::RestartCause::command);
-                sendPowerControlEvent(power_control::Event::resetRequest);
             }
             else
             {
