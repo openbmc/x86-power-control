@@ -2157,7 +2157,8 @@ int main(int argc, char* argv[])
             }
             else
             {
-                std::cerr << "Unrecognized host state transition request.\n";
+                std::cerr << "Unrecognized host state transition request "
+                          << requested << std::endl;
                 throw std::invalid_argument("Unrecognized Transition Request");
                 return 0;
             }
@@ -2200,9 +2201,17 @@ int main(int argc, char* argv[])
                 sendPowerControlEvent(power_control::Event::powerCycleRequest);
                 addRestartCause(power_control::RestartCause::command);
             }
+            else if (requested ==
+                     "xyz.openbmc_project.State.Chassis.Transition.Reset")
+            {
+                addRestartCause(power_control::RestartCause::command);
+                sendPowerControlEvent(power_control::Event::resetRequest);
+            }
+
             else
             {
-                std::cerr << "Unrecognized chassis state transition request.\n";
+                std::cerr << "Unrecognized chassis state transition request "
+                          << requested << std::endl;
                 throw std::invalid_argument("Unrecognized Transition Request");
                 return 0;
             }
