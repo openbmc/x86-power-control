@@ -25,6 +25,7 @@
 #include <fstream>
 #include <gpiod.hpp>
 #include <iostream>
+#include <phosphor-logging/log.hpp>
 #include <sdbusplus/asio/object_server.hpp>
 #include <string_view>
 
@@ -185,7 +186,10 @@ static std::string getPowerStateName(PowerState state)
 }
 static void logStateTransition(const PowerState state)
 {
-    std::cerr << "Moving to \"" << getPowerStateName(state) << "\" state.\n";
+    std::string logMsg = "Moving to \"" + getPowerStateName(state) + "\" state";
+    phosphor::logging::log<phosphor::logging::level::INFO>(
+        logMsg.c_str(),
+        phosphor::logging::entry("STATE=%s", getPowerStateName(state).c_str()));
 }
 
 enum class Event
@@ -286,8 +290,11 @@ static std::string getEventName(Event event)
 }
 static void logEvent(const std::string_view stateHandler, const Event event)
 {
-    std::cerr << stateHandler << ": " << getEventName(event)
-              << " event received.\n";
+    std::string logMsg{stateHandler};
+    logMsg += ": " + getEventName(event) + " event received";
+    phosphor::logging::log<phosphor::logging::level::INFO>(
+        logMsg.c_str(),
+        phosphor::logging::entry("EVENT=%s", getEventName(event).c_str()));
 }
 
 // Power state handlers
