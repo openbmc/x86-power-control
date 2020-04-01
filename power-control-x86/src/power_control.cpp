@@ -25,6 +25,7 @@
 #include <fstream>
 #include <gpiod.hpp>
 #include <iostream>
+#include <phosphor-logging/log.hpp>
 #include <sdbusplus/asio/object_server.hpp>
 #include <string_view>
 
@@ -64,6 +65,8 @@ static bool nmiEnabled = true;
 static constexpr const char* nmiOutName = "NMI_OUT";
 static constexpr const char* powerOutName = "POWER_OUT";
 static constexpr const char* resetOutName = "RESET_OUT";
+
+using namespace phosphor::logging;
 
 // Timers
 // Time holding GPIOs asserted
@@ -185,7 +188,8 @@ static std::string getPowerStateName(PowerState state)
 }
 static void logStateTransition(const PowerState state)
 {
-    std::cerr << "Moving to \"" << getPowerStateName(state) << "\" state.\n";
+    std::string logMsg = "Moving to \"" + getPowerStateName(state) + "\" state";
+    log<level::INFO>(logMsg.c_str());
 }
 
 enum class Event
@@ -286,8 +290,9 @@ static std::string getEventName(Event event)
 }
 static void logEvent(const std::string_view stateHandler, const Event event)
 {
-    std::cerr << stateHandler << ": " << getEventName(event)
-              << " event received.\n";
+    std::string logMsg{stateHandler};
+    logMsg += ": " + getEventName(event) + " event received";
+    log<level::INFO>(logMsg.c_str());
 }
 
 // Power state handlers
