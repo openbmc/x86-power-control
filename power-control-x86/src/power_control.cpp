@@ -35,6 +35,7 @@ static boost::asio::io_service io;
 std::shared_ptr<sdbusplus::asio::connection> conn;
 static std::shared_ptr<sdbusplus::asio::dbus_interface> hostIface;
 static std::shared_ptr<sdbusplus::asio::dbus_interface> chassisIface;
+static std::shared_ptr<sdbusplus::asio::dbus_interface> chassisSysIface;
 static std::shared_ptr<sdbusplus::asio::dbus_interface> powerButtonIface;
 static std::shared_ptr<sdbusplus::asio::dbus_interface> resetButtonIface;
 static std::shared_ptr<sdbusplus::asio::dbus_interface> nmiButtonIface;
@@ -1799,6 +1800,26 @@ static void resetButtonHandler()
         });
 }
 
+static constexpr auto systemdBusname = "org.freedesktop.systemd1";
+static constexpr auto systemdPath = "/org/freedesktop/systemd1";
+static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
+static constexpr auto systemTargetName = "chassis-system-reset.target";
+
+void systemReset()
+{
+    conn->async_method_call(
+        [](boost::system::error_code ec) {
+            if (ec)
+            {
+                phosphor::logging::log<phosphor::logging::level::ERR>(
+                    "Failed to call chassis system reset",
+                    phosphor::logging::entry("ERR=%s", ec.message().c_str()));
+            }
+        },
+        systemdBusname, systemdPath, systemdInterface, "StartUnit",
+        systemTargetName, "replace");
+}
+
 static void nmiSetEnablePorperty(bool value)
 {
     conn->async_method_call(
@@ -2223,6 +2244,43 @@ int main(int argc, char* argv[])
         "LastStateChangeTime", power_control::getCurrentTimeMs());
 
     power_control::chassisIface->initialize();
+
+    // Chassis System Service
+    sdbusplus::asio::object_server chassisSysServer =
+        sdbusplus::asio::object_server(power_control::conn);
+
+    // Chassis System Interface
+    power_control::chassisSysIface = chassisSysServer.add_interface(
+        "/xyz/openbmc_project/state/chassis_system0",
+        "xyz.openbmc_project.State.Chassis");
+
+    power_control::chassisSysIface->register_property(
+        "RequestedPowerTransition",
+        std::string("xyz.openbmc_project.State.Chassis.Transition.On"),
+        [](const std::string& requested, std::string& resp) {
+            if (requested ==
+                "xyz.openbmc_project.State.Chassis.Transition.PowerCycle")
+            {
+                power_control::systemReset();
+                addRestartCause(power_control::RestartCause::command);
+            }
+            else
+            {
+                std::cerr << "Unrecognized chassis system state transition "
+                             "request.\n";
+                throw std::invalid_argument("Unrecognized Transition Request");
+                return 0;
+            }
+            resp = requested;
+            return 1;
+        });
+    power_control::chassisSysIface->register_property(
+        "CurrentPowerState",
+        std::string(power_control::getChassisState(power_control::powerState)));
+    power_control::chassisSysIface->register_property(
+        "LastStateChangeTime", power_control::getCurrentTimeMs());
+
+    power_control::chassisSysIface->initialize();
 
     // Buttons Service
     sdbusplus::asio::object_server buttonsServer =
