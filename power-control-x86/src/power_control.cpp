@@ -27,6 +27,7 @@
 #include <iostream>
 #include <phosphor-logging/log.hpp>
 #include <sdbusplus/asio/object_server.hpp>
+#include <sdbusplus/bus.hpp>
 #include <string_view>
 
 namespace power_control
@@ -1799,6 +1800,30 @@ static void resetButtonHandler()
         });
 }
 
+static constexpr auto SYSTEMD_BUSNAME = "org.freedesktop.systemd1";
+static constexpr auto SYSTEMD_PATH = "/org/freedesktop/systemd1";
+static constexpr auto SYSTEMD_INTERFACE = "org.freedesktop.systemd1.Manager";
+static constexpr auto CHASSIS_SLED_RESET_SERVICE = "chassis-sled-reset.service";
+
+void sledReset()
+{
+    auto bus = sdbusplus::bus::new_default();
+    auto method = bus.new_method_call(SYSTEMD_BUSNAME, SYSTEMD_PATH,
+                                      SYSTEMD_INTERFACE, "StartUnit");
+
+    method.append(CHASSIS_SLED_RESET_SERVICE, "replace");
+
+    try
+    {
+        bus.call_noreply(method);
+    }
+    catch (const sdbusplus::exception::SdBusError& e)
+    {
+        phosphor::logging::log<phosphor::logging::level::ERR>(
+            "Failed to call chassis sled reset");
+    }
+}
+
 static void nmiSetEnablePorperty(bool value)
 {
     conn->async_method_call(
@@ -2222,6 +2247,8 @@ int main(int argc, char* argv[])
     power_control::chassisIface->register_property(
         "LastStateChangeTime", power_control::getCurrentTimeMs());
 
+    power_control::chassisIface->register_method("SLED",
+                                                 power_control::sledReset);
     power_control::chassisIface->initialize();
 
     // Buttons Service
