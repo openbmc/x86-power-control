@@ -1799,6 +1799,26 @@ static void resetButtonHandler()
         });
 }
 
+static constexpr auto systemdBusname = "org.freedesktop.systemd1";
+static constexpr auto systemdPath = "/org/freedesktop/systemd1";
+static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
+static constexpr auto sledTargetName = "chassis-sled-reset.target";
+
+void sledReset()
+{
+    conn->async_method_call(
+        [](boost::system::error_code ec) {
+            if (ec)
+            {
+                phosphor::logging::log<phosphor::logging::level::ERR>(
+                    "Failed to call chassis sled reset",
+                    phosphor::logging::entry("ERR=%s", ec.message().c_str()));
+            }
+        },
+        systemdBusname, systemdPath, systemdInterface, "StartUnit",
+        sledTargetName, "replace");
+}
+
 static void nmiSetEnablePorperty(bool value)
 {
     conn->async_method_call(
@@ -2206,6 +2226,11 @@ int main(int argc, char* argv[])
             {
                 sendPowerControlEvent(power_control::Event::powerCycleRequest);
                 addRestartCause(power_control::RestartCause::command);
+            }
+            else if (requested ==
+                     "xyz.openbmc_project.State.Chassis.Transition.SledReset")
+            {
+                power_control::sledReset();
             }
             else
             {
