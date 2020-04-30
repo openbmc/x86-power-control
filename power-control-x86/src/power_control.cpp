@@ -1570,6 +1570,19 @@ static void powerStateCycleOff(const Event event)
     logEvent(__FUNCTION__, event);
     switch (event)
     {
+        case Event::psPowerOKAssert:
+            powerCycleTimer.cancel();
+            setPowerState(PowerState::waitForSIOPowerGood);
+            break;
+        case Event::sioS5DeAssert:
+            powerCycleTimer.cancel();
+            setPowerState(PowerState::waitForPSPowerOK);
+            break;
+        case Event::powerButtonPressed:
+            powerCycleTimer.cancel();
+            psPowerOKWatchdogTimerStart();
+            setPowerState(PowerState::waitForPSPowerOK);
+            break;
         case Event::powerCycleTimerExpired:
             psPowerOKWatchdogTimerStart();
             setPowerState(PowerState::waitForPSPowerOK);
