@@ -188,10 +188,12 @@ static std::string getPowerStateName(PowerState state)
 }
 static void logStateTransition(const PowerState state)
 {
-    std::string logMsg = "Moving to \"" + getPowerStateName(state) + "\" state";
+    std::string logMsg =
+        "Host0: Moving to \"" + getPowerStateName(state) + "\" state";
     phosphor::logging::log<phosphor::logging::level::INFO>(
         logMsg.c_str(),
-        phosphor::logging::entry("STATE=%s", getPowerStateName(state).c_str()));
+        phosphor::logging::entry("STATE=%s", getPowerStateName(state).c_str()),
+        phosphor::logging::entry("HOST=0"));
 }
 
 enum class Event
