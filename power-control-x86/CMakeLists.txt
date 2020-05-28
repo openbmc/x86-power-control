@@ -27,8 +27,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-rtti")
 
 set(
   SERVICE_FILES
-  ${PROJECT_SOURCE_DIR}/service_files/chassis-system-reset.service
-  ${PROJECT_SOURCE_DIR}/service_files/chassis-system-reset.target
+  ${PROJECT_SOURCE_DIR}/service_files/xyz.openbmc_project.Chassis.Control.Power@.service
   ${PROJECT_SOURCE_DIR}/service_files/xyz.openbmc_project.Chassis.Control.Power.service
   )
 install(FILES ${SERVICE_FILES} DESTINATION /lib/systemd/system/)
