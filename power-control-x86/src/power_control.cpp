@@ -21,12 +21,13 @@
 #include <boost/asio/posix/stream_descriptor.hpp>
 #include <boost/container/flat_map.hpp>
 #include <boost/container/flat_set.hpp>
-#include <filesystem>
-#include <fstream>
 #include <gpiod.hpp>
-#include <iostream>
 #include <phosphor-logging/log.hpp>
 #include <sdbusplus/asio/object_server.hpp>
+
+#include <filesystem>
+#include <fstream>
+#include <iostream>
 #include <string_view>
 
 namespace power_control
