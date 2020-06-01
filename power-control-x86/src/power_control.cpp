@@ -52,12 +52,13 @@ const static constexpr int powerPulseTimeMs = 200;
 const static constexpr int forceOffPulseTimeMs = 15000;
 const static constexpr int resetPulseTimeMs = 500;
 const static constexpr int powerCycleTimeMs = 5000;
-const static constexpr int sioPowerGoodWatchdogTimeMs = 1000;
+static int sioPowerGoodWatchdogTimeMs = 1000;
 const static constexpr int psPowerOKWatchdogTimeMs = 8000;
 const static constexpr int gracefulPowerOffTimeMs = 60000;
 const static constexpr int warmResetCheckTimeMs = 500;
 const static constexpr int buttonMaskTimeMs = 60000;
 const static constexpr int powerOffSaveTimeMs = 7000;
+const static constexpr int extraSioPowerGoodWatchdogTimeMs = 40000;
 
 const static std::filesystem::path powerControlDir = "/var/lib/power-control";
 const static constexpr std::string_view powerStateFile = "power-state";
@@ -107,6 +108,7 @@ static boost::asio::posix::stream_descriptor idButtonEvent(io);
 static gpiod::line postCompleteLine;
 static boost::asio::posix::stream_descriptor postCompleteEvent(io);
 static gpiod::line nmiOutLine;
+static gpiod::line cpuPwrgdTimeOutLine;
 
 static constexpr uint8_t beepPowerFail = 8;
 
@@ -1004,6 +1006,42 @@ static bool setGPIOOutput(const std::string& name, const int value,
     return true;
 }
 
+static bool getGPIOInput(const std::string& name, gpiod::line& gpioLine)
+{
+    // Find the GPIO line
+    gpioLine = gpiod::find_line(name);
+    if (!gpioLine)
+    {
+        std::cerr << "Failed to find the " << name << " line.\n";
+        return false;
+    }
+    try
+    {
+        gpioLine.request({__FUNCTION__, gpiod::line_request::DIRECTION_INPUT});
+    }
+    catch (std::exception&)
+    {
+        std::cerr << "Failed to request " << name << " output\n";
+        return false;
+    }
+    try
+    {
+        if (gpioLine.get_value())
+        {
+            power_control::sioPowerGoodWatchdogTimeMs =
+                power_control::extraSioPowerGoodWatchdogTimeMs;
+            std::cerr << "sioPowerGoodWatchdogTimeMs = "
+                      << power_control::sioPowerGoodWatchdogTimeMs << "\n";
+        }
+    }
+    catch (std::exception&)
+    {
+        std::cerr << "Failed to request gpio line value " << name << "\n";
+        return false;
+    }
+    return true;
+}
+
 static int setMaskedGPIOOutputForMs(gpiod::line& maskedGPIOLine,
                                     const std::string& name, const int value,
                                     const int durationMs)
@@ -1356,6 +1394,8 @@ static void currentHostStateMonitor()
 static void sioPowerGoodWatchdogTimerStart()
 {
     std::cerr << "SIO power good watchdog timer started\n";
+    std::cerr << "SIO power good watchdog timer started for "
+              << sioPowerGoodWatchdogTimeMs << " ms\n";
     sioPowerGoodWatchdogTimer.expires_after(
         std::chrono::milliseconds(sioPowerGoodWatchdogTimeMs));
     sioPowerGoodWatchdogTimer.async_wait(
@@ -2044,6 +2084,19 @@ int main(int argc, char* argv[])
     power_control::conn->request_name("xyz.openbmc_project.Control.Host.NMI");
     power_control::conn->request_name(
         "xyz.openbmc_project.Control.Host.RestartCause");
+
+    // Get the DBG_CPLD_CPUPWRGD_TIMEOUT GPIO line value
+    if (!power_control::getGPIOInput("DBG_CPLD_CPUPWRGD_TIMEOUT",
+                                     power_control::cpuPwrgdTimeOutLine))
+    {
+        return -1;
+    }
+    if (power_control::sioPowerGoodWatchdogTimeMs ==
+        power_control::extraSioPowerGoodWatchdogTimeMs)
+    {
+        std::cerr << "SioPowerGoodWatchdogTimeMs set to "
+                  << power_control::extraSioPowerGoodWatchdogTimeMs << " ms\n";
+    }
 
     // Request PS_PWROK GPIO events
     if (!power_control::requestGPIOEvents(
