@@ -134,7 +134,6 @@ enum class PowerState
     on,
     waitForPSPowerOK,
     waitForSIOPowerGood,
-    failedTransitionToOn,
     off,
     transitionToOff,
     gracefulTransitionToOff,
@@ -156,9 +155,6 @@ static std::string getPowerStateName(PowerState state)
             break;
         case PowerState::waitForSIOPowerGood:
             return "Wait for SIO Power Good";
-            break;
-        case PowerState::failedTransitionToOn:
-            return "Failed Transition to On";
             break;
         case PowerState::off:
             return "Off";
@@ -305,7 +301,6 @@ static void logEvent(const std::string_view stateHandler, const Event event)
 static void powerStateOn(const Event event);
 static void powerStateWaitForPSPowerOK(const Event event);
 static void powerStateWaitForSIOPowerGood(const Event event);
-static void powerStateFailedTransitionToOn(const Event event);
 static void powerStateOff(const Event event);
 static void powerStateTransitionToOff(const Event event);
 static void powerStateGracefulTransitionToOff(const Event event);
@@ -326,9 +321,6 @@ static std::function<void(const Event)> getPowerStateHandler(PowerState state)
             break;
         case PowerState::waitForSIOPowerGood:
             return powerStateWaitForSIOPowerGood;
-            break;
-        case PowerState::failedTransitionToOn:
-            return powerStateFailedTransitionToOn;
             break;
         case PowerState::off:
             return powerStateOff;
@@ -394,7 +386,6 @@ static constexpr std::string_view getHostState(const PowerState state)
             break;
         case PowerState::waitForPSPowerOK:
         case PowerState::waitForSIOPowerGood:
-        case PowerState::failedTransitionToOn:
         case PowerState::off:
         case PowerState::transitionToOff:
         case PowerState::transitionToCycleOff:
@@ -421,7 +412,6 @@ static constexpr std::string_view getChassisState(const PowerState state)
             break;
         case PowerState::waitForPSPowerOK:
         case PowerState::waitForSIOPowerGood:
-        case PowerState::failedTransitionToOn:
         case PowerState::off:
         case PowerState::cycleOff:
             return "xyz.openbmc_project.State.Chassis.PowerState.Off";
@@ -1448,7 +1438,7 @@ static void powerStateWaitForPSPowerOK(const Event event)
             setPowerState(PowerState::waitForSIOPowerGood);
             break;
         case Event::psPowerOKWatchdogTimerExpired:
-            setPowerState(PowerState::failedTransitionToOn);
+            setPowerState(PowerState::off);
             psPowerOKFailedLog();
             break;
         case Event::sioPowerGoodAssert:
@@ -1472,39 +1462,8 @@ static void powerStateWaitForSIOPowerGood(const Event event)
             setPowerState(PowerState::on);
             break;
         case Event::sioPowerGoodWatchdogTimerExpired:
-            setPowerState(PowerState::failedTransitionToOn);
+            setPowerState(PowerState::off);
             systemPowerGoodFailedLog();
-            forcePowerOff();
-            break;
-        default:
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "No action taken.");
-            break;
-    }
-}
-
-static void powerStateFailedTransitionToOn(const Event event)
-{
-    logEvent(__FUNCTION__, event);
-    switch (event)
-    {
-        case Event::psPowerOKAssert:
-            // We're in a failure state, so don't allow the system to turn on
-            // without a user request
-            forcePowerOff();
-            break;
-        case Event::psPowerOKDeAssert:
-            // Cancel any GPIO assertions held during the transition
-            gpioAssertTimer.cancel();
-            break;
-        case Event::powerButtonPressed:
-            psPowerOKWatchdogTimerStart();
-            setPowerState(PowerState::waitForPSPowerOK);
-            break;
-        case Event::powerOnRequest:
-            psPowerOKWatchdogTimerStart();
-            setPowerState(PowerState::waitForPSPowerOK);
-            powerOn();
             break;
         default:
             phosphor::logging::log<phosphor::logging::level::INFO>(
@@ -1523,6 +1482,9 @@ static void powerStateOff(const Event event)
             break;
         case Event::sioS5DeAssert:
             setPowerState(PowerState::waitForPSPowerOK);
+            break;
+        case Event::sioPowerGoodAssert:
+            setPowerState(PowerState::on);
             break;
         case Event::powerButtonPressed:
             psPowerOKWatchdogTimerStart();
