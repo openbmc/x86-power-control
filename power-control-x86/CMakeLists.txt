@@ -31,4 +31,11 @@ set(
   ${PROJECT_SOURCE_DIR}/service_files/chassis-system-reset.target
   ${PROJECT_SOURCE_DIR}/service_files/xyz.openbmc_project.Chassis.Control.Power.service
   )
+
+set(
+  CONFIG_FILE
+  ${PROJECT_SOURCE_DIR}/src/power-config0.json
+  )
+
 install(FILES ${SERVICE_FILES} DESTINATION /lib/systemd/system/)
+install(FILES ${CONFIG_FILE} DESTINATION /usr/share/power-control/)
