@@ -1,0 +1,10 @@
+Ok-To-Test+1: Jenkins <openbmc-ci-admin@ozlabs.org>
+Verified+1: Jenkins <openbmc-ci-admin@ozlabs.org>
+Code-Review+1: Vijay Khemka <vijaykhemka@fb.com>
+Code-Review+2: Jason Bills <jason.m.bills@linux.intel.com>
+Code-Review+1: Bruce Mitchell <Bruce_Mitchell@Phoenix.com>
+Submitted-by: Jason Bills <jason.m.bills@linux.intel.com>
+Submitted-at: Mon, 06 Jul 2020 19:12:33 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/x86-power-control/+/33789
+Project: openbmc/x86-power-control
+Branch: refs/heads/master
