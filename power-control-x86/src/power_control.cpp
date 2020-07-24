@@ -1293,27 +1293,40 @@ static void currentHostStateMonitor()
         *conn,
         "type='signal',member='PropertiesChanged', "
         "interface='org.freedesktop.DBus.Properties', "
-        "arg0namespace='xyz.openbmc_project.State.Host'",
+        "arg0='xyz.openbmc_project.State.Host'",
         [](sdbusplus::message::message& message) {
             std::string intfName;
             std::map<std::string, std::variant<std::string>> properties;
 
-            message.read(intfName, properties);
-
-            std::variant<std::string> currentHostState;
-
             try
             {
-                currentHostState = properties.at("CurrentHostState");
+                message.read(intfName, properties);
             }
-            catch (const std::out_of_range& e)
+            catch (std::exception& e)
             {
-                std::cerr << "Error in finding CurrentHostState property\n";
-
+                std::cerr << "Unable to read host state\n";
+                return;
+            }
+            if (properties.empty())
+            {
+                std::cerr << "ERROR: Empty PropertiesChanged signal received\n";
                 return;
             }
 
-            if (std::get<std::string>(currentHostState) ==
+            // We only want to check for CurrentHostState
+            if (properties.begin()->first != "CurrentHostState")
+            {
+                return;
+            }
+            std::string* currentHostState =
+                std::get_if<std::string>(&(properties.begin()->second));
+            if (currentHostState == nullptr)
+            {
+                std::cerr << properties.begin()->first << " property invalid\n";
+                return;
+            }
+
+            if (*currentHostState ==
                 "xyz.openbmc_project.State.Host.HostState.Running")
             {
                 pohCounterTimerStart();
