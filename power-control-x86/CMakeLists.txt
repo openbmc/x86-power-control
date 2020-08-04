@@ -38,4 +38,4 @@ set(
   )
 
 install(FILES ${SERVICE_FILES} DESTINATION /lib/systemd/system/)
-install(FILES ${CONFIG_FILE} DESTINATION /usr/share/power-control/)
+install(FILES ${CONFIG_FILE} DESTINATION /usr/share/x86-power-control/)
