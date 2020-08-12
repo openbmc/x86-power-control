@@ -81,6 +81,7 @@ const static std::filesystem::path powerControlDir = "/var/lib/power-control";
 const static constexpr std::string_view powerStateFile = "power-state";
 
 static bool nmiEnabled = true;
+static bool sioEnabled = true;
 
 // Timers
 // Time holding GPIOs asserted
@@ -1458,12 +1459,21 @@ static void powerStateWaitForPSPowerOK(const Event event)
     switch (event)
     {
         case Event::psPowerOKAssert:
+        {
             // Cancel any GPIO assertions held during the transition
             gpioAssertTimer.cancel();
             psPowerOKWatchdogTimer.cancel();
-            sioPowerGoodWatchdogTimerStart();
-            setPowerState(PowerState::waitForSIOPowerGood);
+            if (sioEnabled == true)
+            {
+                sioPowerGoodWatchdogTimerStart();
+                setPowerState(PowerState::waitForSIOPowerGood);
+            }
+            else
+            {
+                setPowerState(PowerState::on);
+            }
             break;
+        }
         case Event::psPowerOKWatchdogTimerExpired:
             setPowerState(PowerState::off);
             psPowerOKFailedLog();
@@ -1505,8 +1515,17 @@ static void powerStateOff(const Event event)
     switch (event)
     {
         case Event::psPowerOKAssert:
-            setPowerState(PowerState::waitForSIOPowerGood);
+        {
+            if (sioEnabled == true)
+            {
+                setPowerState(PowerState::waitForSIOPowerGood);
+            }
+            else
+            {
+                setPowerState(PowerState::on);
+            }
             break;
+        }
         case Event::sioS5DeAssert:
             setPowerState(PowerState::waitForPSPowerOK);
             break;
@@ -1571,9 +1590,18 @@ static void powerStateCycleOff(const Event event)
     switch (event)
     {
         case Event::psPowerOKAssert:
+        {
             powerCycleTimer.cancel();
-            setPowerState(PowerState::waitForSIOPowerGood);
+            if (sioEnabled == true)
+            {
+                setPowerState(PowerState::waitForSIOPowerGood);
+            }
+            else
+            {
+                setPowerState(PowerState::on);
+            }
             break;
+        }
         case Event::sioS5DeAssert:
             powerCycleTimer.cancel();
             setPowerState(PowerState::waitForPSPowerOK);
@@ -2138,6 +2166,14 @@ int main(int argc, char* argv[])
     power_control::conn->request_name(
         "xyz.openbmc_project.Control.Host.RestartCause");
 
+    if (power_control::sioPwrGoodName.empty() ||
+        power_control::sioOnControlName.empty() ||
+        power_control::sioS5Name.empty())
+    {
+        power_control::sioEnabled = false;
+        std::cerr << "SIO control GPIOs not defined, disable SIO support.\n";
+    }
+
     // Request PS_PWROK GPIO events
     if (!power_control::powerOkName.empty())
     {
@@ -2155,9 +2191,9 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    // Request SIO_POWER_GOOD GPIO events
-    if (!power_control::sioPwrGoodName.empty())
+    if (power_control::sioEnabled == true)
     {
+        // Request SIO_POWER_GOOD GPIO events
         if (!power_control::requestGPIOEvents(
                 power_control::sioPwrGoodName,
                 power_control::sioPowerGoodHandler,
@@ -2166,17 +2202,8 @@ int main(int argc, char* argv[])
         {
             return -1;
         }
-    }
-    else
-    {
-        std::cerr
-            << "sioPwrGood name should be configured from json config file\n";
-        return -1;
-    }
 
-    // Request SIO_ONCONTROL GPIO events
-    if (!power_control::sioOnControlName.empty())
-    {
+        // Request SIO_ONCONTROL GPIO events
         if (!power_control::requestGPIOEvents(
                 power_control::sioOnControlName,
                 power_control::sioOnControlHandler,
@@ -2185,28 +2212,14 @@ int main(int argc, char* argv[])
         {
             return -1;
         }
-    }
-    else
-    {
-        std::cerr
-            << "sioOnControl name should be configured from json config file\n";
-        return -1;
-    }
 
-    // Request SIO_S5 GPIO events
-    if (!power_control::sioS5Name.empty())
-    {
+        // Request SIO_S5 GPIO events
         if (!power_control::requestGPIOEvents(
                 power_control::sioS5Name, power_control::sioS5Handler,
                 power_control::sioS5Line, power_control::sioS5Event))
         {
             return -1;
         }
-    }
-    else
-    {
-        std::cerr << "sioS5 name should be configured from json config file\n";
-        return -1;
     }
 
     // Request POWER_BUTTON GPIO events
