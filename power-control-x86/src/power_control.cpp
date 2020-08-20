@@ -363,7 +363,7 @@ static std::function<void(const Event)> getPowerStateHandler(PowerState state)
             return powerStateCheckForWarmReset;
             break;
         default:
-            return std::function<void(const Event)>{};
+            return nullptr;
             break;
     }
 };
