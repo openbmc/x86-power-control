@@ -2117,7 +2117,7 @@ static int loadConfigValues()
 
 int main(int argc, char* argv[])
 {
-    std::cerr << "Start Chassis power control service...\n";
+    std::cerr << "Test Start Chassis power control service...\n";
     power_control::conn =
         std::make_shared<sdbusplus::asio::connection>(power_control::io);
 
