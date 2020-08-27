@@ -18,7 +18,9 @@
 #include <sys/sysinfo.h>
 #include <systemd/sd-journal.h>
 
+#include <boost/asio/io_service.hpp>
 #include <boost/asio/posix/stream_descriptor.hpp>
+#include <boost/asio/steady_timer.hpp>
 #include <boost/container/flat_map.hpp>
 #include <boost/container/flat_set.hpp>
 #include <gpiod.hpp>
