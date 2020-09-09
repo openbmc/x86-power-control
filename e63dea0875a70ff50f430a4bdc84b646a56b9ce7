@@ -1,0 +1,14 @@
+Ok-To-Test+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+1: Bruce Mitchell <Bruce_Mitchell@Phoenix.com>
+Code-Review+1: Zhikui Ren <zhikui.ren@intel.com>
+Code-Review+1: Ed Tanous <ed@tanous.net>
+Code-Review+1: Priyatharshan P <priyatharshanp@hcl.com>
+Code-Review+1: Andrew Geissler <geissonator@yahoo.com>
+Code-Review+1: Vijay Khemka <vijaykhemka@fb.com>
+Code-Review+2: Jason Bills <jason.m.bills@linux.intel.com>
+Submitted-by: Jason Bills <jason.m.bills@linux.intel.com>
+Submitted-at: Wed, 09 Sep 2020 20:36:18 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/x86-power-control/+/36037
+Project: openbmc/x86-power-control
+Branch: refs/heads/master
