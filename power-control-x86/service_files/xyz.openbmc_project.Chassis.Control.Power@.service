@@ -1,0 +1,13 @@
+[Unit]
+Description=Intel Power Control for the Host %i
+ConditionPathExists=/usr/share/x86-power-control/power-config-host%i.json
+
+[Service]
+Restart=always
+RestartSec=3
+ExecStart=/usr/bin/power-control %i
+Type=dbus
+BusName=xyz.openbmc_project.State.Host%i
+
+[Install]
+WantedBy=sysinit.target
