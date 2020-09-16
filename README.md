@@ -26,6 +26,42 @@ RESET_BUTTON
 RESET_OUT
 POWER_BUTTON
 POWER_OUT
+POST_COMPLETE
+PS_PWROK
+SIO_ONCONTROL
+SIO_POWER_GOOD
+SIO_S5
+
+x86-power-control uses default json file (power-config-host0.json) for GPIO configuration.
+However this can customized by producing your own power-config-host0.json file.
+
+Definitions can be configured by two type:
+
+1. GPIO
+
+ For the platform having direct GPIO access can use the type GPIO and define like below.
+
+    {
+        "Name" : "PostComplete",
+        "LineName" : "POST_COMPLETE",
+        "Type" : "GPIO"
+    },
+
+2. DBUS
+
+ For the platform not having direct GPIO access can use dbus based event monitor by using the type DBUS.
+
+    {
+        "Name" : "PowerButton",
+        "DbusName" : "xyz.openbmc_project.Chassis.Event",
+        "Path" : "/xyz/openbmc_project/Chassis/Event",
+        "Interface" : "xyz.openbmc_project.Chassis.Event",
+        "Property" : "PowerButton_Host1",
+        "Type" : "DBUS"
+    },
+
+ x86-power-control will monitor the property change from the given DbusName and take appropriate action.
+ *define Property as a bool variable.
 
 On an aspeed, these are generally connected to E0, E1, E2, and E3 respecitvely.
 An example of this is available in the s2600WF config.
