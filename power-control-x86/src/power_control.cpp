@@ -40,6 +40,14 @@ std::shared_ptr<sdbusplus::asio::connection> conn;
 
 static std::string node = "0";
 
+static std::string hostDbusName = "xyz.openbmc_project.State.Host";
+static std::string chassisDbusName = "xyz.openbmc_project.State.Chassis";
+static std::string osDbusName = "xyz.openbmc_project.State.OperatingSystem";
+static std::string buttonDbusName = "xyz.openbmc_project.Chassis.Buttons";
+static std::string nmiDbusName = "xyz.openbmc_project.Control.Host.NMI";
+static std::string rstCauseDbusName =
+    "xyz.openbmc_project.Control.Host.RestartCause";
+
 static std::string powerOutName;
 static std::string powerOkName;
 static std::string resetOutName;
@@ -2119,6 +2127,11 @@ static int loadConfigValues()
 
 int main(int argc, char* argv[])
 {
+    if (argc > 1)
+    {
+        power_control::node = argv[1];
+    }
+
     std::cerr << "Start Chassis power control service...\n";
     power_control::conn =
         std::make_shared<sdbusplus::asio::connection>(power_control::io);
@@ -2130,15 +2143,26 @@ int main(int argc, char* argv[])
                   << "Error in Parsing...\n";
     }
 
+    power_control::hostDbusName =
+        "xyz.openbmc_project.State.Host" + power_control::node;
+    power_control::chassisDbusName =
+        "xyz.openbmc_project.State.Chassis" + power_control::node;
+    power_control::osDbusName =
+        "xyz.openbmc_project.State.OperatingSystem" + power_control::node;
+    power_control::buttonDbusName =
+        "xyz.openbmc_project.Chassis.Buttons" + power_control::node;
+    power_control::nmiDbusName =
+        "xyz.openbmc_project.Control.Host.NMI" + power_control::node;
+    power_control::rstCauseDbusName =
+        "xyz.openbmc_project.Control.Host.RestartCause" + power_control::node;
+
     // Request all the dbus names
-    power_control::conn->request_name("xyz.openbmc_project.State.Host");
-    power_control::conn->request_name("xyz.openbmc_project.State.Chassis");
-    power_control::conn->request_name(
-        "xyz.openbmc_project.State.OperatingSystem");
-    power_control::conn->request_name("xyz.openbmc_project.Chassis.Buttons");
-    power_control::conn->request_name("xyz.openbmc_project.Control.Host.NMI");
-    power_control::conn->request_name(
-        "xyz.openbmc_project.Control.Host.RestartCause");
+    power_control::conn->request_name(power_control::hostDbusName.c_str());
+    power_control::conn->request_name(power_control::chassisDbusName.c_str());
+    power_control::conn->request_name(power_control::osDbusName.c_str());
+    power_control::conn->request_name(power_control::buttonDbusName.c_str());
+    power_control::conn->request_name(power_control::nmiDbusName.c_str());
+    power_control::conn->request_name(power_control::rstCauseDbusName.c_str());
 
     // Request PS_PWROK GPIO events
     if (!power_control::powerOkName.empty())
@@ -2329,8 +2353,9 @@ int main(int argc, char* argv[])
         sdbusplus::asio::object_server(power_control::conn);
 
     // Power Control Interface
-    power_control::hostIface = hostServer.add_interface(
-        "/xyz/openbmc_project/state/host0", "xyz.openbmc_project.State.Host");
+    power_control::hostIface =
+        hostServer.add_interface("/xyz/openbmc_project/state/host0",
+                                 power_control::hostDbusName.c_str());
 
     power_control::hostIface->register_property(
         "RequestedHostTransition",
@@ -2389,7 +2414,7 @@ int main(int argc, char* argv[])
     // Chassis Control Interface
     power_control::chassisIface =
         chassisServer.add_interface("/xyz/openbmc_project/state/chassis0",
-                                    "xyz.openbmc_project.State.Chassis");
+                                    power_control::chassisDbusName.c_str());
 
     power_control::chassisIface->register_property(
         "RequestedPowerTransition",
@@ -2436,7 +2461,7 @@ int main(int argc, char* argv[])
     // Chassis System Interface
     power_control::chassisSysIface = chassisSysServer.add_interface(
         "/xyz/openbmc_project/state/chassis_system0",
-        "xyz.openbmc_project.State.Chassis");
+        power_control::chassisDbusName.c_str());
 
     power_control::chassisSysIface->register_property(
         "RequestedPowerTransition",
@@ -2473,7 +2498,7 @@ int main(int argc, char* argv[])
     // Power Button Interface
     power_control::powerButtonIface = buttonsServer.add_interface(
         "/xyz/openbmc_project/chassis/buttons/power",
-        "xyz.openbmc_project.Chassis.Buttons");
+        power_control::buttonDbusName.c_str());
 
     power_control::powerButtonIface->register_property(
         "ButtonMasked", false, [](const bool requested, bool& current) {
@@ -2516,7 +2541,7 @@ int main(int argc, char* argv[])
     // Reset Button Interface
     power_control::resetButtonIface = buttonsServer.add_interface(
         "/xyz/openbmc_project/chassis/buttons/reset",
-        "xyz.openbmc_project.Chassis.Buttons");
+        power_control::buttonDbusName.c_str());
 
     power_control::resetButtonIface->register_property(
         "ButtonMasked", false, [](const bool requested, bool& current) {
@@ -2561,7 +2586,7 @@ int main(int argc, char* argv[])
         // NMI Button Interface
         power_control::nmiButtonIface = buttonsServer.add_interface(
             "/xyz/openbmc_project/chassis/buttons/nmi",
-            "xyz.openbmc_project.Chassis.Buttons");
+            power_control::buttonDbusName.c_str());
 
         power_control::nmiButtonIface->register_property(
             "ButtonMasked", false, [](const bool requested, bool& current) {
@@ -2602,7 +2627,7 @@ int main(int argc, char* argv[])
         // NMI out Interface
         power_control::nmiOutIface =
             nmiOutServer.add_interface("/xyz/openbmc_project/control/host0/nmi",
-                                       "xyz.openbmc_project.Control.Host.NMI");
+                                       power_control::nmiDbusName.c_str());
         power_control::nmiOutIface->register_method("NMI",
                                                     power_control::nmiReset);
         power_control::nmiOutIface->initialize();
@@ -2613,7 +2638,7 @@ int main(int argc, char* argv[])
         // ID Button Interface
         power_control::idButtonIface = buttonsServer.add_interface(
             "/xyz/openbmc_project/chassis/buttons/id",
-            "xyz.openbmc_project.Chassis.Buttons");
+            power_control::buttonDbusName.c_str());
 
         // Check ID button state
         bool idButtonPressed = power_control::idButtonLine.get_value() == 0;
@@ -2629,8 +2654,7 @@ int main(int argc, char* argv[])
 
     // OS State Interface
     power_control::osIface = osServer.add_interface(
-        "/xyz/openbmc_project/state/os",
-        "xyz.openbmc_project.State.OperatingSystem.Status");
+        "/xyz/openbmc_project/state/os", power_control::osDbusName.c_str());
 
     // Get the initial OS state based on POST complete
     //      0: Asserted, OS state is "Standby" (ready to boot)
@@ -2651,7 +2675,7 @@ int main(int argc, char* argv[])
     // Restart Cause Interface
     power_control::restartCauseIface = restartCauseServer.add_interface(
         "/xyz/openbmc_project/control/host0/restart_cause",
-        "xyz.openbmc_project.Control.Host.RestartCause");
+        power_control::rstCauseDbusName.c_str());
 
     power_control::restartCauseIface->register_property(
         "RestartCause",
