@@ -2190,9 +2190,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        std::cerr
-            << "sioOnControl name should be configured from json config file\n";
-        return -1;
+        std::cerr << "There is no sioOnControl in the json config file\n";
     }
 
     // Request SIO_S5 GPIO events
@@ -2207,8 +2205,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        std::cerr << "sioS5 name should be configured from json config file\n";
-        return -1;
+        std::cerr << "There is no sioS5 in the json config file\n";
     }
 
     // Request POWER_BUTTON GPIO events
@@ -2242,9 +2239,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        std::cerr
-            << "resetButton name should be configured from json config file\n";
-        return -1;
+        std::cerr << "There is no resetButton in the json config file\n";
     }
 
     // Request NMI_BUTTON GPIO events
@@ -2550,9 +2545,13 @@ int main(int argc, char* argv[])
         });
 
     // Check reset button state
-    bool resetButtonPressed = power_control::resetButtonLine.get_value() == 0;
-    power_control::resetButtonIface->register_property("ButtonPressed",
-                                                       resetButtonPressed);
+    if (power_control::resetButtonLine)
+    {
+        bool resetButtonPressed =
+            power_control::resetButtonLine.get_value() == 0;
+        power_control::resetButtonIface->register_property("ButtonPressed",
+                                                           resetButtonPressed);
+    }
 
     power_control::resetButtonIface->initialize();
 
