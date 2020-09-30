@@ -12,6 +12,12 @@ add_definitions(-DBOOST_ASIO_DISABLE_THREADS)
 
 set(SRC_FILES src/power_control.cpp)
 
+option (
+    WITH_RESETBUTTON
+    "Enable the Reset Button."
+    ON
+)
+
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 target_link_libraries(${PROJECT_NAME} -lstdc++fs)
 target_link_libraries(${PROJECT_NAME} chassisi2c)
@@ -21,6 +27,10 @@ target_link_libraries(${PROJECT_NAME} systemd)
 target_link_libraries(${PROJECT_NAME} sdbusplus)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+target_compile_definitions (
+	${PROJECT_NAME} PRIVATE $<$<BOOL:${WITH_RESETBUTTON}>: -DWITH_RESETBUTTON>
+)
 
 # Temporarily disable rtti
 # See https://github.com/chriskohlhoff/asio/issues/533

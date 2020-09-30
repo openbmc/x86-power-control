@@ -2242,6 +2242,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+#ifdef WITH_RESETBUTTON
     // Request RESET_BUTTON GPIO events
     if (!power_control::resetButtonName.empty())
     {
@@ -2259,6 +2260,7 @@ int main(int argc, char* argv[])
             << "resetButton name should be configured from json config file\n";
         return -1;
     }
+#endif
 
     // Request NMI_BUTTON GPIO events
     if (!power_control::nmiButtonName.empty())
@@ -2526,6 +2528,7 @@ int main(int argc, char* argv[])
 
     power_control::powerButtonIface->initialize();
 
+#ifdef WITH_RESETBUTTON
     // Reset Button Interface
     power_control::resetButtonIface = buttonsServer.add_interface(
         "/xyz/openbmc_project/chassis/buttons/reset",
@@ -2568,6 +2571,7 @@ int main(int argc, char* argv[])
                                                        resetButtonPressed);
 
     power_control::resetButtonIface->initialize();
+#endif
 
     if (power_control::nmiButtonLine)
     {
