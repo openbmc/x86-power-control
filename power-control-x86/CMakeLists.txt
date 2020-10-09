@@ -3,6 +3,16 @@ project(power-control CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option (
+    CHASSIS_SYSTEM_RESET
+    "Enable chassis system power reset to allow removing
+     power and restoring back"
+    OFF
+)
+
+if (CHASSIS_SYSTEM_RESET)
+    add_definitions (-DCHASSIS_SYSTEM_RESET)
+endif ()
 add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
 add_definitions(-DBOOST_SYSTEM_NO_DEPRECATED)
 add_definitions(-DBOOST_ALL_NO_LIB)
