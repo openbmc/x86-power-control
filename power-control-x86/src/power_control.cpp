@@ -55,7 +55,9 @@ static std::string nmiButtonName;
 
 static std::shared_ptr<sdbusplus::asio::dbus_interface> hostIface;
 static std::shared_ptr<sdbusplus::asio::dbus_interface> chassisIface;
+#ifdef CHASSIS_SYSTEM_RESET
 static std::shared_ptr<sdbusplus::asio::dbus_interface> chassisSysIface;
+#endif
 static std::shared_ptr<sdbusplus::asio::dbus_interface> powerButtonIface;
 static std::shared_ptr<sdbusplus::asio::dbus_interface> resetButtonIface;
 static std::shared_ptr<sdbusplus::asio::dbus_interface> nmiButtonIface;
@@ -1818,6 +1820,7 @@ static void resetButtonHandler()
         });
 }
 
+#ifdef CHASSIS_SYSTEM_RESET
 static constexpr auto systemdBusname = "org.freedesktop.systemd1";
 static constexpr auto systemdPath = "/org/freedesktop/systemd1";
 static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
@@ -1837,6 +1840,7 @@ void systemReset()
         systemdBusname, systemdPath, systemdInterface, "StartUnit",
         systemTargetName, "replace");
 }
+#endif
 
 static void nmiSetEnablePorperty(bool value)
 {
@@ -2429,6 +2433,7 @@ int main(int argc, char* argv[])
 
     power_control::chassisIface->initialize();
 
+#ifdef CHASSIS_SYSTEM_RESET
     // Chassis System Service
     sdbusplus::asio::object_server chassisSysServer =
         sdbusplus::asio::object_server(power_control::conn);
@@ -2465,6 +2470,7 @@ int main(int argc, char* argv[])
         "LastStateChangeTime", power_control::getCurrentTimeMs());
 
     power_control::chassisSysIface->initialize();
+#endif
 
     // Buttons Service
     sdbusplus::asio::object_server buttonsServer =
