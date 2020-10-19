@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6e53d897_7b4767f9",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 2584,
+      "author": {
+        "id": 1000153
+      },
+      "writtenOn": "2020-10-19T16:02:30Z",
+      "side": 1,
+      "message": "If this feature is enabled, this is going to still exposes a chassis_system0 endpoint?  What would you expect this to do in relation to the chassis_system\u003cn\u003e endpoint.",
+      "range": {
+        "startLine": 2584,
+        "startChar": 36,
+        "endLine": 2584,
+        "endChar": 51
+      },
+      "revId": "b662b615a847a7320791c2457fd5c08733bd0f9b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
