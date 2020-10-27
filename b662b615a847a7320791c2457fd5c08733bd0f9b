@@ -70,6 +70,30 @@
       "revId": "b662b615a847a7320791c2457fd5c08733bd0f9b",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6349e48b_68037346",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 2584,
+      "author": {
+        "id": 1000153
+      },
+      "writtenOn": "2020-10-27T15:26:25Z",
+      "side": 1,
+      "message": "\u003e @Ed Tanous\n\u003e \n\u003e Instance 0 (chassis_system0) will be treated as a complete chassis system which will include BMC, host and chassis. This will support hard power cycle of complete system.\n\nSo, there will be 4 different clients exposing it in a 4 node system?  That doesn\u0027t seem right.\n\n\u003e \n\u003e In multi-host or multi-chassis system, instance number can be used from 1-N, as 0 is reserved for complete system and 1-N for individual slot power cycle(12V).\n\u003e \n\u003e \n\u003e @vijay\n\u003e \n\u003e Yes, you are right.  If you are running multiple instances of power-control then every instance of power-control will try to create chassis_system0.But the code will not fail and we can issue  complete system reset (chassis_system0) using any of the host instances.\n\nBut how will clients know which one to use?  We can\u0027t have identical dbus interfaces and paths published by multiple clients.",
+      "parentUuid": "2528d3a1_4105a450",
+      "range": {
+        "startLine": 2584,
+        "startChar": 36,
+        "endLine": 2584,
+        "endChar": 51
+      },
+      "revId": "b662b615a847a7320791c2457fd5c08733bd0f9b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
