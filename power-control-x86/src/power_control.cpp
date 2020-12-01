@@ -2353,8 +2353,12 @@ int main(int argc, char* argv[])
         [](const std::string& requested, std::string& resp) {
             if (requested == "xyz.openbmc_project.State.Host.Transition.Off")
             {
+#ifndef NOT_SUPPORT_GRACEFUL_POWEROFF
                 sendPowerControlEvent(
                     power_control::Event::gracefulPowerOffRequest);
+#else
+                sendPowerControlEvent(power_control::Event::powerOffRequest);
+#endif
                 addRestartCause(power_control::RestartCause::command);
             }
             else if (requested ==

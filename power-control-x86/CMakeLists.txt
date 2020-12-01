@@ -10,6 +10,13 @@ option (
     OFF
 )
 
+option (
+    NOT_SUPPORT_GRACEFUL_POWEROFF
+    "Replace by power off request since some kernel
+     doesn't handle graceful power off"
+    OFF
+)
+
 add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
 add_definitions(-DBOOST_SYSTEM_NO_DEPRECATED)
 add_definitions(-DBOOST_ALL_NO_LIB)
@@ -30,6 +37,11 @@ target_link_libraries(${PROJECT_NAME} sdbusplus)
 target_compile_definitions (
     ${PROJECT_NAME} PRIVATE $<$<BOOL:${CHASSIS_SYSTEM_RESET}>:
     -DCHASSIS_SYSTEM_RESET>
+)
+
+target_compile_definitions (
+    ${PROJECT_NAME} PRIVATE $<$<BOOL:${NOT_SUPPORT_GRACEFUL_POWEROFF}>:
+    -DNOT_SUPPORT_GRACEFUL_POWEROFF>
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
