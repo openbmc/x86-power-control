@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4fe2303a_78967c96",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2271,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2020-12-04T20:47:03Z",
+      "side": 1,
+      "message": "I\u0027m not sure if it\u0027s possible, but it might be good if we can separate out the GPIO and D-Bus behavior in the code.  Perhaps using .hpp files?  It may help with readability of the code.",
+      "revId": "87ea78a1a8cb8a8fab215c03890451bc10e6c115",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
