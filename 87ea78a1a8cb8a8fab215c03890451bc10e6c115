@@ -16,6 +16,24 @@
       "revId": "87ea78a1a8cb8a8fab215c03890451bc10e6c115",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1ee58cc5_199675ad",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2271,
+      "author": {
+        "id": 1000867
+      },
+      "writtenOn": "2020-12-07T15:06:24Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4fe2303a_78967c96",
+      "revId": "87ea78a1a8cb8a8fab215c03890451bc10e6c115",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
