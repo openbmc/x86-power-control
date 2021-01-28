@@ -219,6 +219,8 @@ enum class Event
     sioPowerGoodDeAssert,
     sioS5Assert,
     sioS5DeAssert,
+    pltRstAssert,
+    pltRstDeAssert,
     postCompleteAssert,
     postCompleteDeAssert,
     powerButtonPressed,
@@ -256,6 +258,12 @@ static std::string getEventName(Event event)
             break;
         case Event::sioS5DeAssert:
             return "SIO S5 de-assert";
+            break;
+        case Event::pltRstAssert:
+            return "PLT_RST assert";
+            break;
+        case Event::pltRstDeAssert:
+            return "PLT_RST de-assert";
             break;
         case Event::postCompleteAssert:
             return "POST Complete assert";
@@ -1416,11 +1424,19 @@ static void powerStateOn(const Event event)
             setPowerState(PowerState::transitionToOff);
             addRestartCause(RestartCause::softReset);
             break;
+#if USE_PLT_RST
+        case Event::pltRstAssert:
+            setPowerState(PowerState::checkForWarmReset);
+            addRestartCause(RestartCause::softReset);
+            warmResetCheckTimerStart();
+            break;
+#else
         case Event::postCompleteDeAssert:
             setPowerState(PowerState::checkForWarmReset);
             addRestartCause(RestartCause::softReset);
             warmResetCheckTimerStart();
             break;
+#endif
         case Event::powerButtonPressed:
             setPowerState(PowerState::gracefulTransitionToOff);
             gracefulPowerOffTimerStart();
@@ -2032,6 +2048,55 @@ static void idButtonHandler()
                              });
 }
 
+static void pltRstHandler(bool pltRst)
+{
+    if (pltRst)
+    {
+        sendPowerControlEvent(Event::pltRstDeAssert);
+    }
+    else
+    {
+        sendPowerControlEvent(Event::pltRstAssert);
+    }
+}
+
+static void hostMiscHandler(sdbusplus::message::message& msg)
+{
+    std::string interfaceName;
+    boost::container::flat_map<std::string, std::variant<bool>>
+        propertiesChanged;
+    bool pltRst;
+    try
+    {
+        msg.read(interfaceName, propertiesChanged);
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << "Unable to read Host Misc status\n";
+        return;
+    }
+    if (propertiesChanged.empty())
+    {
+        std::cerr
+            << "ERROR: Empty Host.Misc PropertiesChanged signal received\n";
+        return;
+    }
+
+    for (auto& [property, value] : propertiesChanged)
+    {
+        if (property == "ESpiPlatformReset")
+        {
+            bool* pltRst = std::get_if<bool>(&value);
+            if (pltRst == nullptr)
+            {
+                std::cerr << property << " property invalid\n";
+                return;
+            }
+            pltRstHandler(*pltRst);
+        }
+    }
+}
+
 static void postCompleteHandler()
 {
     gpiod::line_event gpioLineEvent = postCompleteLine.event_read();
@@ -2273,6 +2338,14 @@ int main(int argc, char* argv[])
             power_control::idButtonName, power_control::idButtonHandler,
             power_control::idButtonLine, power_control::idButtonEvent);
     }
+
+#ifdef USE_PLT_RST
+    sdbusplus::bus::match::match pltRstMatch(
+        *power_control::conn,
+        "type='signal',interface='org.freedesktop.DBus.Properties',member='"
+        "PropertiesChanged',arg0='xyz.openbmc_project.State.Host.Misc'",
+        power_control::hostMiscHandler);
+#endif
 
     // Request POST_COMPLETE GPIO events
     if (!power_control::postCompleteName.empty())
