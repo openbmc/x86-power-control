@@ -9,6 +9,12 @@ option (
      power and restoring back"
     OFF
 )
+option (
+    USE_PLT_RST
+    "Use the PLT_RST eSPI signal to detect warm reset
+     instead of POST Complete"
+    OFF
+)
 
 add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
 add_definitions(-DBOOST_SYSTEM_NO_DEPRECATED)
@@ -30,6 +36,8 @@ target_link_libraries(${PROJECT_NAME} sdbusplus)
 target_compile_definitions (
     ${PROJECT_NAME} PRIVATE $<$<BOOL:${CHASSIS_SYSTEM_RESET}>:
     -DCHASSIS_SYSTEM_RESET>
+    ${PROJECT_NAME} PRIVATE $<$<BOOL:${USE_PLT_RST}>:
+    -DUSE_PLT_RST>
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
