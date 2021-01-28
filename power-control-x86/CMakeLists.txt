@@ -9,6 +9,12 @@ option (
      power and restoring back"
     OFF
 )
+option (
+    REMOVE_POST_COMPLETE
+    "Remove the use of the POST complete GPIO and use the
+    PLT_RST and Core BIOS Done signals instead"
+    OFF
+)
 
 add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
 add_definitions(-DBOOST_SYSTEM_NO_DEPRECATED)
@@ -30,6 +36,8 @@ target_link_libraries(${PROJECT_NAME} sdbusplus)
 target_compile_definitions (
     ${PROJECT_NAME} PRIVATE $<$<BOOL:${CHASSIS_SYSTEM_RESET}>:
     -DCHASSIS_SYSTEM_RESET>
+    ${PROJECT_NAME} PRIVATE $<$<BOOL:${REMOVE_POST_COMPLETE}>:
+    -DREMOVE_POST_COMPLETE>
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
