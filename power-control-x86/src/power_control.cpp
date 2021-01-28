@@ -219,6 +219,8 @@ enum class Event
     sioPowerGoodDeAssert,
     sioS5Assert,
     sioS5DeAssert,
+    pltRstAssert,
+    pltRstDeAssert,
     postCompleteAssert,
     postCompleteDeAssert,
     powerButtonPressed,
@@ -256,6 +258,12 @@ static std::string getEventName(Event event)
             break;
         case Event::sioS5DeAssert:
             return "SIO S5 de-assert";
+            break;
+        case Event::pltRstAssert:
+            return "PLT_RST assert";
+            break;
+        case Event::pltRstDeAssert:
+            return "PLT_RST de-assert";
             break;
         case Event::postCompleteAssert:
             return "POST Complete assert";
@@ -1416,6 +1424,11 @@ static void powerStateOn(const Event event)
             setPowerState(PowerState::transitionToOff);
             addRestartCause(RestartCause::softReset);
             break;
+        case Event::pltRstAssert:
+            setPowerState(PowerState::checkForWarmReset);
+            addRestartCause(RestartCause::softReset);
+            warmResetCheckTimerStart();
+            break;
         case Event::postCompleteDeAssert:
             setPowerState(PowerState::checkForWarmReset);
             addRestartCause(RestartCause::softReset);
@@ -2032,6 +2045,133 @@ static void idButtonHandler()
                              });
 }
 
+static void coreBIOSDoneHandler(bool coreBIOSDone)
+{
+    if (coreBIOSDone)
+    {
+        osIface->set_property("OperatingSystemState", std::string("Standby"));
+    }
+    else
+    {
+        osIface->set_property("OperatingSystemState", std::string("Inactive"));
+    }
+}
+
+static void coreBIOSDoneInit()
+{
+    // In case CoreBiosDone is not available, set a match for it's interface to
+    // be added
+    static std::unique_ptr<sdbusplus::bus::match::match> platStateAddedMatch =
+        std::make_unique<sdbusplus::bus::match::match>(
+            *conn,
+            "type='signal',interface='org.freedesktop.DBus.ObjectManager',"
+            "member='InterfacesAdded',arg0path='/xyz/openbmc_project/misc/"
+            "platform_state'",
+            [](sdbusplus::message::message& msg) {
+                sdbusplus::message::object_path path;
+                boost::container::flat_map<
+                    std::string,
+                    boost::container::flat_map<std::string, std::variant<bool>>>
+                    interfacesAdded;
+                bool coreBIOSDone = false;
+                try
+                {
+                    msg.read(path, interfacesAdded);
+                    coreBIOSDone = std::get<bool>(
+                        interfacesAdded.begin()->second.at("CoreBiosDone"));
+                }
+                catch (std::exception& e)
+                {
+                    std::cerr << "Unable to read CoreBiosDone: " << e.what()
+                              << "\n";
+                    platStateAddedMatch.reset();
+                    return;
+                }
+                coreBIOSDoneHandler(coreBIOSDone);
+                platStateAddedMatch.reset();
+            });
+
+    conn->async_method_call(
+        [](boost::system::error_code ec,
+           const std::variant<bool>& coreBIOSDoneProperty) {
+            if (ec)
+            {
+                return;
+            }
+            const bool* coreBIOSDone = std::get_if<bool>(&coreBIOSDoneProperty);
+            if (coreBIOSDone == nullptr)
+            {
+                std::cerr << "Unable to read coreBIOSDone value\n";
+                return;
+            }
+            coreBIOSDoneHandler(*coreBIOSDone);
+            platStateAddedMatch.reset();
+        },
+        "xyz.openbmc_project.Host.Misc.Manager",
+        "/xyz/openbmc_project/misc/platform_state",
+        "org.freedesktop.DBus.Properties", "Get",
+        "xyz.openbmc_project.State.Host.Misc", "CoreBiosDone");
+}
+
+static void pltRstHandler(bool pltRst)
+{
+    if (pltRst)
+    {
+        sendPowerControlEvent(Event::pltRstDeAssert);
+    }
+    else
+    {
+        sendPowerControlEvent(Event::pltRstAssert);
+    }
+}
+
+static void hostMiscHandler(sdbusplus::message::message& msg)
+{
+    std::string interfaceName;
+    boost::container::flat_map<std::string, std::variant<bool>>
+        propertiesChanged;
+    bool pltRst;
+    try
+    {
+        msg.read(interfaceName, propertiesChanged);
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << "Unable to read Host Misc status\n";
+        return;
+    }
+    if (propertiesChanged.empty())
+    {
+        std::cerr
+            << "ERROR: Empty Host.Misc PropertiesChanged signal received\n";
+        return;
+    }
+
+    if (propertiesChanged.begin()->first == "ESpiPlatformReset")
+    {
+        bool* pltRst = std::get_if<bool>(&(propertiesChanged.begin()->second));
+        if (pltRst == nullptr)
+        {
+            std::cerr << propertiesChanged.begin()->first
+                      << " property invalid\n";
+            return;
+        }
+        pltRstHandler(*pltRst);
+    }
+    else if (propertiesChanged.begin()->first == "CoreBiosDone")
+    {
+        bool* coreBIOSDone =
+            std::get_if<bool>(&(propertiesChanged.begin()->second));
+        if (coreBIOSDone == nullptr)
+        {
+            std::cerr << propertiesChanged.begin()->first
+                      << " property invalid\n";
+            return;
+        }
+        coreBIOSDoneHandler(*coreBIOSDone);
+    }
+}
+
 static void postCompleteHandler()
 {
     gpiod::line_event gpioLineEvent = postCompleteLine.event_read();
@@ -2274,6 +2414,13 @@ int main(int argc, char* argv[])
             power_control::idButtonLine, power_control::idButtonEvent);
     }
 
+#ifdef REMOVE_POST_COMPLETE
+    sdbusplus::bus::match::match pltRstMatch = sdbusplus::bus::match::match(
+        *power_control::conn,
+        "type='signal',interface='org.freedesktop.DBus.Properties',member='"
+        "PropertiesChanged',arg0='xyz.openbmc_project.State.Host.Misc'",
+        power_control::hostMiscHandler);
+#else
     // Request POST_COMPLETE GPIO events
     if (!power_control::postCompleteName.empty())
     {
@@ -2292,6 +2439,7 @@ int main(int argc, char* argv[])
             << "postComplete name should be configured from json config file\n";
         return -1;
     }
+#endif
 
     // initialize NMI_OUT GPIO.
     power_control::setGPIOOutput(power_control::nmiOutName, 0,
@@ -2649,12 +2797,17 @@ int main(int argc, char* argv[])
         "/xyz/openbmc_project/state/os",
         "xyz.openbmc_project.State.OperatingSystem.Status");
 
+#ifdef REMOVE_POST_COMPLETE
+    power_control::coreBIOSDoneInit();
+    std::string osState = "Inactive";
+#else
     // Get the initial OS state based on POST complete
     //      0: Asserted, OS state is "Standby" (ready to boot)
     //      1: De-Asserted, OS state is "Inactive"
     std::string osState = power_control::postCompleteLine.get_value() > 0
                               ? "Inactive"
                               : "Standby";
+#endif
 
     power_control::osIface->register_property("OperatingSystemState",
                                               std::string(osState));
