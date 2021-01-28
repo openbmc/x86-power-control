@@ -27,13 +27,13 @@ RESET_OUT
 POWER_BUTTON
 POWER_OUT
 
-On an aspeed, these are generally connected to E0, E1, E2, and E3 respecitvely.
+On an aspeed, these are generally connected to E0, E1, E2, and E3 respectively.
 An example of this is available in the s2600WF config.
 
 This patch allows the passthrough to be reenabled to the default condition when
 the appropriate pin is released.  This allows power control to take control
 when needed by a user power action, but leave the hardware in control a majority
-of the time, reducing the possibilty of bricking a system due to a failed BMC.
+of the time, reducing the possibility of bricking a system due to a failed BMC.
 
 https://github.com/Intel-BMC/openbmc/blob/intel/meta-openbmc-mods/meta-ast2500/recipes-kernel/linux/linux-aspeed/0002-Enable-pass-through-on-GPIOE1-and-GPIOE3-free.patch
 https://github.com/Intel-BMC/openbmc/blob/intel/meta-openbmc-mods/meta-ast2500/recipes-kernel/linux/linux-aspeed/0003-Enable-GPIOE0-and-GPIOE2-pass-through-by-default.patch
@@ -44,3 +44,14 @@ Caveats:
 This implementation does not currently implement the common targets that other
 implementations do.  There were several attempts to, but all ended in timing
 issues and boot inconsistencies during stress operations.
+
+## Build Options
+
+#### USE_PLT_RST
+The POST Complete GPIO is usually held asserted by BIOS after POST complete
+and de-asserts on reset.  This de-assert behavior is currently used to detect
+warm resets.
+
+Some systems are adding support for a PLT_RST eSPI signal that can be used to
+more accurately detect warm resets.  When this option is enabled, x86-power-control
+will use PLT_RST to detect warm resets instead of POST Complete.
