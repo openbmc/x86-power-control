@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "26b5af32_b6a56156",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-01-31T17:38:18Z",
+      "side": 1,
+      "message": "Do we need to test whether warm reset induced by IPMI command, Host OS restart command log correct Restart Reason ?",
+      "revId": "7c8d19cbcd2f444f112c4a78ac4ea7c64d000ee6",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}

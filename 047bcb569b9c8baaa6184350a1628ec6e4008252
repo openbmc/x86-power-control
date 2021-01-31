@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6c6ff3a6_5d856548",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1428,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-01-31T17:38:18Z",
+      "side": 0,
+      "message": "w.r.t. your other patch, Do we need to support warmReset detection for platforms where postCompletLine is absent ?\n\nCan this be not removed #ifdef REMOVE_POST_COMPLETE ?\n\n#ifdef REMOVE_POST_COMPLETE\n\n        // Rely on ResetButtonPressed events to detect Warm Reset as \n        // postComplete line can not be used.\n\n        case Event::resetButtonPressed:\n            setPowerState(PowerState::checkForWarmReset);\n            warmResetCheckTimerStart();\n            break;\n\n#else\n\n        case Event::postCompleteDeAssert:\n            setPowerState(PowerState::checkForWarmReset);\n            addRestartCause(RestartCause::softReset);\n            warmResetCheckTimerStart();\n            break;\n\n#endif",
+      "revId": "047bcb569b9c8baaa6184350a1628ec6e4008252",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
