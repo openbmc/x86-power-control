@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4e333cfd_114f14f7",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-01-31T17:53:43Z",
+      "side": 1,
+      "message": "Do we need extend the \n#ifdef REMOVE_POST_COMPLETE \n\nto all applicable places in which postComplete Line is replaced ?",
+      "revId": "4a015de7411d6769fd5af09daa254757f207bf08",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
