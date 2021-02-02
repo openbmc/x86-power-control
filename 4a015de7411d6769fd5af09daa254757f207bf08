@@ -16,6 +16,24 @@
       "revId": "4a015de7411d6769fd5af09daa254757f207bf08",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d8527144_baf779f5",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-02-02T21:28:47Z",
+      "side": 1,
+      "message": "We could, if needed.  I have the #ifdef check when the signals are loaded which should cause the unused handlers to not be used, and hopefully the optimizer cleans them up.\n\nI\u0027d like to avoid adding lots of build flags throughout the file, if possible.",
+      "parentUuid": "4e333cfd_114f14f7",
+      "revId": "4a015de7411d6769fd5af09daa254757f207bf08",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
