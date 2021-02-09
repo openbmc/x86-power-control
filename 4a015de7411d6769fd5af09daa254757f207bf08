@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "88965864_d1861e6e",
+        "filename": "power-control-x86/CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-02-09T22:29:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "31cc6b2f_a25551e4",
+      "revId": "4a015de7411d6769fd5af09daa254757f207bf08",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4e333cfd_114f14f7",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 2
@@ -92,6 +110,30 @@
       "revId": "4a015de7411d6769fd5af09daa254757f207bf08",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "86ea56fb_b2480fe9",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2417,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-02-09T22:29:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e01e6c61_963f9a3d",
+      "range": {
+        "startLine": 2417,
+        "startChar": 7,
+        "endLine": 2417,
+        "endChar": 27
+      },
+      "revId": "4a015de7411d6769fd5af09daa254757f207bf08",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
