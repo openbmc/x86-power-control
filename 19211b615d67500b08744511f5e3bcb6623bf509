@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c4da86ba_ac2e454b",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1000414
+      },
+      "writtenOn": "2021-02-13T08:35:44Z",
+      "side": 1,
+      "message": "200 ms is decided upon what basis?",
+      "revId": "19211b615d67500b08744511f5e3bcb6623bf509",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
