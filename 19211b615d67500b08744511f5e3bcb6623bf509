@@ -16,6 +16,24 @@
       "revId": "19211b615d67500b08744511f5e3bcb6623bf509",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6a59bb5b_faadc8a6",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1000867
+      },
+      "writtenOn": "2021-02-17T14:21:51Z",
+      "side": 1,
+      "message": "Good catch...As per FB implementation it would be 20secs. I will update this to 20 secs..Thanks",
+      "parentUuid": "c4da86ba_ac2e454b",
+      "revId": "19211b615d67500b08744511f5e3bcb6623bf509",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
