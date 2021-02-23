@@ -55,6 +55,9 @@ static std::string nmiButtonName;
 
 static std::shared_ptr<sdbusplus::asio::dbus_interface> hostIface;
 static std::shared_ptr<sdbusplus::asio::dbus_interface> chassisIface;
+#ifdef BOOT_PROGRESS
+static std::shared_ptr<sdbusplus::asio::dbus_interface> bootProgressIface;
+#endif
 #ifdef CHASSIS_SYSTEM_RESET
 static std::shared_ptr<sdbusplus::asio::dbus_interface> chassisSysIface;
 #endif
@@ -83,6 +86,16 @@ const static constexpr int powerOffSaveTimeMs = 7000;
 
 const static std::filesystem::path powerControlDir = "/var/lib/power-control";
 const static constexpr std::string_view powerStateFile = "power-state";
+
+#ifdef BOOT_PROGRESS
+const static constexpr auto bootProgressProperty = "BootProgress";
+const static constexpr auto bootProgressLastUpdateProperty =
+    "BootProgressLastUpdate";
+const static constexpr auto bootProgressUnspecified =
+    "xyz.openbmc_project.State.Boot.Progress.ProgressStages.Unspecified";
+const static constexpr auto bootProgressStarted =
+    "xyz.openbmc_project.State.Boot.Progress.ProgressStages.OSStart";
+#endif
 
 static bool nmiEnabled = true;
 static bool sioEnabled = true;
@@ -465,13 +478,31 @@ static void setPowerState(const PowerState state)
     powerState = state;
     logStateTransition(state);
 
-    hostIface->set_property("CurrentHostState",
-                            std::string(getHostState(powerState)));
+    auto hostState = std::string(getHostState(powerState));
+    hostIface->set_property("CurrentHostState", hostState);
 
     chassisIface->set_property("CurrentPowerState",
                                std::string(getChassisState(powerState)));
     chassisIface->set_property("LastStateChangeTime", getCurrentTimeMs());
 
+#ifdef BOOT_PROGRESS
+    if (hostState == "xyz.openbmc_project.State.Host.HostState.Running")
+    {
+        bootProgressIface->set_property(bootProgressProperty,
+                                        bootProgressStarted);
+    }
+    else
+    {
+        // If host not running or empty, set it unspecified
+        bootProgressIface->set_property(bootProgressProperty,
+                                        bootProgressUnspecified);
+    }
+    auto microSec = static_cast<uint64_t>(
+        std::chrono::duration_cast<std::chrono::microseconds>(
+            std::chrono::system_clock::now().time_since_epoch())
+            .count());
+    bootProgressIface->set_property(bootProgressLastUpdateProperty, microSec);
+#endif
     // Save the power state for the restore policy
     savePowerState(state);
 }
@@ -2366,6 +2397,17 @@ int main(int argc, char* argv[])
                                  std::string(getHostState(powerState)));
 
     hostIface->initialize();
+
+#ifdef BOOT_PROGRESS
+    // Boot Progress Interface in host server
+    bootProgressIface = hostServer.add_interface(
+        "/xyz/openbmc_project/state/host0", "xyz.openbmc_project.State.Boot");
+    bootProgressIface->register_property(bootProgressProperty,
+                                         bootProgressUnspecified);
+    bootProgressIface->register_property(bootProgressLastUpdateProperty,
+                                         uint64_t(0));
+    bootProgressIface->initialize();
+#endif
 
     // Chassis Control Service
     sdbusplus::asio::object_server chassisServer =
