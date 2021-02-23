@@ -16,6 +16,12 @@ option (
     OFF
 )
 
+option (
+    BOOT_PROGRESS
+    "Enable boot progress interface on host server"
+    OFF
+)
+
 add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
 add_definitions(-DBOOST_SYSTEM_NO_DEPRECATED)
 add_definitions(-DBOOST_ALL_NO_LIB)
@@ -38,6 +44,11 @@ target_compile_definitions (
     -DCHASSIS_SYSTEM_RESET>
     ${PROJECT_NAME} PRIVATE $<$<BOOL:${USE_PLT_RST}>:
     -DUSE_PLT_RST>
+)
+
+target_compile_definitions (
+    ${PROJECT_NAME} PRIVATE $<$<BOOL:${BOOT_PROGRESS}>:
+    -DBOOT_PROGRESS>
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
