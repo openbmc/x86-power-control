@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "90e28b14_799d94db",
+        "filename": "power-control-x86/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-02-26T19:01:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4768f24e_eb324b43",
+      "range": {
+        "startLine": 13,
+        "startChar": 4,
+        "endLine": 13,
+        "endChar": 24
+      },
+      "revId": "d4f44c670e542415613128e499488b35c6248366",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e6789b80_a690e6f0",
         "filename": "power-control-x86/CMakeLists.txt",
         "patchSetId": 3
@@ -45,6 +69,30 @@
       "revId": "d4f44c670e542415613128e499488b35c6248366",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8c0c5e5e_b7ce57ae",
+        "filename": "power-control-x86/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-02-26T19:01:29Z",
+      "side": 1,
+      "message": "I confirmed that POST Complete is not being removed as I had thought.  Keeping POST Complete for OS State detection.",
+      "parentUuid": "e6789b80_a690e6f0",
+      "range": {
+        "startLine": 14,
+        "startChar": 4,
+        "endLine": 15,
+        "endChar": 47
+      },
+      "revId": "d4f44c670e542415613128e499488b35c6248366",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     },
     {
       "key": {
@@ -80,6 +128,24 @@
       "revId": "d4f44c670e542415613128e499488b35c6248366",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa0d9786_96fe28c7",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2052,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-02-26T19:01:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3883be00_469fb190",
+      "revId": "d4f44c670e542415613128e499488b35c6248366",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
