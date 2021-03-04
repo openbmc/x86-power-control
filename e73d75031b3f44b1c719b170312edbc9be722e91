@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "8365cd27_4c537116",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1428,
+      "author": {
+        "id": 1000900
+      },
+      "writtenOn": "2021-03-04T19:34:16Z",
+      "side": 1,
+      "message": "Oops, it\u0027s OK if Host.Misc.Manager restarts - the state is preserved in the driver level. But BMC reboot will still lose the state. I guess the worst case is that it looks like a warm reset for 500ms, right?",
+      "parentUuid": "c4557f1a_10b72993",
+      "revId": "e73d75031b3f44b1c719b170312edbc9be722e91",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6f6843e2_d5b973b1",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 4
