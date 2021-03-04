@@ -75,9 +75,8 @@ const static constexpr int resetPulseTimeMs = 500;
 const static constexpr int powerCycleTimeMs = 5000;
 const static constexpr int sioPowerGoodWatchdogTimeMs = 1000;
 const static constexpr int psPowerOKWatchdogTimeMs = 8000;
-const static constexpr int gracefulPowerOffTimeMs = 60000;
+const static constexpr int gracefulPowerOffTimeS = 5 * 60;
 const static constexpr int warmResetCheckTimeMs = 500;
-const static constexpr int buttonMaskTimeMs = 60000;
 const static constexpr int powerOffSaveTimeMs = 7000;
 
 const static std::filesystem::path powerControlDir = "/var/lib/power-control";
@@ -1192,7 +1191,7 @@ static void gracefulPowerOffTimerStart()
     phosphor::logging::log<phosphor::logging::level::INFO>(
         "Graceful power-off timer started");
     gracefulPowerOffTimer.expires_after(
-        std::chrono::milliseconds(gracefulPowerOffTimeMs));
+        std::chrono::seconds(gracefulPowerOffTimeS));
     gracefulPowerOffTimer.async_wait([](const boost::system::error_code ec) {
         if (ec)
         {
@@ -1669,6 +1668,21 @@ static void powerStateGracefulTransitionToOff(const Event event)
         case Event::gracefulPowerOffTimerExpired:
             setPowerState(PowerState::on);
             break;
+        case Event::powerOffRequest:
+            gracefulPowerOffTimer.cancel();
+            setPowerState(PowerState::transitionToOff);
+            forcePowerOff();
+            break;
+        case Event::powerCycleRequest:
+            gracefulPowerOffTimer.cancel();
+            setPowerState(PowerState::transitionToCycleOff);
+            forcePowerOff();
+            break;
+        case Event::resetRequest:
+            gracefulPowerOffTimer.cancel();
+            setPowerState(PowerState::on);
+            reset();
+            break;
         default:
             phosphor::logging::log<phosphor::logging::level::INFO>(
                 "No action taken.");
@@ -1745,6 +1759,21 @@ static void powerStateGracefulTransitionToCycleOff(const Event event)
             break;
         case Event::gracefulPowerOffTimerExpired:
             setPowerState(PowerState::on);
+            break;
+        case Event::powerOffRequest:
+            gracefulPowerOffTimer.cancel();
+            setPowerState(PowerState::transitionToOff);
+            forcePowerOff();
+            break;
+        case Event::powerCycleRequest:
+            gracefulPowerOffTimer.cancel();
+            setPowerState(PowerState::transitionToCycleOff);
+            forcePowerOff();
+            break;
+        case Event::resetRequest:
+            gracefulPowerOffTimer.cancel();
+            setPowerState(PowerState::on);
+            reset();
             break;
         default:
             phosphor::logging::log<phosphor::logging::level::INFO>(
