@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "0a37ad3a_aae720ca",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1428,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-03-04T20:54:58Z",
+      "side": 1,
+      "message": "Host.Misc.Manager should be configured to not send a PropertiesChanged event when PLTRST# is initialized, so we should only get the events when the signal changes and not when it\u0027s initialized.",
+      "parentUuid": "8365cd27_4c537116",
+      "revId": "e73d75031b3f44b1c719b170312edbc9be722e91",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6f6843e2_d5b973b1",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 4
@@ -48,6 +66,30 @@
       "writtenOn": "2021-03-04T19:31:27Z",
       "side": 1,
       "message": "This logic assumes that no other property in the interface can change at the same time as ESpiPlatformReset (i.e. it will be at propertiesChanged.begin()). Is there a reason that\u0027s guaranteed? If not, you should search the dict for a match.",
+      "range": {
+        "startLine": 2085,
+        "startChar": 8,
+        "endLine": 2085,
+        "endChar": 63
+      },
+      "revId": "e73d75031b3f44b1c719b170312edbc9be722e91",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "765cd2eb_ad130f5e",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2085,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-03-04T20:54:58Z",
+      "side": 1,
+      "message": "My understanding is our implementation of ProperitesChanged will only signal one property at a time.  There are lots of places that use this logic, but it probably doesn\u0027t hurt to prepare for the future where it may be different.  I\u0027ll update with a search.",
+      "parentUuid": "6f6843e2_d5b973b1",
       "range": {
         "startLine": 2085,
         "startChar": 8,
