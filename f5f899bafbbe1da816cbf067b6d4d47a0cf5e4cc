@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e5c368e4_6cd60846",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1435,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-03-07T16:22:40Z",
+      "side": 1,
+      "message": "nit: As post_complete event is abstracted, and x86-power-control operations for both events are same, will it look nice if we put like this:\n\n#if USE_PLT_RST\n        case Event::pltRstAssert:\n#else\n        case Event::postCompleteDeAssert:\n#endif\n            setPowerState(PowerState::checkForWarmReset);\n            addRestartCause(RestartCause::softReset);\n            warmResetCheckTimerStart();\n            break;",
+      "revId": "f5f899bafbbe1da816cbf067b6d4d47a0cf5e4cc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
