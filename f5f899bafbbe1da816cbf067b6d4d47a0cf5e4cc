@@ -16,6 +16,93 @@
       "revId": "f5f899bafbbe1da816cbf067b6d4d47a0cf5e4cc",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "118f06c1_ed92cf1c",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1435,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2021-03-08T06:02:01Z",
+      "side": 1,
+      "message": "+1",
+      "parentUuid": "e5c368e4_6cd60846",
+      "revId": "f5f899bafbbe1da816cbf067b6d4d47a0cf5e4cc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b4ffccc3_2345fa6e",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2075,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2021-03-08T06:02:01Z",
+      "side": 1,
+      "message": "Already switch to phosphor log right?",
+      "range": {
+        "startLine": 2075,
+        "startChar": 8,
+        "endLine": 2075,
+        "endChar": 21
+      },
+      "revId": "f5f899bafbbe1da816cbf067b6d4d47a0cf5e4cc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "114194ca_06bcc0c0",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2080,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2021-03-08T06:02:01Z",
+      "side": 1,
+      "message": "Already switch to phosphor log right?",
+      "range": {
+        "startLine": 2080,
+        "startChar": 8,
+        "endLine": 2080,
+        "endChar": 17
+      },
+      "revId": "f5f899bafbbe1da816cbf067b6d4d47a0cf5e4cc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab00f0a7_7f1fadf5",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2092,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2021-03-08T06:02:01Z",
+      "side": 1,
+      "message": "Already switch to phosphor log right?",
+      "range": {
+        "startLine": 2092,
+        "startChar": 16,
+        "endLine": 2092,
+        "endChar": 42
+      },
+      "revId": "f5f899bafbbe1da816cbf067b6d4d47a0cf5e4cc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
