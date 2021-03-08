@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "88164c7f_2b3e2606",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1435,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-03-08T20:31:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "118f06c1_ed92cf1c",
+      "revId": "f5f899bafbbe1da816cbf067b6d4d47a0cf5e4cc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b4ffccc3_2345fa6e",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 5
@@ -57,6 +75,30 @@
       "revId": "f5f899bafbbe1da816cbf067b6d4d47a0cf5e4cc",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2a54023b_017ce0c8",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2075,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-03-08T20:31:48Z",
+      "side": 1,
+      "message": "The switch to phosphor log is after this commit and includes these messages.",
+      "parentUuid": "b4ffccc3_2345fa6e",
+      "range": {
+        "startLine": 2075,
+        "startChar": 8,
+        "endLine": 2075,
+        "endChar": 21
+      },
+      "revId": "f5f899bafbbe1da816cbf067b6d4d47a0cf5e4cc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     },
     {
       "key": {
@@ -83,6 +125,30 @@
     },
     {
       "key": {
+        "uuid": "4bf9abdf_058c29fa",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2080,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-03-08T20:31:48Z",
+      "side": 1,
+      "message": "The switch to phosphor log is after this commit and includes these messages.",
+      "parentUuid": "114194ca_06bcc0c0",
+      "range": {
+        "startLine": 2080,
+        "startChar": 8,
+        "endLine": 2080,
+        "endChar": 17
+      },
+      "revId": "f5f899bafbbe1da816cbf067b6d4d47a0cf5e4cc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ab00f0a7_7f1fadf5",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 5
@@ -103,6 +169,30 @@
       "revId": "f5f899bafbbe1da816cbf067b6d4d47a0cf5e4cc",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ceadf669_c8eb8321",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2092,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-03-08T20:31:48Z",
+      "side": 1,
+      "message": "The switch to phosphor log is after this commit and includes these messages.",
+      "parentUuid": "ab00f0a7_7f1fadf5",
+      "range": {
+        "startLine": 2092,
+        "startChar": 16,
+        "endLine": 2092,
+        "endChar": 42
+      },
+      "revId": "f5f899bafbbe1da816cbf067b6d4d47a0cf5e4cc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
