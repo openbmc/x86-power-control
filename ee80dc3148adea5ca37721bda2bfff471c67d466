@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "8c1d42d5_ef79ff0f",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1000044
+      },
+      "writtenOn": "2021-03-09T15:16:44Z",
+      "side": 1,
+      "message": "This patch is submitted for reference (as discussed in Discord #test-automation channel.\nThe whole idea is to make x86-power-control to implement BootProgress interface, so that it passes the HW-CI test in openbmc-test-automation.",
+      "parentUuid": "27660b8d_017f707e",
+      "revId": "ee80dc3148adea5ca37721bda2bfff471c67d466",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "15bc144b_4645b698",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2021-03-08T20:46:58Z",
       "side": 1,
       "message": "Is there a reason to make this change?  It looks like it will cause an unnecessary std::string construction.",
+      "revId": "ee80dc3148adea5ca37721bda2bfff471c67d466",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "66a849ac_44676543",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 1000044
+      },
+      "writtenOn": "2021-03-09T15:16:44Z",
+      "side": 1,
+      "message": "The code below uses the `hostState` variable.",
+      "parentUuid": "15bc144b_4645b698",
       "revId": "ee80dc3148adea5ca37721bda2bfff471c67d466",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
