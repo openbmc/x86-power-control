@@ -432,7 +432,6 @@ static constexpr std::string_view getChassisState(const PowerState state)
     switch (state)
     {
         case PowerState::on:
-        case PowerState::transitionToOff:
         case PowerState::gracefulTransitionToOff:
         case PowerState::transitionToCycleOff:
         case PowerState::gracefulTransitionToCycleOff:
@@ -443,6 +442,7 @@ static constexpr std::string_view getChassisState(const PowerState state)
         case PowerState::waitForSIOPowerGood:
         case PowerState::off:
         case PowerState::cycleOff:
+        case PowerState::transitionToOff:
             return "xyz.openbmc_project.State.Chassis.PowerState.Off";
             break;
         default:
