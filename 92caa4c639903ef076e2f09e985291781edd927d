@@ -1,0 +1,10 @@
+Ok-To-Test+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+1: Kuiying Wang <kuiying.wang@intel.com>
+Code-Review+1: Lei YU <yulei.sh@bytedance.com>
+Code-Review+2: Jason Bills <jason.m.bills@linux.intel.com>
+Submitted-by: Lei YU <yulei.sh@bytedance.com>
+Submitted-at: Wed, 24 Mar 2021 01:46:39 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/x86-power-control/+/41129
+Project: openbmc/x86-power-control
+Branch: refs/heads/master
