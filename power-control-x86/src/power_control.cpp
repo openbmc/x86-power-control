@@ -69,15 +69,15 @@ static gpiod::line powerButtonMask;
 static gpiod::line resetButtonMask;
 static bool nmiButtonMasked = false;
 
-const static constexpr int powerPulseTimeMs = 200;
-const static constexpr int forceOffPulseTimeMs = 15000;
-const static constexpr int resetPulseTimeMs = 500;
-const static constexpr int powerCycleTimeMs = 5000;
-const static constexpr int sioPowerGoodWatchdogTimeMs = 1000;
-const static constexpr int psPowerOKWatchdogTimeMs = 8000;
-const static constexpr int gracefulPowerOffTimeS = 5 * 60;
-const static constexpr int warmResetCheckTimeMs = 500;
-const static constexpr int powerOffSaveTimeMs = 7000;
+static int powerPulseTimeMs = 200;
+static int forceOffPulseTimeMs = 15000;
+static int resetPulseTimeMs = 500;
+static int powerCycleTimeMs = 5000;
+static int sioPowerGoodWatchdogTimeMs = 1000;
+static int psPowerOKWatchdogTimeMs = 8000;
+static int gracefulPowerOffTimeS = 5 * 60;
+static int warmResetCheckTimeMs = 500;
+static int powerOffSaveTimeMs = 7000;
 
 const static std::filesystem::path powerControlDir = "/var/lib/power-control";
 const static constexpr std::string_view powerStateFile = "power-state";
@@ -2289,67 +2289,113 @@ static int loadConfigValues()
             "Power config readings JSON parser failure");
         return -1;
     }
+    auto gpios = data["gpio_configs"];
+    auto timers = data["timing_configs"];
 
-    if (data.contains("IdButton"))
+    if (gpios.contains("IdButton"))
     {
-        idButtonName = data["IdButton"];
+        idButtonName = gpios["IdButton"];
     }
 
-    if (data.contains("NMIButton"))
+    if (gpios.contains("NMIButton"))
     {
-        nmiButtonName = data["NMIButton"];
+        nmiButtonName = gpios["NMIButton"];
     }
 
-    if (data.contains("NMIOut"))
+    if (gpios.contains("NMIOut"))
     {
-        nmiOutName = data["NMIOut"];
+        nmiOutName = gpios["NMIOut"];
     }
 
-    if (data.contains("PostComplete"))
+    if (gpios.contains("PostComplete"))
     {
-        postCompleteName = data["PostComplete"];
+        postCompleteName = gpios["PostComplete"];
     }
 
-    if (data.contains("PwrButton"))
+    if (gpios.contains("PwrButton"))
     {
-        powerButtonName = data["PwrButton"];
+        powerButtonName = gpios["PwrButton"];
     }
 
-    if (data.contains("PwrOK"))
+    if (gpios.contains("PwrOK"))
     {
-        powerOkName = data["PwrOK"];
+        powerOkName = gpios["PwrOK"];
     }
 
-    if (data.contains("PwrOut"))
+    if (gpios.contains("PwrOut"))
     {
-        powerOutName = data["PwrOut"];
+        powerOutName = gpios["PwrOut"];
     }
 
-    if (data.contains("RstButton"))
+    if (gpios.contains("RstButton"))
     {
-        resetButtonName = data["RstButton"];
+        resetButtonName = gpios["RstButton"];
     }
 
-    if (data.contains("RstOut"))
+    if (gpios.contains("RstOut"))
     {
-        resetOutName = data["RstOut"];
+        resetOutName = gpios["RstOut"];
     }
 
-    if (data.contains("SIOOnCtl"))
+    if (gpios.contains("SIOOnCtl"))
     {
-        sioOnControlName = data["SIOOnCtl"];
+        sioOnControlName = gpios["SIOOnCtl"];
     }
 
-    if (data.contains("SIOPwrGd"))
+    if (gpios.contains("SIOPwrGd"))
     {
-        sioPwrGoodName = data["SIOPwrGd"];
+        sioPwrGoodName = gpios["SIOPwrGd"];
     }
 
-    if (data.contains("SIOS5"))
+    if (gpios.contains("SIOS5"))
     {
-        sioS5Name = data["SIOS5"];
+        sioS5Name = gpios["SIOS5"];
     }
 
+    if (timers.contains("PowerPulseMs"))
+    {
+        powerPulseTimeMs = timers["PowerPulseMs"];
+    }
+
+    if (timers.contains("ForceOffPulseMs"))
+    {
+        forceOffPulseTimeMs = timers["ForceOffPulseMs"];
+    }
+
+    if (timers.contains("ResetPulseMs"))
+    {
+        resetPulseTimeMs = timers["ResetPulseMs"];
+    }
+
+    if (timers.contains("PowerCycleMs"))
+    {
+        powerCycleTimeMs = timers["PowerCycleMs"];
+    }
+
+    if (timers.contains("SioPowerGoodWatchdogMs"))
+    {
+        sioPowerGoodWatchdogTimeMs = timers["SioPowerGoodWatchdogMs"];
+    }
+
+    if (timers.contains("PsPowerOKWatchdogMs"))
+    {
+        psPowerOKWatchdogTimeMs = timers["PsPowerOKWatchdogMs"];
+    }
+
+    if (timers.contains("GracefulPowerOffS"))
+    {
+        gracefulPowerOffTimeS = timers["GracefulPowerOffS"];
+    }
+
+    if (timers.contains("WarmResetCheckMs"))
+    {
+        warmResetCheckTimeMs = timers["WarmResetCheckMs"];
+    }
+
+    if (timers.contains("PowerOffSaveMs"))
+    {
+        powerOffSaveTimeMs = timers["PowerOffSaveMs"];
+    }
     return 0;
 }
 
