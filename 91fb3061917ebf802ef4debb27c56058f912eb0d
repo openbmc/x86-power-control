@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8fc0153c_8f4e62d4",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2360,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-04-27T19:33:21Z",
+      "side": 1,
+      "message": "ForceOffPulseMs",
+      "revId": "91fb3061917ebf802ef4debb27c56058f912eb0d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dcee6f68_4d6d707b",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2365,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-04-27T19:33:21Z",
+      "side": 1,
+      "message": "ResetPulseMs",
+      "range": {
+        "startLine": 2365,
+        "startChar": 25,
+        "endLine": 2365,
+        "endChar": 35
+      },
+      "revId": "91fb3061917ebf802ef4debb27c56058f912eb0d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a740902_24a5f26e",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2370,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-04-27T19:33:21Z",
+      "side": 1,
+      "message": "PowerCycleMs",
+      "range": {
+        "startLine": 2370,
+        "startChar": 25,
+        "endLine": 2370,
+        "endChar": 35
+      },
+      "revId": "91fb3061917ebf802ef4debb27c56058f912eb0d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
