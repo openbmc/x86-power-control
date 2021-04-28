@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "bbfb6cb1_53c9aa86",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2360,
+      "author": {
+        "id": 1000930
+      },
+      "writtenOn": "2021-04-28T01:27:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8fc0153c_8f4e62d4",
+      "revId": "91fb3061917ebf802ef4debb27c56058f912eb0d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dcee6f68_4d6d707b",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 3
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "e91d4d4f_4e3961f2",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2365,
+      "author": {
+        "id": 1000930
+      },
+      "writtenOn": "2021-04-28T01:27:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dcee6f68_4d6d707b",
+      "range": {
+        "startLine": 2365,
+        "startChar": 25,
+        "endLine": 2365,
+        "endChar": 35
+      },
+      "revId": "91fb3061917ebf802ef4debb27c56058f912eb0d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a740902_24a5f26e",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 3
@@ -62,6 +104,30 @@
       "revId": "91fb3061917ebf802ef4debb27c56058f912eb0d",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b1649a8a_c43cb32c",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2370,
+      "author": {
+        "id": 1000930
+      },
+      "writtenOn": "2021-04-28T01:27:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a740902_24a5f26e",
+      "range": {
+        "startLine": 2370,
+        "startChar": 25,
+        "endLine": 2370,
+        "endChar": 35
+      },
+      "revId": "91fb3061917ebf802ef4debb27c56058f912eb0d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
