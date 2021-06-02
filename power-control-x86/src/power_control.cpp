@@ -488,6 +488,59 @@ static void setPowerState(const PowerState state)
     savePowerState(state);
 }
 
+#ifdef STOP_HOST_WATCHDOG_TIMER
+static constexpr auto SYSTEMD_SERVICE = "org.freedesktop.systemd1";
+static constexpr auto SYSTEMD_ROOT = "/org/freedesktop/systemd1";
+static constexpr auto SYSTEMD_INTERFACE = "org.freedesktop.systemd1.Manager";
+static constexpr auto SYSTEMD_TARGET = "stop-watchdog-timer.target";
+
+void stopHostWatchdog()
+{
+    conn->async_method_call(
+        [](boost::system::error_code ec) {
+            if (ec)
+            {
+                phosphor::logging::log<phosphor::logging::level::ERR>(
+                    "Failed to call stop host watchdog timer",
+                    phosphor::logging::entry("ERR=%s", ec.message().c_str()));
+            }
+            phosphor::logging::log<phosphor::logging::level::INFO>(
+                "Stop host watchdog timer");
+        },
+        SYSTEMD_SERVICE, SYSTEMD_ROOT, SYSTEMD_INTERFACE, "StartUnit",
+        SYSTEMD_TARGET, "replace");
+}
+
+static void stopHostWatchdogTimerStart(size_t retries = 5)
+{
+    static boost::asio::steady_timer stopHostWatchdogTimer(io);
+    phosphor::logging::log<phosphor::logging::level::INFO>(
+        "stopHostWatchdog Timer started");
+    stopHostWatchdogTimer.expires_after(std::chrono::seconds(2));
+    stopHostWatchdogTimer.async_wait([retries](
+                                         const boost::system::error_code ec) {
+        if (ec)
+        {
+            std::string errMsg =
+                "stopHostWatchdog async_wait failed: " + ec.message();
+            phosphor::logging::log<phosphor::logging::level::ERR>(
+                errMsg.c_str());
+        }
+        if (powerState == PowerState::off || powerState == PowerState::cycleOff)
+        {
+            stopHostWatchdog();
+        }
+        else
+        {
+            if (retries)
+            {
+                stopHostWatchdogTimerStart(retries - 1);
+            }
+        }
+    });
+}
+#endif
+
 enum class RestartCause
 {
     command,
@@ -1295,6 +1348,10 @@ static void warmResetCheckTimerStart()
         phosphor::logging::log<phosphor::logging::level::INFO>(
             "Warm reset check timer completed");
         sendPowerControlEvent(Event::warmResetDetected);
+
+#ifdef STOP_HOST_WATCHDOG_TIMER
+        stopHostWatchdog();
+#endif
     });
 }
 
@@ -1455,6 +1512,10 @@ static void currentHostStateMonitor()
                                 "PRIORITY=%i", LOG_INFO,
                                 "REDFISH_MESSAGE_ID=%s",
                                 "OpenBMC.0.1.DCPowerOff", NULL);
+
+#ifdef STOP_HOST_WATCHDOG_TIMER
+                stopHostWatchdogTimerStart();
+#endif
             }
         });
 }

@@ -15,6 +15,12 @@ option (
      instead of POST Complete"
     OFF
 )
+option (
+    STOP_HOST_WATCHDOG_TIMER
+    "Stop host watchdog timer when the host power off,
+     power cycle and warm reset"
+    OFF
+)
 
 add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
 add_definitions(-DBOOST_SYSTEM_NO_DEPRECATED)
@@ -38,6 +44,8 @@ target_compile_definitions (
     -DCHASSIS_SYSTEM_RESET>
     ${PROJECT_NAME} PRIVATE $<$<BOOL:${USE_PLT_RST}>:
     -DUSE_PLT_RST>
+    ${PROJECT_NAME} PRIVATE $<$<BOOL:${STOP_HOST_WATCHDOG_TIMER}>:
+    -DSTOP_HOST_WATCHDOG_TIMER>
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
