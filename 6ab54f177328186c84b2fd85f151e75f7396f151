@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8f42f560_436f488c",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 497,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-06-02T22:09:09Z",
+      "side": 1,
+      "message": "x86-power-control doesn\u0027t feel like the right place for this change.  I think it would make more sense to add a match for the CurrentHostState property in the host watchdog service and start and stop the timer based on that match.  You can find an example match in currentHostStateMonitor().\n\nIf x86-power-control is really the best place, we can put it in.",
+      "revId": "6ab54f177328186c84b2fd85f151e75f7396f151",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "927c88fb_ae85e3b4",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 518,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-06-02T22:09:09Z",
+      "side": 1,
+      "message": "This would be better in currentHostStateMonitor() where other things like the POH counter are already handled based on the host state.\n\nAlso, does anything ever start the host watchdog timer?",
+      "revId": "6ab54f177328186c84b2fd85f151e75f7396f151",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
