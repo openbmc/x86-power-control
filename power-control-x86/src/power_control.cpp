@@ -472,6 +472,29 @@ static void savePowerState(const PowerState state)
         powerStateStream << getChassisState(state);
     });
 }
+#ifdef STOP_HOST_WATCHDOG_TIMER
+static constexpr auto SYSTEMD_SERVICE = "org.freedesktop.systemd1";
+static constexpr auto SYSTEMD_ROOT = "/org/freedesktop/systemd1";
+static constexpr auto SYSTEMD_INTERFACE = "org.freedesktop.systemd1.Manager";
+static constexpr auto SYSTEMD_TARGET = "stop-watchdog-timer.target";
+
+void stopHostWatchdogTimer()
+{
+    conn->async_method_call(
+        [](boost::system::error_code ec) {
+            if (ec)
+            {
+                phosphor::logging::log<phosphor::logging::level::ERR>(
+                    "Failed to call stop host watchdog timer",
+                    phosphor::logging::entry("ERR=%s", ec.message().c_str()));
+            }
+            phosphor::logging::log<phosphor::logging::level::INFO>(
+                "Stop host watchdog timer");
+        },
+        SYSTEMD_SERVICE, SYSTEMD_ROOT, SYSTEMD_INTERFACE, "StartUnit",
+        SYSTEMD_TARGET, "replace");
+}
+#endif
 static void setPowerState(const PowerState state)
 {
     powerState = state;
@@ -486,6 +509,13 @@ static void setPowerState(const PowerState state)
 
     // Save the power state for the restore policy
     savePowerState(state);
+
+#ifdef STOP_HOST_WATCHDOG_TIMER
+    if (powerState == PowerState::off || powerState == PowerState::cycleOff)
+    {
+        stopHostWatchdogTimer();
+    }
+#endif
 }
 
 enum class RestartCause
@@ -1295,6 +1325,10 @@ static void warmResetCheckTimerStart()
         phosphor::logging::log<phosphor::logging::level::INFO>(
             "Warm reset check timer completed");
         sendPowerControlEvent(Event::warmResetDetected);
+
+#ifdef STOP_HOST_WATCHDOG_TIMER
+        stopHostWatchdogTimer();
+#endif
     });
 }
 
