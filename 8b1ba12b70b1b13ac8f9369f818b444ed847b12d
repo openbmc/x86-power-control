@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d6fca03d_3c597b0b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-06-02T22:03:01Z",
+      "side": 1,
+      "message": "typo: support. To",
+      "range": {
+        "startLine": 10,
+        "startChar": 9,
+        "endLine": 10,
+        "endChar": 19
+      },
+      "revId": "8b1ba12b70b1b13ac8f9369f818b444ed847b12d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a5f7e6b_37d268bd",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1240,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-06-02T22:03:01Z",
+      "side": 1,
+      "message": "setGPIOOutput() calls request on the gpiod::line object which I think can only be called once.  I think for this to work, you may need to request the line once then use set_value() to toggle it in these functions instead of using setGPIOOutput().",
+      "revId": "8b1ba12b70b1b13ac8f9369f818b444ed847b12d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
