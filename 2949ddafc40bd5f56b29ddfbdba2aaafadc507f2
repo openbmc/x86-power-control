@@ -1,0 +1,158 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "68ee4d70_e96067b7",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-06-02T22:33:03Z",
+      "side": 1,
+      "message": "enums are in camelCase",
+      "revId": "2949ddafc40bd5f56b29ddfbdba2aaafadc507f2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b0f59db8_dad0b6ba",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-06-02T22:33:03Z",
+      "side": 1,
+      "message": "boost::flat_map is preferred for efficiency.",
+      "revId": "2949ddafc40bd5f56b29ddfbdba2aaafadc507f2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84c0bb88_c93e88a9",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-06-02T22:33:03Z",
+      "side": 1,
+      "message": "This appears to be unused and can be removed.",
+      "revId": "2949ddafc40bd5f56b29ddfbdba2aaafadc507f2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cb4bcaeb_2ebd897e",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-06-02T22:33:03Z",
+      "side": 1,
+      "message": "At this point could we just put the above values directly into the map instead of a pointer to the static int?",
+      "revId": "2949ddafc40bd5f56b29ddfbdba2aaafadc507f2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "90b2d176_57b0abe4",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2362,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-06-02T22:33:03Z",
+      "side": 1,
+      "message": "Can we use the real type here instead of auto?",
+      "range": {
+        "startLine": 2362,
+        "startChar": 9,
+        "endLine": 2362,
+        "endChar": 13
+      },
+      "revId": "2949ddafc40bd5f56b29ddfbdba2aaafadc507f2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a941560b_acd2990e",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2381,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-06-02T22:33:03Z",
+      "side": 1,
+      "message": "The else isn\u0027t needed because the if has a return.",
+      "revId": "2949ddafc40bd5f56b29ddfbdba2aaafadc507f2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5d49ba06_81a95a54",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2429,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-06-02T22:33:03Z",
+      "side": 1,
+      "message": "Can we use the real type here instead of auto?\n\nOr, since you want the second of dbusConfig, you could use a structured binding to provide a more descriptive name.",
+      "range": {
+        "startLine": 2429,
+        "startChar": 17,
+        "endLine": 2429,
+        "endChar": 21
+      },
+      "revId": "2949ddafc40bd5f56b29ddfbdba2aaafadc507f2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ce68adbe_00883e22",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2448,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-06-02T22:33:03Z",
+      "side": 1,
+      "message": "typo: config",
+      "range": {
+        "startLine": 2448,
+        "startChar": 49,
+        "endLine": 2448,
+        "endChar": 56
+      },
+      "revId": "2949ddafc40bd5f56b29ddfbdba2aaafadc507f2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
