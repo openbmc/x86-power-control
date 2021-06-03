@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "95578219_ddd4ba9f",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 497,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-06-03T20:21:51Z",
+      "side": 1,
+      "message": "That\u0027s a good point - I think when the host shuts itself down, the OS usually turns the IPMI watchdog off, but let me double check on that.",
+      "parentUuid": "87e31026_f1eac7c0",
+      "revId": "6ab54f177328186c84b2fd85f151e75f7396f151",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "927c88fb_ae85e3b4",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 1
