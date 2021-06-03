@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "06c7184c_83ca5773",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 497,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-06-03T19:06:48Z",
+      "side": 1,
+      "message": "Hmm, I think the host watchdog should be there in case we want to try to power it up when the host goes down unexpectedly - wouldn\u0027t basing it off of \"currentHostStatusMonitor\" defeat the purpose of the watchdog?\n\nWe want to only turn the watchdog off when we mean to turn off the host - ie. when the BMC instructs the host to turn itself off, so I think this living in x86-power-control code makes sense to me.",
+      "parentUuid": "df91139f_1c60c994",
+      "revId": "6ab54f177328186c84b2fd85f151e75f7396f151",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "927c88fb_ae85e3b4",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 1
