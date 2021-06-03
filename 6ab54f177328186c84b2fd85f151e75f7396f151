@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "87e31026_f1eac7c0",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 497,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-06-03T19:52:37Z",
+      "side": 1,
+      "message": "Interesting.  In what cases would you call the host turning off expected vs. unexpected?  What if a user shuts down from the host OS?",
+      "parentUuid": "06c7184c_83ca5773",
+      "revId": "6ab54f177328186c84b2fd85f151e75f7396f151",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "927c88fb_ae85e3b4",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 1
