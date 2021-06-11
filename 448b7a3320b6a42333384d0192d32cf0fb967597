@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1314950d_58f873a0",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 2357,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-06-11T22:24:06Z",
+      "side": 1,
+      "message": "Real type here instead of auto would still be nice.",
+      "range": {
+        "startLine": 2357,
+        "startChar": 9,
+        "endLine": 2357,
+        "endChar": 13
+      },
+      "revId": "448b7a3320b6a42333384d0192d32cf0fb967597",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6baec5c8_ed6d9552",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 2500,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-06-11T22:24:06Z",
+      "side": 1,
+      "message": "nit: It\u0027s better to keep try blocks small, so I think the catch could be moved up to 2474 after the std::get call as it doesn\u0027t look like there are any further exceptions after that.\nSimilar for the remaining try blocks below.",
+      "revId": "448b7a3320b6a42333384d0192d32cf0fb967597",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
