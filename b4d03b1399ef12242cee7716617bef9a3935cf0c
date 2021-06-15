@@ -22,6 +22,30 @@
       "revId": "b4d03b1399ef12242cee7716617bef9a3935cf0c",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e494d92b_f106fd1f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2021-06-15T23:08:18Z",
+      "side": 1,
+      "message": "The IPMI spec is often found lacking in detail. I think that this is one of those areas.\n\nWhat sense does it make to mask the front panel buttons (via an IPMI command) and then still allow the same actions over IPMI that the front panel buttons would do. Especially given that the source of any IPMI command could be in a variety of locations without coordination. I would argue that the notion of masking the buttons is not just about masking the buttons, but rather masking the action.\n\nConsider the scenario: I don\u0027t want the system to be reset. I mask the buttons. Another admin, unaware of why I might not want to have the host reset, sends an OOB reset request. The host is reset. This is a non-user friendly scenario. I masked the buttons to keep the host from being reset but it didn\u0027t work.",
+      "parentUuid": "787c5a79_95ffbb61",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 28
+      },
+      "revId": "b4d03b1399ef12242cee7716617bef9a3935cf0c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
