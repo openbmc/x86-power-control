@@ -46,6 +46,30 @@
       "revId": "b4d03b1399ef12242cee7716617bef9a3935cf0c",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "569dc0f1_0bb608c9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-06-16T16:46:02Z",
+      "side": 1,
+      "message": "@vernon: I agree with the scenarios you mention. LGTM.",
+      "parentUuid": "e494d92b_f106fd1f",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 28
+      },
+      "revId": "b4d03b1399ef12242cee7716617bef9a3935cf0c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
