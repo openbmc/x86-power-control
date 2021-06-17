@@ -70,6 +70,29 @@
       "revId": "b4d03b1399ef12242cee7716617bef9a3935cf0c",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7db7dc5_59312409",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2609,
+      "author": {
+        "id": 1000410
+      },
+      "writtenOn": "2021-06-17T06:46:41Z",
+      "side": 1,
+      "message": "nit: No need to return after throwing an exception, I suppose. https://godbolt.org/z/jK3eW7zxo",
+      "range": {
+        "startLine": 2609,
+        "startChar": 20,
+        "endLine": 2609,
+        "endChar": 29
+      },
+      "revId": "b4d03b1399ef12242cee7716617bef9a3935cf0c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
