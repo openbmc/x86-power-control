@@ -2707,20 +2707,53 @@ int main(int argc, char* argv[])
         [](const std::string& requested, std::string& resp) {
             if (requested == "xyz.openbmc_project.State.Chassis.Transition.Off")
             {
-                sendPowerControlEvent(Event::powerOffRequest);
-                addRestartCause(RestartCause::command);
+                // if power button is masked, ignore this
+                if (!powerButtonMask)
+                {
+                    sendPowerControlEvent(Event::powerOffRequest);
+                    addRestartCause(RestartCause::command);
+                }
+                else
+                {
+                    phosphor::logging::log<phosphor::logging::level::INFO>(
+                        "Power Button Masked.");
+                    throw std::invalid_argument("Transition Request Masked");
+                    return 0;
+                }
             }
             else if (requested ==
                      "xyz.openbmc_project.State.Chassis.Transition.On")
             {
-                sendPowerControlEvent(Event::powerOnRequest);
-                addRestartCause(RestartCause::command);
+                // if power button is masked, ignore this
+                if (!powerButtonMask)
+                {
+                    sendPowerControlEvent(Event::powerOnRequest);
+                    addRestartCause(RestartCause::command);
+                }
+                else
+                {
+                    phosphor::logging::log<phosphor::logging::level::INFO>(
+                        "Power Button Masked.");
+                    throw std::invalid_argument("Transition Request Masked");
+                    return 0;
+                }
             }
             else if (requested ==
                      "xyz.openbmc_project.State.Chassis.Transition.PowerCycle")
             {
-                sendPowerControlEvent(Event::powerCycleRequest);
-                addRestartCause(RestartCause::command);
+                // if power button is masked, ignore this
+                if (!powerButtonMask)
+                {
+                    sendPowerControlEvent(Event::powerCycleRequest);
+                    addRestartCause(RestartCause::command);
+                }
+                else
+                {
+                    phosphor::logging::log<phosphor::logging::level::INFO>(
+                        "Power Button Masked.");
+                    throw std::invalid_argument("Transition Request Masked");
+                    return 0;
+                }
             }
             else
             {
