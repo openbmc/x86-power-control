@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "a9977cb4_7253da78",
+        "filename": "README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1001093
+      },
+      "writtenOn": "2021-07-15T06:46:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ffc7858_435603a7",
+      "range": {
+        "startLine": 36,
+        "startChar": 16,
+        "endLine": 36,
+        "endChar": 17
+      },
+      "revId": "2949ddafc40bd5f56b29ddfbdba2aaafadc507f2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "68ee4d70_e96067b7",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 3
@@ -188,6 +212,30 @@
     },
     {
       "key": {
+        "uuid": "911a7fa4_b855714d",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2362,
+      "author": {
+        "id": 1001093
+      },
+      "writtenOn": "2021-07-15T06:46:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "90b2d176_57b0abe4",
+      "range": {
+        "startLine": 2362,
+        "startChar": 9,
+        "endLine": 2362,
+        "endChar": 13
+      },
+      "revId": "2949ddafc40bd5f56b29ddfbdba2aaafadc507f2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a941560b_acd2990e",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 3
@@ -202,6 +250,24 @@
       "revId": "2949ddafc40bd5f56b29ddfbdba2aaafadc507f2",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6dd41eb8_201fd48c",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2381,
+      "author": {
+        "id": 1001093
+      },
+      "writtenOn": "2021-07-15T06:46:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a941560b_acd2990e",
+      "revId": "2949ddafc40bd5f56b29ddfbdba2aaafadc507f2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     },
     {
       "key": {
