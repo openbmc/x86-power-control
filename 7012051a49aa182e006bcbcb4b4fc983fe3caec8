@@ -1,0 +1,10 @@
+Code-Review+2: Kuiying Wang <wangkuiying.wky@alibaba-inc.com>
+Code-Review+1: Jason Bills <jason.m.bills@linux.intel.com>
+Code-Review+1: Velumani Thangavel <velumanit@hcl.com>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Ok-To-Test+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Submitted-by: Naveen Moses  <naveen.mosess@hcl.com>
+Submitted-at: Thu, 15 Jul 2021 06:46:23 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/x86-power-control/+/36528
+Project: openbmc/x86-power-control
+Branch: refs/heads/master
