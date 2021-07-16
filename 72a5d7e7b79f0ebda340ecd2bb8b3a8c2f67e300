@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d4df123f_1830a933",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2711,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-07-16T18:18:25Z",
+      "side": 1,
+      "message": "IPMI \u0027Front panel Enables\u0027 command allows selectively mask individual buttons.\nSo, do we need to take care condition, resetButtonMasked but powerButton not masked?\nMay be in a separate patch, if required. (Applicable to other hunks also.)\n\nif (!powerButtonMask \u0026\u0026 !resetButtonMask)",
+      "range": {
+        "startLine": 2711,
+        "startChar": 20,
+        "endLine": 2711,
+        "endChar": 36
+      },
+      "revId": "72a5d7e7b79f0ebda340ecd2bb8b3a8c2f67e300",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7854ef8_35fa48da",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2720,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-07-16T18:18:25Z",
+      "side": 1,
+      "message": "Curious question: \nI guess this throw will exit the x86-power-control service?\nCan we just gracefully return 0, instead of throwing exception?",
+      "range": {
+        "startLine": 2720,
+        "startChar": 20,
+        "endLine": 2720,
+        "endChar": 77
+      },
+      "revId": "72a5d7e7b79f0ebda340ecd2bb8b3a8c2f67e300",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05648bcb_96145a47",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2728,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-07-16T18:18:25Z",
+      "side": 1,
+      "message": "Curious question:\nDoes fw-update service takes care of masking these buttons before update ?\nOr it is user responsbility to send IPMI front panel enables command to mask before fw update ?",
+      "range": {
+        "startLine": 2728,
+        "startChar": 21,
+        "endLine": 2728,
+        "endChar": 36
+      },
+      "revId": "72a5d7e7b79f0ebda340ecd2bb8b3a8c2f67e300",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
