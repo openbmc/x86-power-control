@@ -263,12 +263,12 @@ static std::string getPowerStateName(PowerState state)
 }
 static void logStateTransition(const PowerState state)
 {
-    std::string logMsg =
-        "Host0: Moving to \"" + getPowerStateName(state) + "\" state";
+    std::string logMsg = "Host" + node + ": Moving to \"" +
+                         getPowerStateName(state) + "\" state";
     phosphor::logging::log<phosphor::logging::level::INFO>(
         logMsg.c_str(),
         phosphor::logging::entry("STATE=%s", getPowerStateName(state).c_str()),
-        phosphor::logging::entry("HOST=0"));
+        phosphor::logging::entry("HOST=%s", node.c_str()));
 }
 
 enum class Event
@@ -3106,6 +3106,22 @@ int main(int argc, char* argv[])
         std::string errMsg = "Host" + node + ": " + "Error in Parsing...";
         phosphor::logging::log<phosphor::logging::level::ERR>(errMsg.c_str());
     }
+    /* Currently for single host based systems additional busname is added
+    with "0" at the end of the name ex : xyz.openbmc_project.State.Host0.
+    Going forward for single hosts the old bus name withot zero numbering
+    will be removed when all other applications adapted to the
+    bus name with zero numbering (xyz.openbmc_project.State.Host0). */
+
+    if (node == "0")
+    {
+        // Request all the dbus names
+        conn->request_name(hostDbusName.c_str());
+        conn->request_name(chassisDbusName.c_str());
+        conn->request_name(osDbusName.c_str());
+        conn->request_name(buttonDbusName.c_str());
+        conn->request_name(nmiDbusName.c_str());
+        conn->request_name(rstCauseDbusName.c_str());
+    }
 
     hostDbusName = "xyz.openbmc_project.State.Host" + node;
     chassisDbusName = "xyz.openbmc_project.State.Chassis" + node;
@@ -3390,7 +3406,6 @@ int main(int argc, char* argv[])
     hostIface =
         hostServer.add_interface("/xyz/openbmc_project/state/host" + node,
                                  "xyz.openbmc_project.State.Host");
-
     // Interface for IPMI/Redfish initiated host state transitions
     hostIface->register_property(
         "RequestedHostTransition",
@@ -3898,7 +3913,7 @@ int main(int argc, char* argv[])
 
     // Restart Cause Interface
     restartCauseIface = restartCauseServer.add_interface(
-        "/xyz/openbmc_project/control/host0/restart_cause",
+        "/xyz/openbmc_project/control/host" + node + "/restart_cause",
         "xyz.openbmc_project.Control.Host.RestartCause");
 
     restartCauseIface->register_property(
