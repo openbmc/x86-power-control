@@ -264,11 +264,11 @@ static std::string getPowerStateName(PowerState state)
 static void logStateTransition(const PowerState state)
 {
     std::string logMsg =
-        "Host0: Moving to \"" + getPowerStateName(state) + "\" state";
+        "Host" + node + ": Moving to \"" + getPowerStateName(state) + "\" state";
     phosphor::logging::log<phosphor::logging::level::INFO>(
         logMsg.c_str(),
         phosphor::logging::entry("STATE=%s", getPowerStateName(state).c_str()),
-        phosphor::logging::entry("HOST=0"));
+        phosphor::logging::entry("HOST=%s",node.c_str()));
 }
 
 enum class Event
@@ -3106,14 +3106,15 @@ int main(int argc, char* argv[])
         std::string errMsg = "Host" + node + ": " + "Error in Parsing...";
         phosphor::logging::log<phosphor::logging::level::ERR>(errMsg.c_str());
     }
-
-    hostDbusName = "xyz.openbmc_project.State.Host" + node;
-    chassisDbusName = "xyz.openbmc_project.State.Chassis" + node;
-    osDbusName = "xyz.openbmc_project.State.OperatingSystem" + node;
-    buttonDbusName = "xyz.openbmc_project.Chassis.Buttons" + node;
-    nmiDbusName = "xyz.openbmc_project.Control.Host.NMI" + node;
-    rstCauseDbusName = "xyz.openbmc_project.Control.Host.RestartCause" + node;
-
+   if(node != "0")
+   {
+        hostDbusName = "xyz.openbmc_project.State.Host" + node;
+        chassisDbusName = "xyz.openbmc_project.State.Chassis" + node;
+        osDbusName = "xyz.openbmc_project.State.OperatingSystem" + node;
+        buttonDbusName = "xyz.openbmc_project.Chassis.Buttons" + node;
+        nmiDbusName = "xyz.openbmc_project.Control.Host.NMI" + node;
+        rstCauseDbusName = "xyz.openbmc_project.Control.Host.RestartCause" + node;
+   }
     // Request all the dbus names
     conn->request_name(hostDbusName.c_str());
     conn->request_name(chassisDbusName.c_str());
@@ -3865,7 +3866,7 @@ int main(int argc, char* argv[])
 
     // Restart Cause Interface
     restartCauseIface = restartCauseServer.add_interface(
-        "/xyz/openbmc_project/control/host0/restart_cause",
+        "/xyz/openbmc_project/control/" + node + "/restart_cause",
         "xyz.openbmc_project.Control.Host.RestartCause");
 
     restartCauseIface->register_property(
