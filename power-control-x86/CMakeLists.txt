@@ -51,8 +51,22 @@ set(
   SERVICE_FILES
   ${PROJECT_SOURCE_DIR}/service_files/chassis-system-reset.service
   ${PROJECT_SOURCE_DIR}/service_files/chassis-system-reset.target
-  ${PROJECT_SOURCE_DIR}/service_files/xyz.openbmc_project.Chassis.Control.Power@.service
   )
+
+string(COMPARE  EQUAL "${HOST_INSTANCES}" "0" is_single_host)
+if (is_single_host)
+  message(STATUS "SINGLE HOST BMC CONFIG")
+  set(
+    POWER_SERVICE_FILES
+    ${PROJECT_SOURCE_DIR}/service_files/xyz.openbmc_project.Chassis.Control.Power.service
+  )
+else()
+  message(STATUS "MULTI HOST BMC CONFIG")
+  set(
+    POWER_SERVICE_FILES
+    ${PROJECT_SOURCE_DIR}/service_files/xyz.openbmc_project.Chassis.Control.Power@.service
+  )
+endif()
 
 set(
   CONFIG_FILE
@@ -60,4 +74,5 @@ set(
   )
 
 install(FILES ${SERVICE_FILES} DESTINATION /lib/systemd/system/)
+install(FILES ${POWER_SERVICE_FILES} DESTINATION /lib/systemd/system/)
 install(FILES ${CONFIG_FILE} DESTINATION /usr/share/x86-power-control/)
