@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6bd0963d_7bd67ddc",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3481,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-07-16T21:49:00Z",
+      "side": 0,
+      "message": "Looks like you may need to rebase so you don\u0027t unintentionally remove this previous change.",
+      "revId": "117c34e73f80727eeb6c3cd24210644f327b664a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
