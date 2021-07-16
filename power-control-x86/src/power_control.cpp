@@ -263,12 +263,12 @@ static std::string getPowerStateName(PowerState state)
 }
 static void logStateTransition(const PowerState state)
 {
-    std::string logMsg =
-        "Host0: Moving to \"" + getPowerStateName(state) + "\" state";
+    std::string logMsg = "Host" + node + ": Moving to \"" +
+                         getPowerStateName(state) + "\" state";
     phosphor::logging::log<phosphor::logging::level::INFO>(
         logMsg.c_str(),
         phosphor::logging::entry("STATE=%s", getPowerStateName(state).c_str()),
-        phosphor::logging::entry("HOST=0"));
+        phosphor::logging::entry("HOST=%s", node.c_str()));
 }
 
 enum class Event
@@ -3106,13 +3106,16 @@ int main(int argc, char* argv[])
         std::string errMsg = "Host" + node + ": " + "Error in Parsing...";
         phosphor::logging::log<phosphor::logging::level::ERR>(errMsg.c_str());
     }
-
-    hostDbusName = "xyz.openbmc_project.State.Host" + node;
-    chassisDbusName = "xyz.openbmc_project.State.Chassis" + node;
-    osDbusName = "xyz.openbmc_project.State.OperatingSystem" + node;
-    buttonDbusName = "xyz.openbmc_project.Chassis.Buttons" + node;
-    nmiDbusName = "xyz.openbmc_project.Control.Host.NMI" + node;
-    rstCauseDbusName = "xyz.openbmc_project.Control.Host.RestartCause" + node;
+    if (node != "0")
+    {
+        hostDbusName = "xyz.openbmc_project.State.Host" + node;
+        chassisDbusName = "xyz.openbmc_project.State.Chassis" + node;
+        osDbusName = "xyz.openbmc_project.State.OperatingSystem" + node;
+        buttonDbusName = "xyz.openbmc_project.Chassis.Buttons" + node;
+        nmiDbusName = "xyz.openbmc_project.Control.Host.NMI" + node;
+        rstCauseDbusName =
+            "xyz.openbmc_project.Control.Host.RestartCause" + node;
+    }
 
     // Request all the dbus names
     conn->request_name(hostDbusName.c_str());
@@ -3391,94 +3394,38 @@ int main(int argc, char* argv[])
         hostServer.add_interface("/xyz/openbmc_project/state/host" + node,
                                  "xyz.openbmc_project.State.Host");
 
-    // Interface for IPMI/Redfish initiated host state transitions
     hostIface->register_property(
         "RequestedHostTransition",
         std::string("xyz.openbmc_project.State.Host.Transition.Off"),
         [](const std::string& requested, std::string& resp) {
             if (requested == "xyz.openbmc_project.State.Host.Transition.Off")
             {
-                // if power button is masked, ignore this
-                if (!powerButtonMask)
-                {
-                    sendPowerControlEvent(Event::gracefulPowerOffRequest);
-                    addRestartCause(RestartCause::command);
-                }
-                else
-                {
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "Power Button Masked.");
-                    throw std::invalid_argument("Transition Request Masked");
-                    return 0;
-                }
+                sendPowerControlEvent(Event::gracefulPowerOffRequest);
+                addRestartCause(RestartCause::command);
             }
             else if (requested ==
                      "xyz.openbmc_project.State.Host.Transition.On")
             {
-                // if power button is masked, ignore this
-                if (!powerButtonMask)
-                {
-                    sendPowerControlEvent(Event::powerOnRequest);
-                    addRestartCause(RestartCause::command);
-                }
-                else
-                {
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "Power Button Masked.");
-                    throw std::invalid_argument("Transition Request Masked");
-                    return 0;
-                }
+                sendPowerControlEvent(Event::powerOnRequest);
+                addRestartCause(RestartCause::command);
             }
             else if (requested ==
                      "xyz.openbmc_project.State.Host.Transition.Reboot")
             {
-                // if power button is masked, ignore this
-                if (!powerButtonMask)
-                {
-                    sendPowerControlEvent(Event::powerCycleRequest);
-                    addRestartCause(RestartCause::command);
-                }
-                else
-                {
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "Power Button Masked.");
-                    throw std::invalid_argument("Transition Request Masked");
-                    return 0;
-                }
+                sendPowerControlEvent(Event::powerCycleRequest);
+                addRestartCause(RestartCause::command);
             }
             else if (requested == "xyz.openbmc_project.State.Host.Transition."
                                   "GracefulWarmReboot")
             {
-                // if reset button is masked, ignore this
-                if (!resetButtonMask)
-                {
-                    sendPowerControlEvent(Event::gracefulPowerCycleRequest);
-                    addRestartCause(RestartCause::command);
-                }
-                else
-                {
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "Reset Button Masked.");
-                    throw std::invalid_argument("Transition Request Masked");
-                    return 0;
-                }
+                sendPowerControlEvent(Event::gracefulPowerCycleRequest);
+                addRestartCause(RestartCause::command);
             }
             else if (requested == "xyz.openbmc_project.State.Host.Transition."
                                   "ForceWarmReboot")
             {
-                // if reset button is masked, ignore this
-                if (!resetButtonMask)
-                {
-                    sendPowerControlEvent(Event::resetRequest);
-                    addRestartCause(RestartCause::command);
-                }
-                else
-                {
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "Reset Button Masked.");
-                    throw std::invalid_argument("Transition Request Masked");
-                    return 0;
-                }
+                sendPowerControlEvent(Event::resetRequest);
+                addRestartCause(RestartCause::command);
             }
             else
             {
@@ -3865,7 +3812,7 @@ int main(int argc, char* argv[])
 
     // Restart Cause Interface
     restartCauseIface = restartCauseServer.add_interface(
-        "/xyz/openbmc_project/control/host0/restart_cause",
+        "/xyz/openbmc_project/control/" + node + "/restart_cause",
         "xyz.openbmc_project.Control.Host.RestartCause");
 
     restartCauseIface->register_property(
