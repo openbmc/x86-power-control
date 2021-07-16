@@ -54,6 +54,7 @@ set(
   ${PROJECT_SOURCE_DIR}/service_files/xyz.openbmc_project.Chassis.Control.Power@.service
   )
 
+
 set(
   CONFIG_FILE
   ${PROJECT_SOURCE_DIR}/config/power-config-host0.json
