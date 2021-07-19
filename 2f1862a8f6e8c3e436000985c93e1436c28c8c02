@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b8a942d1_1326e188",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2021-07-19T02:18:34Z",
+      "side": 1,
+      "message": "Test it on both single and multi host\nAnd attach the Tested field with test result.",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 0
+      },
+      "revId": "2f1862a8f6e8c3e436000985c93e1436c28c8c02",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
