@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9cfaeb7e_28939f6d",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2711,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2021-07-19T18:49:48Z",
+      "side": 1,
+      "message": "This is a power change, not a reset, so we are only checking the powerButtonMask.",
+      "parentUuid": "d4df123f_1830a933",
+      "range": {
+        "startLine": 2711,
+        "startChar": 20,
+        "endLine": 2711,
+        "endChar": 36
+      },
+      "revId": "72a5d7e7b79f0ebda340ecd2bb8b3a8c2f67e300",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d7854ef8_35fa48da",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 1
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "437ecb50_9e3f3f9c",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2720,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2021-07-19T18:49:48Z",
+      "side": 1,
+      "message": "The throw returns an error code to the d-bus caller, it does not crash x86-power-control.",
+      "parentUuid": "d7854ef8_35fa48da",
+      "range": {
+        "startLine": 2720,
+        "startChar": 20,
+        "endLine": 2720,
+        "endChar": 77
+      },
+      "revId": "72a5d7e7b79f0ebda340ecd2bb8b3a8c2f67e300",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "05648bcb_96145a47",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 1
@@ -68,6 +116,30 @@
       "revId": "72a5d7e7b79f0ebda340ecd2bb8b3a8c2f67e300",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4cc3b7a4_1727bed3",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2728,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2021-07-19T18:49:48Z",
+      "side": 1,
+      "message": "That is an implementation-specific detail not related to this patch.",
+      "parentUuid": "05648bcb_96145a47",
+      "range": {
+        "startLine": 2728,
+        "startChar": 21,
+        "endLine": 2728,
+        "endChar": 36
+      },
+      "revId": "72a5d7e7b79f0ebda340ecd2bb8b3a8c2f67e300",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
