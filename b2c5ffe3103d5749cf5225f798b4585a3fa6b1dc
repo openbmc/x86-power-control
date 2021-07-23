@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2d45ea11_a33d9cc2",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 3870,
+      "author": {
+        "id": 1000900
+      },
+      "writtenOn": "2021-07-23T23:01:10Z",
+      "side": 1,
+      "message": "This breaks IPMI Get System Restart Cause command, leading to the \"ipmitool power status\" failure Jason reported.\nI think it should be\n\n    \"/xyz/openbmc_project/control/host\" + node + \"/restart_cause\"",
+      "revId": "b2c5ffe3103d5749cf5225f798b4585a3fa6b1dc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
