@@ -3930,6 +3930,14 @@ int main(int argc, char* argv[])
 
     restartCauseIface->initialize();
 
+    if (sioEnabled == true)
+    {
+        if (sioPowerGoodLine.get_value() == 1)
+        {
+            sendPowerControlEvent(Event::sioPowerGoodAssert);
+        }
+    }
+
     currentHostStateMonitor();
 
     io.run();
