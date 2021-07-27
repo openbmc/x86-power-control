@@ -3930,6 +3930,18 @@ int main(int argc, char* argv[])
 
     restartCauseIface->initialize();
 
+    if (sioEnabled == true)
+    {
+        if (sioPowerGoodLine.get_value() == 1)
+        {
+            sendPowerControlEvent(Event::sioPowerGoodAssert);
+            std::string logMsg = "SIO Power Good asserted during "
+                                 "initialization as associated GPIO is HIGH";
+            phosphor::logging::log<phosphor::logging::level::INFO>(
+                logMsg.c_str());
+        }
+    }
+
     currentHostStateMonitor();
 
     io.run();
