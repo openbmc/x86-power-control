@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "09e0c75c_f24a918a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-07-28T16:40:36Z",
+      "side": 1,
+      "message": "snip ...\n\u003e \u003e If that is the case, is there a better way to handle service names when there can be multiple instances like this?  It doesn\u0027t make much sense to me to just update everything looking for \"xyz.openbmc_project.State.Host\" to \"xyz.openbmc_project.State.Host0\".  Shouldn\u0027t it also support Host1, etc.?\n\u003e \n\u003e In general, they shouldn\u0027t...  Unless a service is Foo\u003cN\u003e looking for Bar\u003cN\u003e, there really shouldn\u0027t be direct service\u003c-\u003eservice dependencies like this.  It is almost always going to be wrong for multi-host systems.  Look-ups is what mapper is for.\n\u003e \n\u003e If you have specific examples we can talk about them in more detail about how to resolve the issues.\n\nNo specific examples.  One service that I know is impacted, is dbus-sensors.  So, in that case, we are safe to update to Host0 and the sensor scanning will always start/stop based on the state of Host0 even in multi-host systems?\n\n\u003e \n\u003e ---\n\u003e \n\u003e I would suggest we just eat the cost now and fix them all.  Otherwise I think we\u0027re constantly going to be fighting between single-host and multi-host implementations and trying to identify breakages.\n\nSounds good.  Do we need a mailing list announcement of this change and impact?",
+      "parentUuid": "4ecb7a94_feff0f40",
+      "revId": "40fd21090de38e0b95b3a3bc0b2d185d46afca32",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a224448e_773c01f6",
         "filename": "power-control-x86/service_files/xyz.openbmc_project.Chassis.Control.Power.service",
         "patchSetId": 6
