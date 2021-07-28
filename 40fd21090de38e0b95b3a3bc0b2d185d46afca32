@@ -127,6 +127,24 @@
     },
     {
       "key": {
+        "uuid": "d94124a3_6d4ca4aa",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-07-28T18:48:28Z",
+      "side": 1,
+      "message": "Since the single-host is in use and multi-host is new, it seems better to keep the single-hosts working with either Host or Host0. \n Then multi-host can break on neither of those existing, and we can work through each application to fix it for multi-host.\n\nWill that let us take the time needed to properly work through multi-host issues without impacting the single-host systems?",
+      "parentUuid": "fad280e3_f96ef4f7",
+      "revId": "40fd21090de38e0b95b3a3bc0b2d185d46afca32",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a224448e_773c01f6",
         "filename": "power-control-x86/service_files/xyz.openbmc_project.Chassis.Control.Power.service",
         "patchSetId": 6
