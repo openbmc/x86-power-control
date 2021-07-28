@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "a89e3207_ceb0b9e1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-07-28T16:25:06Z",
+      "side": 1,
+      "message": "It was to maintain backward-compatibility with the existing serivce name, so all the applications that use the CurrentHostState property continue working.\n\nIs it expected for the service name to be appended with a number when multiple instances are started?  If this is normal and expected, then we can absorb the cost and find and update all usages.\n\nIf that is the case, is there a better way to handle service names when there can be multiple instances like this?  It doesn\u0027t make much sense to me to just update everything looking for \"xyz.openbmc_project.State.Host\" to \"xyz.openbmc_project.State.Host0\".  Shouldn\u0027t it also support Host1, etc.?",
+      "parentUuid": "2a5a2092_c90c99c6",
+      "revId": "40fd21090de38e0b95b3a3bc0b2d185d46afca32",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a224448e_773c01f6",
         "filename": "power-control-x86/service_files/xyz.openbmc_project.Chassis.Control.Power.service",
         "patchSetId": 6
