@@ -163,6 +163,24 @@
     },
     {
       "key": {
+        "uuid": "e32cf8ca_fd3330cd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-07-28T23:02:58Z",
+      "side": 1,
+      "message": "I was thinking in that direction only because it sounded like we weren\u0027t sure that broadly changing all \"Host\" accesses to \"Host0\" is the right thing to do.\n\nBasically, all single-host x86 systems are now broken, so I\u0027m looking for the best quick fix.  If we are safe to fix single-host systems by broadly updating all \"Host\" to \"Host0\", then I\u0027m okay to rip off the bandaid with that for single-host, and move forward from there for multi-host as needed.",
+      "parentUuid": "7ee32d35_498220fd",
+      "revId": "40fd21090de38e0b95b3a3bc0b2d185d46afca32",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a224448e_773c01f6",
         "filename": "power-control-x86/service_files/xyz.openbmc_project.Chassis.Control.Power.service",
         "patchSetId": 6
