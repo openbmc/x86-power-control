@@ -109,6 +109,24 @@
     },
     {
       "key": {
+        "uuid": "fad280e3_f96ef4f7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-07-28T17:38:32Z",
+      "side": 1,
+      "message": "\u003e Is there any way to have this be backward and forward compatible so existing applications that use Host will still work, while newly updated applications can use Host0, Host1, etc. as needed?\n\nYou could potentially claim both service names (ex. Host and Host0), but that doesn\u0027t really fix the multi-host systems.  Anytime we have someone depending directly on a \"Host\" service name and not \"Host\u003cN\u003e\" it\u0027s probably doing the wrong thing on multi-host.  I\u0027m not sure which of the Host\u003cN\u003e\u0027s you\u0027d want to have claim the non-numbered entity... maybe none and just use that to find the bugs?",
+      "parentUuid": "ba334754_6df768fd",
+      "revId": "40fd21090de38e0b95b3a3bc0b2d185d46afca32",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a224448e_773c01f6",
         "filename": "power-control-x86/service_files/xyz.openbmc_project.Chassis.Control.Power.service",
         "patchSetId": 6
