@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "d0e0f2d9_7bb11d2c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-07-28T16:48:07Z",
+      "side": 1,
+      "message": "\u003e One service that I know is impacted, is dbus-sensors.  So, in that case, we are safe to update to Host0 and the sensor scanning will always start/stop based on the state of Host0 even in multi-host systems?\n\nThat sounds wrong on the surface?  Multi-host systems purposefully start counting at 1 so that we easily identify these kinds of wrong-depend-on-0.  Do we need a target or a mapper-wait instead?\n\n\u003e Do we need a mailing list announcement of this change and impact?\n\nYeah, we probably should now that we recognize it wasn\u0027t as easy as expected from the previous code changes...  Do you or Naveen want to take ownership of that?",
+      "parentUuid": "09e0c75c_f24a918a",
+      "revId": "40fd21090de38e0b95b3a3bc0b2d185d46afca32",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a224448e_773c01f6",
         "filename": "power-control-x86/service_files/xyz.openbmc_project.Chassis.Control.Power.service",
         "patchSetId": 6
