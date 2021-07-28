@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "4ecb7a94_feff0f40",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-07-28T16:33:06Z",
+      "side": 1,
+      "message": "\u003e ...then we can absorb the cost and find and update all usages.\n\nMy main immediate concern is that others are already starting to try to compensate for what was changed recently.\n\n\u003e Is it expected for the service name to be appended with a number when multiple instances are started?  If this is normal and expected, then we can absorb the cost and find and update all usages.\n\nYes, this is the expected design.  It is documented in a few places where the multi-host design was described.  I know it has been in state manager for years.\n\n\u003e If that is the case, is there a better way to handle service names when there can be multiple instances like this?  It doesn\u0027t make much sense to me to just update everything looking for \"xyz.openbmc_project.State.Host\" to \"xyz.openbmc_project.State.Host0\".  Shouldn\u0027t it also support Host1, etc.?\n\nIn general, they shouldn\u0027t...  Unless a service is Foo\u003cN\u003e looking for Bar\u003cN\u003e, there really shouldn\u0027t be direct service\u003c-\u003eservice dependencies like this.  It is almost always going to be wrong for multi-host systems.  Look-ups is what mapper is for.\n\nIf you have specific examples we can talk about them in more detail about how to resolve the issues.\n\n---\n\nI would suggest we just eat the cost now and fix them all.  Otherwise I think we\u0027re constantly going to be fighting between single-host and multi-host implementations and trying to identify breakages.",
+      "parentUuid": "a89e3207_ceb0b9e1",
+      "revId": "40fd21090de38e0b95b3a3bc0b2d185d46afca32",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a224448e_773c01f6",
         "filename": "power-control-x86/service_files/xyz.openbmc_project.Chassis.Control.Power.service",
         "patchSetId": 6
