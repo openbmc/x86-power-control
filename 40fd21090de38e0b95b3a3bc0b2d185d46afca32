@@ -195,6 +195,29 @@
       "revId": "40fd21090de38e0b95b3a3bc0b2d185d46afca32",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8b2a4439_8d5d47f7",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3117,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-07-29T03:09:54Z",
+      "side": 1,
+      "message": "@Jason,\n\nI looked for all of these strings in the code base and I\u0027m seeing fairly minimal impact of keeping the node appended on here.  I assume we can ignore anything in phosphor-state-manager.\n\n```\n./phosphor-buttons/service_files/phosphor-button-handler.service:Wants\u003dxyz.openbmc_project.Chassis.Buttons.service\n./phosphor-buttons/service_files/phosphor-button-handler.service:After\u003dxyz.openbmc_project.Chassis.Buttons.service\n./phosphor-buttons/service_files/xyz.openbmc_project.Chassis.Buttons.service:BusName\u003dxyz.openbmc_project.Chassis.Buttons\n```\n\nThere are a bunch of examples in the openbmc/openbmc repository though of services and scripts that poke at these services.  Should we just send out the email and let people fix their systems?",
+      "range": {
+        "startLine": 3111,
+        "startChar": 0,
+        "endLine": 3117,
+        "endChar": 67
+      },
+      "revId": "40fd21090de38e0b95b3a3bc0b2d185d46afca32",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
