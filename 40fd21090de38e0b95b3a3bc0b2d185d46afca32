@@ -218,6 +218,30 @@
       "revId": "40fd21090de38e0b95b3a3bc0b2d185d46afca32",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cb2917b4_53299f38",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3117,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-07-29T17:29:35Z",
+      "side": 1,
+      "message": "I hadn\u0027t even thought about this impacting service files 😞.  I don\u0027t think I personally use phosphor-buttons, so that may impact phosphor-state-manager.  That brings up a question of if this will make the services provided by x86-power-control diverge from those provided by phosphor-state-manager as that could impact common code.\n\nI\u0027m okay telling everyone to fix their systems, but do we know what the right fix is, yet?\n\n1. All calls to any of these services need to be updated with node 0 as a starting point?\n2. All services that depend on these services need to be updated with the new service name?\n\nIs there more?\n\n@Naveen, can we start the email thread on this to discuss the changes and impact with the community?\n\nShould we consider reverting all these changes until we can get a better idea of the overall architecture and changes needed across all applications?",
+      "parentUuid": "8b2a4439_8d5d47f7",
+      "range": {
+        "startLine": 3111,
+        "startChar": 0,
+        "endLine": 3117,
+        "endChar": 67
+      },
+      "revId": "40fd21090de38e0b95b3a3bc0b2d185d46afca32",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
