@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8255a583_86d1d96b",
+        "filename": "power-control-x86/CMakeLists.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-08-02T20:11:01Z",
+      "side": 1,
+      "message": "Seems like you could revert this change. 😉",
+      "revId": "6f7fc295c3228d3e1ec0694087c5c22a7cde60b6",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
