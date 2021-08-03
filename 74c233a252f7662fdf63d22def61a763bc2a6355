@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "236bd04c_126dc0b0",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1716,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-08-03T21:37:58Z",
+      "side": 1,
+      "message": "There is no handler for Event::sioPowerGoodAssert in the \"On\" state, so the event you trigger below would just hit the default case and take no action.",
+      "revId": "74c233a252f7662fdf63d22def61a763bc2a6355",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "49e7ff72_3bec35cb",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 3359,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-08-03T21:37:58Z",
+      "side": 1,
+      "message": "Power state should be set to \u0027on\u0027 here if psPowerOk is asserted.",
+      "revId": "74c233a252f7662fdf63d22def61a763bc2a6355",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
