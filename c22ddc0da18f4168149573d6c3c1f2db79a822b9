@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3928d08e_50e44ba8",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 3111,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-08-04T19:15:28Z",
+      "side": 1,
+      "message": "typo: without",
+      "range": {
+        "startLine": 3111,
+        "startChar": 52,
+        "endLine": 3111,
+        "endChar": 59
+      },
+      "revId": "c22ddc0da18f4168149573d6c3c1f2db79a822b9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
