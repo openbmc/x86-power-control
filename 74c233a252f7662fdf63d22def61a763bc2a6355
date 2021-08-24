@@ -33,6 +33,23 @@
       "revId": "74c233a252f7662fdf63d22def61a763bc2a6355",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1937cceb_4b57564f",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 3360,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-08-24T18:38:35Z",
+      "side": 1,
+      "message": "Could the check for SIO power good be added here?\nif (sioEnabled \u003d\u003d true)\n    {\n        if (sioPowerGoodLine.get_value() \u003e 1)\n        {\n            powerState \u003d PowerState::on;\n        }\n    }\n\nThen if either signal is asserted during init, the powerState will be initialized to on.",
+      "revId": "74c233a252f7662fdf63d22def61a763bc2a6355",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
