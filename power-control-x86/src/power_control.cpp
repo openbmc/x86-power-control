@@ -65,6 +65,7 @@ struct ConfigData
     std::string dbusName;
     std::string path;
     std::string interface;
+    bool polarity;
     ConfigType type;
 };
 
@@ -1174,27 +1175,37 @@ static int setMaskedGPIOOutputForMs(gpiod::line& maskedGPIOLine,
     return 0;
 }
 
-static int setGPIOOutputForMs(const std::string& name, const int value,
+static int setGPIOOutputForMs(const ConfigData& config, const int value,
                               const int durationMs)
 {
-    // If the requested GPIO is masked, use the mask line to set the output
-    if (powerButtonMask && name == powerOutConfig.lineName)
+    int polarizedvalue;
+    if (!config.polarity)
     {
-        return setMaskedGPIOOutputForMs(powerButtonMask, name, value,
-                                        durationMs);
+        polarizedvalue = value;
     }
-    if (resetButtonMask && name == resetOutConfig.lineName)
+    else
     {
-        return setMaskedGPIOOutputForMs(resetButtonMask, name, value,
-                                        durationMs);
+        polarizedvalue = !value;
+    }
+    // If the requested GPIO is masked, use the mask line to set the output
+    if (powerButtonMask && config.lineName == powerOutConfig.lineName)
+    {
+        return setMaskedGPIOOutputForMs(powerButtonMask, config.lineName,
+                                        polarizedvalue, durationMs);
+    }
+    if (resetButtonMask && config.lineName == resetOutConfig.lineName)
+    {
+        return setMaskedGPIOOutputForMs(resetButtonMask, config.lineName,
+                                        polarizedvalue, durationMs);
     }
 
     // No mask set, so request and set the GPIO normally
     gpiod::line gpioLine;
-    if (!setGPIOOutput(name, value, gpioLine))
+    if (!setGPIOOutput(config.lineName, polarizedvalue, gpioLine))
     {
         return -1;
     }
+    const std::string name = config.lineName;
     gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
     gpioAssertTimer.async_wait([gpioLine, value,
                                 name](const boost::system::error_code ec) {
@@ -1220,8 +1231,7 @@ static int setGPIOOutputForMs(const std::string& name, const int value,
 
 static void powerOn()
 {
-    setGPIOOutputForMs(powerOutConfig.lineName, 0,
-                       TimerMap["powerPulseTimeMs"]);
+    setGPIOOutputForMs(powerOutConfig, 0, TimerMap["powerPulseTimeMs"]);
 }
 #ifdef CHASSIS_SYSTEM_RESET
 static int slotPowerOn()
@@ -1307,14 +1317,13 @@ static void slotPowerCycle()
 #endif
 static void gracefulPowerOff()
 {
-    setGPIOOutputForMs(powerOutConfig.lineName, 0,
-                       TimerMap["powerPulseTimeMs"]);
+    setGPIOOutputForMs(powerOutConfig, 0, TimerMap["powerPulseTimeMs"]);
 }
 
 static void forcePowerOff()
 {
-    if (setGPIOOutputForMs(powerOutConfig.lineName, 0,
-                           TimerMap["forceOffPulseTimeMs"]) < 0)
+    if (setGPIOOutputForMs(powerOutConfig, 0, TimerMap["forceOffPulseTimeMs"]) <
+        0)
     {
         return;
     }
@@ -1355,8 +1364,7 @@ static void forcePowerOff()
 
 static void reset()
 {
-    setGPIOOutputForMs(resetOutConfig.lineName, 0,
-                       TimerMap["resetPulseTimeMs"]);
+    setGPIOOutputForMs(resetOutConfig, 0, TimerMap["resetPulseTimeMs"]);
 }
 
 static void gracefulPowerOffTimerStart()
@@ -2533,6 +2541,36 @@ static int loadConfigValues()
                     "configuration");
                 return -1;
             }
+            if (gpioConfig.contains("Polarity"))
+            {
+                std::string polarity = gpioConfig["Polarity"];
+                if (polarity == "ActiveLow")
+                {
+                    tempGpioData->polarity = false;
+                }
+                else if (polarity == "ActiveHigh")
+                {
+                    tempGpioData->polarity = true;
+                }
+                else
+                {
+                    std::string errMsg =
+                        "Polarity defined but not properly setup. Please "
+                        "only ActiveHigh or ActiveLow. Currently set to " +
+                        polarity;
+                    phosphor::logging::log<phosphor::logging::level::ERR>(
+                        errMsg.c_str());
+                    return -1;
+                }
+            }
+            else
+            {
+                std::string errMsg =
+                    "Polarity field not found for " + tempGpioData->lineName;
+                phosphor::logging::log<phosphor::logging::level::ERR>(
+                    errMsg.c_str());
+                return -1;
+            }
         }
         else
         {
@@ -3336,7 +3374,8 @@ int main(int argc, char* argv[])
     gpiod::line line;
     if (!powerOutConfig.lineName.empty())
     {
-        if (!setGPIOOutput(powerOutConfig.lineName, 1, line))
+        if (!setGPIOOutput(powerOutConfig.lineName, !powerOutConfig.polarity,
+                           line))
         {
             return -1;
         }
@@ -3350,7 +3389,8 @@ int main(int argc, char* argv[])
 
     if (!resetOutConfig.lineName.empty())
     {
-        if (!setGPIOOutput(resetOutConfig.lineName, 1, line))
+        if (!setGPIOOutput(resetOutConfig.lineName, !resetOutConfig.polarity,
+                           line))
         {
             return -1;
         }
