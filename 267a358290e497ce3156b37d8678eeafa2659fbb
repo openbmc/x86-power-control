@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0e5c428e_77f44e80",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-08-31T19:30:07Z",
+      "side": 1,
+      "message": "Looks like your vim swap file got \u0027git add\u0027ed somehow.",
+      "revId": "267a358290e497ce3156b37d8678eeafa2659fbb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0daeddde_9df9b3e9",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-08-31T19:30:07Z",
+      "side": 1,
+      "message": "Can this just be a boolean?  Or are you really trying to tri-state this?  If you want a tri-state, please define an enumeration.",
+      "revId": "267a358290e497ce3156b37d8678eeafa2659fbb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bba4a055_aa730b95",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2577,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-08-31T19:30:07Z",
+      "side": 1,
+      "message": "I don\u0027t think a multi-line string is really what you intended.",
+      "range": {
+        "startLine": 2577,
+        "startChar": 65,
+        "endLine": 2577,
+        "endChar": 67
+      },
+      "revId": "267a358290e497ce3156b37d8678eeafa2659fbb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "18e510a7_59b780c7",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2578,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-08-31T19:30:07Z",
+      "side": 1,
+      "message": "Tabs left in here somehow.",
+      "range": {
+        "startLine": 2578,
+        "startChar": 0,
+        "endLine": 2578,
+        "endChar": 6
+      },
+      "revId": "267a358290e497ce3156b37d8678eeafa2659fbb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
