@@ -3,62 +3,74 @@
     {
         "Name" : "IdButton",
         "LineName" : "ID_BUTTON",
-        "Type" : "GPIO"
+        "Type" : "GPIO",
+        "Polarity" : "ActiveHigh"
     },
     {
         "Name" : "NMIButton",
         "LineName" : "NMI_BUTTON",
-        "Type" : "GPIO"
+        "Type" : "GPIO",
+        "Polarity" : "ActiveHigh"
     },
     {
         "Name" : "NMIOut",
         "LineName" : "NMI_OUT",
-        "Type" : "GPIO"
+        "Type" : "GPIO",
+        "Polarity" : "ActiveHigh"
     },
     {
         "Name" : "PostComplete",
         "LineName" : "POST_COMPLETE",
-        "Type" : "GPIO"
+        "Type" : "GPIO",
+        "Polarity" : "ActiveLow"
     },
     {
         "Name" : "PowerButton",
         "LineName" : "POWER_BUTTON",
-        "Type" : "GPIO"
+        "Type" : "GPIO",
+        "Polarity" : "ActiveLow"
     },
     {
         "Name" : "PowerOk",
         "LineName" : "PS_PWROK",
-        "Type" : "GPIO"
+        "Type" : "GPIO",
+        "Polarity" : "ActiveHigh"
     },
     {
         "Name" : "PowerOut",
         "LineName" : "POWER_OUT",
-        "Type" : "GPIO"
+        "Type" : "GPIO",
+        "Polarity" : "ActiveLow"
     },
     {
         "Name" : "ResetButton",
         "LineName" : "RESET_BUTTON",
-        "Type" : "GPIO"
+        "Type" : "GPIO",
+        "Polarity" : "ActiveLow"
     },
     {
         "Name" : "ResetOut",
         "LineName" : "RESET_OUT",
-        "Type" : "GPIO"
+        "Type" : "GPIO",
+        "Polarity" : "ActiveLow"
     },
     {
         "Name" : "SioOnControl",
         "LineName" : "SIO_ONCONTROL",
-        "Type" : "GPIO"
+        "Type" : "GPIO",
+        "Polarity" : "ActiveLow"
     },
     {
         "Name" : "SioPowerGood",
         "LineName" : "SIO_POWER_GOOD",
-        "Type" : "GPIO"
+        "Type" : "GPIO",
+        "Polarity" : "ActiveHigh"
     },
     {
         "Name" : "SIOS5",
         "LineName" : "SIO_S5",
-        "Type" : "GPIO"
+        "Type" : "GPIO",
+        "Polarity" : "ActiveLow"
     }
 ],
   "timing_configs":{
