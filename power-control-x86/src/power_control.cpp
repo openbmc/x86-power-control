@@ -65,6 +65,7 @@ struct ConfigData
     std::string dbusName;
     std::string path;
     std::string interface;
+    int polarity;
     ConfigType type;
 };
 
@@ -1220,8 +1221,14 @@ static int setGPIOOutputForMs(const std::string& name, const int value,
 
 static void powerOn()
 {
+    if ( powerOutConfig.polarity != -1 )
+    {
+	setGPIOOutputForMs(powerOutConfig.lineName, powerOutConfig.polarity,
+			   TimerMap["powerPulseTimeMs"]);
+	return;
+    }
     setGPIOOutputForMs(powerOutConfig.lineName, 0,
-                       TimerMap["powerPulseTimeMs"]);
+                        TimerMap["powerPulseTimeMs"]);
 }
 #ifdef CHASSIS_SYSTEM_RESET
 static int slotPowerOn()
@@ -1307,16 +1314,33 @@ static void slotPowerCycle()
 #endif
 static void gracefulPowerOff()
 {
+    if (powerOutConfig.polarity != -1)
+    {
+	    setGPIOOutputForMs(powerOutConfig.lineName, powerOutConfig.polarity,
+	                       TimerMap["powerPulseTimeMs"]);
+	    return;
+    }
     setGPIOOutputForMs(powerOutConfig.lineName, 0,
                        TimerMap["powerPulseTimeMs"]);
 }
 
 static void forcePowerOff()
 {
-    if (setGPIOOutputForMs(powerOutConfig.lineName, 0,
-                           TimerMap["forceOffPulseTimeMs"]) < 0)
+    if (powerOutConfig.polarity != -1)
     {
-        return;
+    	if (setGPIOOutputForMs(powerOutConfig.lineName, powerOutConfig.polarity,
+	                           TimerMap["forceOffPulseTimeMs"]) < 0)
+    	{
+		return;
+	}
+    }
+    else
+    {
+	if (setGPIOOutputForMs(powerOutConfig.lineName, 0,
+       		                   TimerMap["forceOffPulseTimeMs"]) < 0)
+    	{
+        	return;
+    	}
     }
 
     // If the force off timer expires, then the PCH power-button override
@@ -1355,7 +1379,13 @@ static void forcePowerOff()
 
 static void reset()
 {
-    setGPIOOutputForMs(resetOutConfig.lineName, 0,
+    if (resetOutConfig.polarity != -1)
+    {
+	    setGPIOOutputForMs(resetOutConfig.lineName, resetOutConfig.polarity,
+	                       TimerMap["resetPulseTimeMs"]);
+	    return;
+    }
+    setGPIOOutputForMs(resetOutConfig.lineName, 1,
                        TimerMap["resetPulseTimeMs"]);
 }
 
@@ -2533,6 +2563,28 @@ static int loadConfigValues()
                     "configuration");
                 return -1;
             }
+   	    if (gpioConfig.contains("Polarity"))
+	    {
+		int temp;
+		std::string polarity = gpioConfig["Polarity"];
+		try
+		{
+			temp = stoi(polarity);
+		}
+		catch(std::exception const & e)
+		{
+			std::string errMsg =
+			"Polarity defined but not properly setup. \
+			Please <integer> value only. Currently set to " +
+			polarity;
+			phosphor::logging::log<phosphor::logging::level::ERR>(
+			errMsg.c_str());
+			return -1;
+		}
+		tempGpioData->polarity = temp;
+	   }
+	   else
+		tempGpioData->polarity = -1;
         }
         else
         {
@@ -3336,9 +3388,22 @@ int main(int argc, char* argv[])
     gpiod::line line;
     if (!powerOutConfig.lineName.empty())
     {
-        if (!setGPIOOutput(powerOutConfig.lineName, 1, line))
-        {
-            return -1;
+	int trigger;
+	switch (resetOutConfig.polarity)
+	{
+		case 0:
+			trigger=1;
+			break;
+		case 1:
+			trigger=0;
+			break;
+		default:
+			trigger=1;
+	}
+
+	if (!setGPIOOutput(powerOutConfig.lineName, trigger, line))
+	{
+		return -1;
         }
     }
     else
@@ -3350,10 +3415,22 @@ int main(int argc, char* argv[])
 
     if (!resetOutConfig.lineName.empty())
     {
-        if (!setGPIOOutput(resetOutConfig.lineName, 1, line))
-        {
-            return -1;
-        }
+		int trigger;
+		switch (resetOutConfig.polarity)
+		{
+			case 0:
+				trigger=1;
+				break;
+			case 1:
+				trigger=0;
+				break;
+			default: 
+				trigger=1;
+		}
+	        if (!setGPIOOutput(resetOutConfig.lineName, trigger, line))
+	        {
+	            return -1;
+	        }
     }
     else
     {
