@@ -2611,39 +2611,64 @@ static int loadConfigValues()
 
     return 0;
 }
+
+static bool getDbusMsgGPIOState(sdbusplus::message::message& msg,
+                                const std::string& lineName, bool& value)
+{
+    std::string thresholdInterface;
+    std::string event;
+    boost::container::flat_map<std::string, std::variant<bool>>
+        propertiesChanged;
+    try
+    {
+        msg.read(thresholdInterface, propertiesChanged);
+        if (propertiesChanged.empty())
+        {
+            return false;
+        }
+
+        event = propertiesChanged.begin()->first;
+        if (event.empty() || event != lineName)
+        {
+            return false;
+        }
+
+        value = std::get<bool>(propertiesChanged.begin()->second);
+        return true;
+    }
+    catch (std::exception& e)
+    {
+        std::string logmsg =
+            "exception while reading dbus property: " + lineName;
+        phosphor::logging::log<phosphor::logging::level::ERR>(logmsg.c_str());
+        return false;
+    }
+}
+
+static sdbusplus::bus::match::match
+    dbusGPIOMatcher(const ConfigData& cfg, std::function<void(bool)> onMatch)
+{
+    auto pulseEventMatcherCallback =
+        [&cfg, onMatch](sdbusplus::message::message& msg) {
+            bool value = false;
+            if (!getDbusMsgGPIOState(msg, cfg.lineName, value))
+            {
+                return;
+            }
+            onMatch(value);
+        };
+
+    return sdbusplus::bus::match::match(
+        static_cast<sdbusplus::bus::bus&>(*conn),
+        "type='signal',interface='org.freedesktop.DBus.Properties',member='"
+        "PropertiesChanged',arg0='" +
+            cfg.dbusName + "'",
+        std::move(pulseEventMatcherCallback));
+}
+
 inline static sdbusplus::bus::match::match powerButtonEventMonitor()
 {
-    auto pulseEventMatcherCallback = [](sdbusplus::message::message& msg) {
-        bool value = false;
-        std::string thresholdInterface;
-        std::string event;
-        boost::container::flat_map<std::string, std::variant<bool>>
-            propertiesChanged;
-        try
-        {
-
-            msg.read(thresholdInterface, propertiesChanged);
-
-            if (propertiesChanged.empty())
-            {
-                return;
-            }
-            event = propertiesChanged.begin()->first;
-
-            if (event.empty() || event != powerButtonConfig.lineName)
-            {
-                return;
-            }
-
-            value = std::get<bool>(propertiesChanged.begin()->second);
-        }
-        catch (std::exception& e)
-        {
-            phosphor::logging::log<phosphor::logging::level::ERR>(
-                "exception during reading dbus property : powerButtonConfig");
-            return;
-        }
-
+    auto onMatch = [](bool value) {
         if (value == false)
         {
             powerButtonPressLog();
@@ -2665,48 +2690,12 @@ inline static sdbusplus::bus::match::match powerButtonEventMonitor()
         }
     };
 
-    sdbusplus::bus::match::match pulseEventMatcher(
-        static_cast<sdbusplus::bus::bus&>(*conn),
-        "type='signal',interface='org.freedesktop.DBus.Properties',member='"
-        "PropertiesChanged',arg0='" +
-            powerButtonConfig.dbusName + "'",
-        std::move(pulseEventMatcherCallback));
-
-    return pulseEventMatcher;
+    return dbusGPIOMatcher(powerButtonConfig, std::move(onMatch));
 }
 
 inline static sdbusplus::bus::match::match resetButtonEventMonitor()
 {
-    auto pulseEventMatcherCallback = [](sdbusplus::message::message& msg) {
-        bool value = false;
-        std::string thresholdInterface;
-        std::string event;
-        boost::container::flat_map<std::string, std::variant<bool>>
-            propertiesChanged;
-        try
-        {
-            msg.read(thresholdInterface, propertiesChanged);
-
-            if (propertiesChanged.empty())
-            {
-                return;
-            }
-            event = propertiesChanged.begin()->first;
-
-            if (event.empty() || event != resetButtonConfig.lineName)
-            {
-                return;
-            }
-
-            value = std::get<bool>(propertiesChanged.begin()->second);
-        }
-        catch (std::exception& e)
-        {
-            phosphor::logging::log<phosphor::logging::level::ERR>(
-                "exception during reading dbus property : resetButtonConfig");
-            return;
-        }
-
+    auto onMatch = [](bool value) {
         if (value == false)
         {
             resetButtonPressLog();
@@ -2728,236 +2717,56 @@ inline static sdbusplus::bus::match::match resetButtonEventMonitor()
         }
     };
 
-    sdbusplus::bus::match::match pulseEventMatcher(
-        static_cast<sdbusplus::bus::bus&>(*conn),
-        "type='signal',interface='org.freedesktop.DBus.Properties',member='"
-        "PropertiesChanged',arg0='" +
-            resetButtonConfig.dbusName + "'",
-        std::move(pulseEventMatcherCallback));
-
-    return pulseEventMatcher;
+    return dbusGPIOMatcher(resetButtonConfig, std::move(onMatch));
 }
 
 inline static sdbusplus::bus::match::match powerOkEventMonitor()
 {
-    auto pulseEventMatcherCallback = [](sdbusplus::message::message& msg) {
-        bool value = false;
-        std::string thresholdInterface;
-        std::string event;
-        boost::container::flat_map<std::string, std::variant<bool>>
-            propertiesChanged;
-        try
-        {
-            msg.read(thresholdInterface, propertiesChanged);
-
-            if (propertiesChanged.empty())
-            {
-                return;
-            }
-            event = propertiesChanged.begin()->first;
-
-            if (event.empty() || event != powerOkConfig.lineName)
-            {
-                return;
-            }
-
-            value = std::get<bool>(propertiesChanged.begin()->second);
-        }
-        catch (std::exception& e)
-        {
-            phosphor::logging::log<phosphor::logging::level::ERR>(
-                "exception during reading dbus property : powerOkConfig");
-            return;
-        }
-
+    auto onMatch = [](bool value) {
         Event powerControlEvent =
             value ? Event::psPowerOKAssert : Event::psPowerOKDeAssert;
         sendPowerControlEvent(powerControlEvent);
     };
 
-    sdbusplus::bus::match::match pulseEventMatcher(
-        static_cast<sdbusplus::bus::bus&>(*conn),
-        "type='signal',interface='org.freedesktop.DBus.Properties',member='"
-        "PropertiesChanged',arg0='" +
-            powerOkConfig.dbusName + "'",
-        std::move(pulseEventMatcherCallback));
-
-    return pulseEventMatcher;
+    return dbusGPIOMatcher(powerOkConfig, std::move(onMatch));
 }
 
 inline static sdbusplus::bus::match::match sioPwrGoodEventMonitor()
 {
-    auto pulseEventMatcherCallback = [](sdbusplus::message::message& msg) {
-        bool value = false;
-        std::string thresholdInterface;
-        std::string event;
-        boost::container::flat_map<std::string, std::variant<bool>>
-            propertiesChanged;
-        try
-        {
-            msg.read(thresholdInterface, propertiesChanged);
-
-            if (propertiesChanged.empty())
-            {
-                return;
-            }
-            event = propertiesChanged.begin()->first;
-
-            if (event.empty() || event != sioPwrGoodConfig.lineName)
-            {
-                return;
-            }
-
-            value = std::get<bool>(propertiesChanged.begin()->second);
-        }
-        catch (std::exception& e)
-        {
-            phosphor::logging::log<phosphor::logging::level::ERR>(
-                "exception during reading dbus property : sioPwrGoodConfig");
-            return;
-        }
-
+    auto onMatch = [](bool value) {
         Event powerControlEvent =
             value ? Event::sioPowerGoodAssert : Event::sioPowerGoodDeAssert;
-
         sendPowerControlEvent(powerControlEvent);
     };
 
-    sdbusplus::bus::match::match pulseEventMatcher(
-        static_cast<sdbusplus::bus::bus&>(*conn),
-        "type='signal',interface='org.freedesktop.DBus.Properties',member='"
-        "PropertiesChanged',arg0='" +
-            sioPwrGoodConfig.dbusName + "'",
-        std::move(pulseEventMatcherCallback));
-
-    return pulseEventMatcher;
+    return dbusGPIOMatcher(sioPwrGoodConfig, std::move(onMatch));
 }
 
 inline static sdbusplus::bus::match::match sioOnControlEventMonitor()
 {
-    auto pulseEventMatcherCallback = [](sdbusplus::message::message& msg) {
-        bool value = false;
-        std::string thresholdInterface;
-        std::string event;
-        boost::container::flat_map<std::string, std::variant<bool>>
-            propertiesChanged;
-        try
-        {
-            msg.read(thresholdInterface, propertiesChanged);
-
-            if (propertiesChanged.empty())
-            {
-                return;
-            }
-            event = propertiesChanged.begin()->first;
-
-            if (event.empty() || event != sioOnControlConfig.lineName)
-            {
-                return;
-            }
-
-            value = std::get<bool>(propertiesChanged.begin()->second);
-        }
-        catch (std::exception& e)
-        {
-            phosphor::logging::log<phosphor::logging::level::ERR>(
-                "exception during reading dbus property : sioOnControlConfig");
-            return;
-        }
-
+    auto onMatch = [](bool value) {
         std::string errMsg =
             "SIO_ONCONTROL value changed : " + std::to_string(value);
         phosphor::logging::log<phosphor::logging::level::ERR>(errMsg.c_str());
     };
 
-    sdbusplus::bus::match::match pulseEventMatcher(
-        static_cast<sdbusplus::bus::bus&>(*conn),
-        "type='signal',interface='org.freedesktop.DBus.Properties',member='"
-        "PropertiesChanged',arg0='" +
-            sioOnControlConfig.dbusName + "'",
-        std::move(pulseEventMatcherCallback));
-
-    return pulseEventMatcher;
+    return dbusGPIOMatcher(sioOnControlConfig, std::move(onMatch));
 }
 
 inline static sdbusplus::bus::match::match sioS5EventMonitor()
 {
-    auto pulseEventMatcherCallback = [](sdbusplus::message::message& msg) {
-        bool value = false;
-        std::string thresholdInterface;
-        std::string event;
-        boost::container::flat_map<std::string, std::variant<bool>>
-            propertiesChanged;
-        try
-        {
-            msg.read(thresholdInterface, propertiesChanged);
-
-            if (propertiesChanged.empty())
-            {
-                return;
-            }
-            event = propertiesChanged.begin()->first;
-
-            if (event.empty() || event != sioS5Config.lineName)
-            {
-                return;
-            }
-
-            value = std::get<bool>(propertiesChanged.begin()->second);
-        }
-        catch (std::exception& e)
-        {
-            phosphor::logging::log<phosphor::logging::level::ERR>(
-                "exception during reading dbus property : sioS5Config");
-            return;
-        }
-
+    auto onMatch = [](bool value) {
         Event powerControlEvent =
             value ? Event::sioS5DeAssert : Event::sioS5Assert;
         sendPowerControlEvent(powerControlEvent);
     };
 
-    sdbusplus::bus::match::match pulseEventMatcher(
-        static_cast<sdbusplus::bus::bus&>(*conn),
-        "type='signal',interface='org.freedesktop.DBus.Properties',member='"
-        "PropertiesChanged',arg0='" +
-            sioS5Config.dbusName + "'",
-        std::move(pulseEventMatcherCallback));
-
-    return pulseEventMatcher;
+    return dbusGPIOMatcher(sioS5Config, std::move(onMatch));
 }
 
 inline static sdbusplus::bus::match::match nmiButtonEventMonitor()
 {
-    auto pulseEventMatcherCallback = [](sdbusplus::message::message& msg) {
-        bool value = false;
-        std::string thresholdInterface;
-        std::string event;
-        boost::container::flat_map<std::string, std::variant<bool>>
-            propertiesChanged;
-        try
-        {
-            msg.read(thresholdInterface, propertiesChanged);
-
-            if (propertiesChanged.empty())
-            {
-                return;
-            }
-            event = propertiesChanged.begin()->first;
-            if (event.empty() || event != nmiButtonConfig.lineName)
-            {
-                return;
-            }
-
-            value = std::get<bool>(propertiesChanged.begin()->second);
-        }
-        catch (std::exception& e)
-        {
-            phosphor::logging::log<phosphor::logging::level::ERR>(
-                "exception during reading dbus property : nmiButtonConfig");
-            return;
-        }
-
+    auto onMatch = [](bool value) {
         if (value)
         {
             nmiButtonIface->set_property("ButtonPressed", false);
@@ -2978,50 +2787,12 @@ inline static sdbusplus::bus::match::match nmiButtonEventMonitor()
         }
     };
 
-    sdbusplus::bus::match::match pulseEventMatcher(
-        static_cast<sdbusplus::bus::bus&>(*conn),
-        "type='signal',interface='org.freedesktop.DBus.Properties',member='"
-        "PropertiesChanged',arg0='" +
-            nmiButtonConfig.dbusName + "'",
-        std::move(pulseEventMatcherCallback));
-
-    return pulseEventMatcher;
+    return dbusGPIOMatcher(nmiButtonConfig, std::move(onMatch));
 }
 
 inline static sdbusplus::bus::match::match idButtonEventMonitor()
 {
-    auto pulseEventMatcherCallback = [](sdbusplus::message::message& msg) {
-        bool value = false;
-        std::string thresholdInterface;
-        std::string event;
-        boost::container::flat_map<std::string, std::variant<bool>>
-            propertiesChanged;
-
-        try
-        {
-
-            msg.read(thresholdInterface, propertiesChanged);
-
-            if (propertiesChanged.empty())
-            {
-                return;
-            }
-            event = propertiesChanged.begin()->first;
-
-            if (event.empty() | event != idButtonConfig.lineName)
-            {
-                return;
-            }
-
-            value = std::get<bool>(propertiesChanged.begin()->second);
-        }
-        catch (std::exception& e)
-        {
-            phosphor::logging::log<phosphor::logging::level::ERR>(
-                "exception during reading dbus property : idButtonConfig");
-            return;
-        }
-
+    auto onMatch = [](bool value) {
         if (value)
         {
             idButtonIface->set_property("ButtonPressed", false);
@@ -3032,49 +2803,12 @@ inline static sdbusplus::bus::match::match idButtonEventMonitor()
         }
     };
 
-    sdbusplus::bus::match::match pulseEventMatcher(
-        static_cast<sdbusplus::bus::bus&>(*conn),
-        "type='signal',interface='org.freedesktop.DBus.Properties',member='"
-        "PropertiesChanged',arg0='" +
-            idButtonConfig.dbusName + "'",
-        std::move(pulseEventMatcherCallback));
-
-    return pulseEventMatcher;
+    return dbusGPIOMatcher(idButtonConfig, std::move(onMatch));
 }
 
 inline static sdbusplus::bus::match::match postCompleteEventMonitor()
 {
-    auto pulseEventMatcherCallback = [](sdbusplus::message::message& msg) {
-        bool value = false;
-        std::string thresholdInterface;
-        std::string event;
-        boost::container::flat_map<std::string, std::variant<bool>>
-            propertiesChanged;
-        try
-        {
-
-            msg.read(thresholdInterface, propertiesChanged);
-
-            if (propertiesChanged.empty())
-            {
-                return;
-            }
-            event = propertiesChanged.begin()->first;
-
-            if (event.empty() | event != postCompleteConfig.lineName)
-            {
-                return;
-            }
-
-            value = std::get<bool>(propertiesChanged.begin()->second);
-        }
-        catch (std::exception& e)
-        {
-            phosphor::logging::log<phosphor::logging::level::ERR>(
-                "exception during reading dbus property : postCompleteConfig");
-            return;
-        }
-
+    auto onMatch = [](bool value) {
         if (value)
         {
             sendPowerControlEvent(Event::postCompleteDeAssert);
@@ -3089,15 +2823,7 @@ inline static sdbusplus::bus::match::match postCompleteEventMonitor()
         }
     };
 
-    sdbusplus::bus::match::match pulseEventMatcher(
-        static_cast<sdbusplus::bus::bus&>(*conn),
-        "type='signal',path='" + postCompleteConfig.path +
-            "',interface='org.freedesktop.DBus.Properties',member='"
-            "PropertiesChanged',arg0='" +
-            postCompleteConfig.dbusName + "'",
-        std::move(pulseEventMatcherCallback));
-
-    return pulseEventMatcher;
+    return dbusGPIOMatcher(postCompleteConfig, std::move(onMatch));
 }
 
 int getProperty(ConfigData& configData)
