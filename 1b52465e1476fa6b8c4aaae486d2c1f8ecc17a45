@@ -81,6 +81,24 @@
       "revId": "1b52465e1476fa6b8c4aaae486d2c1f8ecc17a45",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "972c5c63_43856ace",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2587,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-02T20:30:52Z",
+      "side": 1,
+      "message": "We just added some other big changes to the config file, so I don\u0027t think anyone should have issue with additional changes.  As long as we set the config file with the existing polarity defaults, I think we can go with a hard stop to keep the code simpler.",
+      "parentUuid": "8ff9fd17_b356b847",
+      "revId": "1b52465e1476fa6b8c4aaae486d2c1f8ecc17a45",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
