@@ -756,8 +756,8 @@ static int initializePowerStateStorage()
     {
         if (ec.value() != 0)
         {
-            std::string errMsg =
-                "failed to create " + powerControlDir.string() + ec.message();
+            std::string errMsg = "failed to create " +
+                                 powerControlDir.string() + ": " + ec.message();
             phosphor::logging::log<phosphor::logging::level::ERR>(
                 errMsg.c_str());
             return -1;
