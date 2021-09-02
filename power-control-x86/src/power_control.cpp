@@ -3123,12 +3123,12 @@ int main(int argc, char* argv[])
         conn->request_name(rstCauseDbusName.c_str());
     }
 
-    hostDbusName = "xyz.openbmc_project.State.Host" + node;
-    chassisDbusName = "xyz.openbmc_project.State.Chassis" + node;
-    osDbusName = "xyz.openbmc_project.State.OperatingSystem" + node;
-    buttonDbusName = "xyz.openbmc_project.Chassis.Buttons" + node;
-    nmiDbusName = "xyz.openbmc_project.Control.Host.NMI" + node;
-    rstCauseDbusName = "xyz.openbmc_project.Control.Host.RestartCause" + node;
+    hostDbusName += node;
+    chassisDbusName += node;
+    osDbusName += node;
+    buttonDbusName += node;
+    nmiDbusName += node;
+    rstCauseDbusName += node;
 
     // Request all the dbus names
     conn->request_name(hostDbusName.c_str());
