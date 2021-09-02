@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "afa2d089_b9674527",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1388,
+      "author": {
+        "id": 1000854
+      },
+      "writtenOn": "2021-09-02T16:58:38Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ad5487f3_6bcbc4d6",
+      "range": {
+        "startLine": 1388,
+        "startChar": 48,
+        "endLine": 1388,
+        "endChar": 49
+      },
+      "revId": "1b52465e1476fa6b8c4aaae486d2c1f8ecc17a45",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3143adab_5385942f",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 5
@@ -36,6 +60,24 @@
       "writtenOn": "2021-09-01T19:40:14Z",
       "side": 1,
       "message": "Do we need to handle the case where \"Polarity\" doesn\u0027t exist in the config file?  Can we just make it a required parameter and error out if it doesn\u0027t exist?  Then we don\u0027t have to handle the -1 case and can just directly use the polarity setting.",
+      "revId": "1b52465e1476fa6b8c4aaae486d2c1f8ecc17a45",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ff9fd17_b356b847",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2587,
+      "author": {
+        "id": 1000854
+      },
+      "writtenOn": "2021-09-02T16:58:38Z",
+      "side": 1,
+      "message": "We could, but I am always gentle on modifying configuration file. Roughly we can offer either a smooth transition or a hard stop. Up to use to decide. I am more on the smooth transition side, but I am ok, with the hard stop.",
+      "parentUuid": "3143adab_5385942f",
       "revId": "1b52465e1476fa6b8c4aaae486d2c1f8ecc17a45",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
