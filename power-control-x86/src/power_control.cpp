@@ -1981,16 +1981,20 @@ static void powerStateCheckForWarmReset(const Event event)
     }
 }
 
-static void psPowerOKHandler()
+static void psPowerOKHandler(bool state)
+{
+    Event powerControlEvent =
+        state ? Event::psPowerOKAssert : Event::psPowerOKDeAssert;
+    sendPowerControlEvent(powerControlEvent);
+}
+
+static void psPowerOKGPIOHandler()
 {
     gpiod::line_event gpioLineEvent = psPowerOKLine.event_read();
 
-    Event powerControlEvent =
-        gpioLineEvent.event_type == gpiod::line_event::RISING_EDGE
-            ? Event::psPowerOKAssert
-            : Event::psPowerOKDeAssert;
+    psPowerOKHandler(gpioLineEvent.event_type ==
+                     gpiod::line_event::RISING_EDGE);
 
-    sendPowerControlEvent(powerControlEvent);
     psPowerOKEvent.async_wait(
         boost::asio::posix::stream_descriptor::wait_read,
         [](const boost::system::error_code ec) {
@@ -2002,20 +2006,24 @@ static void psPowerOKHandler()
                     errMsg.c_str());
                 return;
             }
-            psPowerOKHandler();
+            psPowerOKGPIOHandler();
         });
 }
 
-static void sioPowerGoodHandler()
+static void sioPowerGoodHandler(bool state)
+{
+    Event powerControlEvent =
+        state ? Event::sioPowerGoodAssert : Event::sioPowerGoodDeAssert;
+    sendPowerControlEvent(powerControlEvent);
+}
+
+static void sioPowerGoodGPIOHandler()
 {
     gpiod::line_event gpioLineEvent = sioPowerGoodLine.event_read();
 
-    Event powerControlEvent =
-        gpioLineEvent.event_type == gpiod::line_event::RISING_EDGE
-            ? Event::sioPowerGoodAssert
-            : Event::sioPowerGoodDeAssert;
+    sioPowerGoodHandler(gpioLineEvent.event_type ==
+                        gpiod::line_event::RISING_EDGE);
 
-    sendPowerControlEvent(powerControlEvent);
     sioPowerGoodEvent.async_wait(
         boost::asio::posix::stream_descriptor::wait_read,
         [](const boost::system::error_code ec) {
@@ -2027,19 +2035,24 @@ static void sioPowerGoodHandler()
                     errMsg.c_str());
                 return;
             }
-            sioPowerGoodHandler();
+            sioPowerGoodGPIOHandler();
         });
 }
 
-static void sioOnControlHandler()
+static void sioOnControlHandler(bool state)
+{
+    std::string logMsg =
+        "SIO_ONCONTROL value changed: " + std::to_string(state);
+    phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
+}
+
+static void sioOnControlGPIOHandler()
 {
     gpiod::line_event gpioLineEvent = sioOnControlLine.event_read();
 
-    bool sioOnControl =
-        gpioLineEvent.event_type == gpiod::line_event::RISING_EDGE;
-    std::string logMsg =
-        "SIO_ONCONTROL value changed: " + std::to_string(sioOnControl);
-    phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
+    sioOnControlHandler(gpioLineEvent.event_type ==
+                        gpiod::line_event::RISING_EDGE);
+
     sioOnControlEvent.async_wait(
         boost::asio::posix::stream_descriptor::wait_read,
         [](const boost::system::error_code ec) {
@@ -2051,20 +2064,22 @@ static void sioOnControlHandler()
                     errMsg.c_str());
                 return;
             }
-            sioOnControlHandler();
+            sioOnControlGPIOHandler();
         });
 }
 
-static void sioS5Handler()
+static void sioS5Handler(bool state)
+{
+    Event powerControlEvent = state ? Event::sioS5DeAssert : Event::sioS5Assert;
+    sendPowerControlEvent(powerControlEvent);
+}
+
+static void sioS5GPIOHandler()
 {
     gpiod::line_event gpioLineEvent = sioS5Line.event_read();
 
-    Event powerControlEvent =
-        gpioLineEvent.event_type == gpiod::line_event::FALLING_EDGE
-            ? Event::sioS5Assert
-            : Event::sioS5DeAssert;
+    sioS5Handler(gpioLineEvent.event_type == gpiod::line_event::RISING_EDGE);
 
-    sendPowerControlEvent(powerControlEvent);
     sioS5Event.async_wait(
         boost::asio::posix::stream_descriptor::wait_read,
         [](const boost::system::error_code ec) {
@@ -2075,18 +2090,16 @@ static void sioS5Handler()
                     errMsg.c_str());
                 return;
             }
-            sioS5Handler();
+            sioS5GPIOHandler();
         });
 }
 
-static void powerButtonHandler()
+static void powerButtonHandler(bool state)
 {
-    gpiod::line_event gpioLineEvent = powerButtonLine.event_read();
-
-    if (gpioLineEvent.event_type == gpiod::line_event::FALLING_EDGE)
+    powerButtonIface->set_property("ButtonPressed", !state);
+    if (!state)
     {
         powerButtonPressLog();
-        powerButtonIface->set_property("ButtonPressed", true);
         if (!powerButtonMask)
         {
             sendPowerControlEvent(Event::powerButtonPressed);
@@ -2098,10 +2111,15 @@ static void powerButtonHandler()
                 "power button press masked");
         }
     }
-    else if (gpioLineEvent.event_type == gpiod::line_event::RISING_EDGE)
-    {
-        powerButtonIface->set_property("ButtonPressed", false);
-    }
+}
+
+static void powerButtonGPIOHandler()
+{
+    gpiod::line_event gpioLineEvent = powerButtonLine.event_read();
+
+    powerButtonHandler(gpioLineEvent.event_type ==
+                       gpiod::line_event::RISING_EDGE);
+
     powerButtonEvent.async_wait(
         boost::asio::posix::stream_descriptor::wait_read,
         [](const boost::system::error_code ec) {
@@ -2113,18 +2131,16 @@ static void powerButtonHandler()
                     errMsg.c_str());
                 return;
             }
-            powerButtonHandler();
+            powerButtonGPIOHandler();
         });
 }
 
-static void resetButtonHandler()
+static void resetButtonHandler(bool state)
 {
-    gpiod::line_event gpioLineEvent = resetButtonLine.event_read();
-
-    if (gpioLineEvent.event_type == gpiod::line_event::FALLING_EDGE)
+    resetButtonIface->set_property("ButtonPressed", !state);
+    if (!state)
     {
         resetButtonPressLog();
-        resetButtonIface->set_property("ButtonPressed", true);
         if (!resetButtonMask)
         {
             sendPowerControlEvent(Event::resetButtonPressed);
@@ -2136,10 +2152,15 @@ static void resetButtonHandler()
                 "reset button press masked");
         }
     }
-    else if (gpioLineEvent.event_type == gpiod::line_event::RISING_EDGE)
-    {
-        resetButtonIface->set_property("ButtonPressed", false);
-    }
+}
+
+static void resetButtonGPIOHandler()
+{
+    gpiod::line_event gpioLineEvent = resetButtonLine.event_read();
+
+    resetButtonHandler(gpioLineEvent.event_type ==
+                       gpiod::line_event::RISING_EDGE);
+
     resetButtonEvent.async_wait(
         boost::asio::posix::stream_descriptor::wait_read,
         [](const boost::system::error_code ec) {
@@ -2151,7 +2172,7 @@ static void resetButtonHandler()
                     errMsg.c_str());
                 return;
             }
-            resetButtonHandler();
+            resetButtonGPIOHandler();
         });
 }
 
@@ -2298,14 +2319,12 @@ static void setNmiSource()
     nmiSetEnableProperty(true);
 }
 
-static void nmiButtonHandler()
+static void nmiButtonHandler(bool state)
 {
-    gpiod::line_event gpioLineEvent = nmiButtonLine.event_read();
-
-    if (gpioLineEvent.event_type == gpiod::line_event::FALLING_EDGE)
+    nmiButtonIface->set_property("ButtonPressed", !state);
+    if (!state)
     {
         nmiButtonPressLog();
-        nmiButtonIface->set_property("ButtonPressed", true);
         if (nmiButtonMasked)
         {
             phosphor::logging::log<phosphor::logging::level::INFO>(
@@ -2316,10 +2335,15 @@ static void nmiButtonHandler()
             setNmiSource();
         }
     }
-    else if (gpioLineEvent.event_type == gpiod::line_event::RISING_EDGE)
-    {
-        nmiButtonIface->set_property("ButtonPressed", false);
-    }
+}
+
+static void nmiButtonGPIOHandler()
+{
+    gpiod::line_event gpioLineEvent = nmiButtonLine.event_read();
+
+    nmiButtonHandler(gpioLineEvent.event_type ==
+                     gpiod::line_event::RISING_EDGE);
+
     nmiButtonEvent.async_wait(
         boost::asio::posix::stream_descriptor::wait_read,
         [](const boost::system::error_code ec) {
@@ -2331,22 +2355,21 @@ static void nmiButtonHandler()
                     errMsg.c_str());
                 return;
             }
-            nmiButtonHandler();
+            nmiButtonGPIOHandler();
         });
 }
 
-static void idButtonHandler()
+static void idButtonHandler(bool state)
+{
+    idButtonIface->set_property("ButtonPressed", !state);
+}
+
+static void idButtonGPIOHandler()
 {
     gpiod::line_event gpioLineEvent = idButtonLine.event_read();
 
-    if (gpioLineEvent.event_type == gpiod::line_event::FALLING_EDGE)
-    {
-        idButtonIface->set_property("ButtonPressed", true);
-    }
-    else if (gpioLineEvent.event_type == gpiod::line_event::RISING_EDGE)
-    {
-        idButtonIface->set_property("ButtonPressed", false);
-    }
+    idButtonHandler(gpioLineEvent.event_type == gpiod::line_event::RISING_EDGE);
+
     idButtonEvent.async_wait(
         boost::asio::posix::stream_descriptor::wait_read,
         [](const boost::system::error_code& ec) {
@@ -2357,7 +2380,7 @@ static void idButtonHandler()
                     errMsg.c_str());
                 return;
             }
-            idButtonHandler();
+            idButtonGPIOHandler();
         });
 }
 
@@ -2413,13 +2436,9 @@ static void hostMiscHandler(sdbusplus::message::message& msg)
     }
 }
 
-static void postCompleteHandler()
+static void postCompleteHandler(bool state)
 {
-    gpiod::line_event gpioLineEvent = postCompleteLine.event_read();
-
-    bool postComplete =
-        gpioLineEvent.event_type == gpiod::line_event::FALLING_EDGE;
-    if (postComplete)
+    if (!state)
     {
         sendPowerControlEvent(Event::postCompleteAssert);
         osIface->set_property("OperatingSystemState", std::string("Standby"));
@@ -2429,6 +2448,15 @@ static void postCompleteHandler()
         sendPowerControlEvent(Event::postCompleteDeAssert);
         osIface->set_property("OperatingSystemState", std::string("Inactive"));
     }
+}
+
+static void postCompleteGPIOHandler()
+{
+    gpiod::line_event gpioLineEvent = postCompleteLine.event_read();
+
+    postCompleteHandler(gpioLineEvent.event_type ==
+                        gpiod::line_event::RISING_EDGE);
+
     postCompleteEvent.async_wait(
         boost::asio::posix::stream_descriptor::wait_read,
         [](const boost::system::error_code ec) {
@@ -2440,7 +2468,7 @@ static void postCompleteHandler()
                     errMsg.c_str());
                 return;
             }
-            postCompleteHandler();
+            postCompleteGPIOHandler();
         });
 }
 
@@ -2625,166 +2653,6 @@ static sdbusplus::bus::match::match
         std::move(pulseEventMatcherCallback));
 }
 
-inline static sdbusplus::bus::match::match powerButtonEventMonitor()
-{
-    auto onMatch = [](bool value) {
-        if (value == false)
-        {
-            powerButtonPressLog();
-            powerButtonIface->set_property("ButtonPressed", true);
-            if (!powerButtonMask)
-            {
-                sendPowerControlEvent(Event::powerButtonPressed);
-                addRestartCause(RestartCause::powerButton);
-            }
-            else
-            {
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    "power button press masked\n");
-            }
-        }
-        else
-        {
-            powerButtonIface->set_property("ButtonPressed", false);
-        }
-    };
-
-    return dbusGPIOMatcher(powerButtonConfig, std::move(onMatch));
-}
-
-inline static sdbusplus::bus::match::match resetButtonEventMonitor()
-{
-    auto onMatch = [](bool value) {
-        if (value == false)
-        {
-            resetButtonPressLog();
-            resetButtonIface->set_property("ButtonPressed", true);
-            if (!resetButtonMask)
-            {
-                sendPowerControlEvent(Event::resetButtonPressed);
-                addRestartCause(RestartCause::resetButton);
-            }
-            else
-            {
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    "reset button press masked");
-            }
-        }
-        else
-        {
-            resetButtonIface->set_property("ButtonPressed", false);
-        }
-    };
-
-    return dbusGPIOMatcher(resetButtonConfig, std::move(onMatch));
-}
-
-inline static sdbusplus::bus::match::match powerOkEventMonitor()
-{
-    auto onMatch = [](bool value) {
-        Event powerControlEvent =
-            value ? Event::psPowerOKAssert : Event::psPowerOKDeAssert;
-        sendPowerControlEvent(powerControlEvent);
-    };
-
-    return dbusGPIOMatcher(powerOkConfig, std::move(onMatch));
-}
-
-inline static sdbusplus::bus::match::match sioPwrGoodEventMonitor()
-{
-    auto onMatch = [](bool value) {
-        Event powerControlEvent =
-            value ? Event::sioPowerGoodAssert : Event::sioPowerGoodDeAssert;
-        sendPowerControlEvent(powerControlEvent);
-    };
-
-    return dbusGPIOMatcher(sioPwrGoodConfig, std::move(onMatch));
-}
-
-inline static sdbusplus::bus::match::match sioOnControlEventMonitor()
-{
-    auto onMatch = [](bool value) {
-        std::string errMsg =
-            "SIO_ONCONTROL value changed : " + std::to_string(value);
-        phosphor::logging::log<phosphor::logging::level::ERR>(errMsg.c_str());
-    };
-
-    return dbusGPIOMatcher(sioOnControlConfig, std::move(onMatch));
-}
-
-inline static sdbusplus::bus::match::match sioS5EventMonitor()
-{
-    auto onMatch = [](bool value) {
-        Event powerControlEvent =
-            value ? Event::sioS5DeAssert : Event::sioS5Assert;
-        sendPowerControlEvent(powerControlEvent);
-    };
-
-    return dbusGPIOMatcher(sioS5Config, std::move(onMatch));
-}
-
-inline static sdbusplus::bus::match::match nmiButtonEventMonitor()
-{
-    auto onMatch = [](bool value) {
-        if (value)
-        {
-            nmiButtonIface->set_property("ButtonPressed", false);
-        }
-        else
-        {
-            nmiButtonPressLog();
-            nmiButtonIface->set_property("ButtonPressed", true);
-            if (nmiButtonMasked)
-            {
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    "NMI button press masked");
-            }
-            else
-            {
-                setNmiSource();
-            }
-        }
-    };
-
-    return dbusGPIOMatcher(nmiButtonConfig, std::move(onMatch));
-}
-
-inline static sdbusplus::bus::match::match idButtonEventMonitor()
-{
-    auto onMatch = [](bool value) {
-        if (value)
-        {
-            idButtonIface->set_property("ButtonPressed", false);
-        }
-        else
-        {
-            idButtonIface->set_property("ButtonPressed", true);
-        }
-    };
-
-    return dbusGPIOMatcher(idButtonConfig, std::move(onMatch));
-}
-
-inline static sdbusplus::bus::match::match postCompleteEventMonitor()
-{
-    auto onMatch = [](bool value) {
-        if (value)
-        {
-            sendPowerControlEvent(Event::postCompleteDeAssert);
-            osIface->set_property("OperatingSystemState",
-                                  std::string("Inactive"));
-        }
-        else
-        {
-            sendPowerControlEvent(Event::postCompleteAssert);
-            osIface->set_property("OperatingSystemState",
-                                  std::string("Standby"));
-        }
-    };
-
-    return dbusGPIOMatcher(postCompleteConfig, std::move(onMatch));
-}
-
 int getProperty(ConfigData& configData)
 {
     auto method = conn->new_method_call(
@@ -2875,7 +2743,7 @@ int main(int argc, char* argv[])
     // Request PS_PWROK GPIO events
     if (powerOkConfig.type == ConfigType::GPIO)
     {
-        if (!requestGPIOEvents(powerOkConfig.lineName, psPowerOKHandler,
+        if (!requestGPIOEvents(powerOkConfig.lineName, psPowerOKGPIOHandler,
                                psPowerOKLine, psPowerOKEvent))
         {
             return -1;
@@ -2885,7 +2753,7 @@ int main(int argc, char* argv[])
     {
 
         static sdbusplus::bus::match::match powerOkEventMonitor =
-            power_control::powerOkEventMonitor();
+            power_control::dbusGPIOMatcher(powerOkConfig, psPowerOKHandler);
     }
     else
     {
@@ -2900,7 +2768,7 @@ int main(int argc, char* argv[])
         if (sioPwrGoodConfig.type == ConfigType::GPIO)
         {
             if (!requestGPIOEvents(sioPwrGoodConfig.lineName,
-                                   sioPowerGoodHandler, sioPowerGoodLine,
+                                   sioPowerGoodGPIOHandler, sioPowerGoodLine,
                                    sioPowerGoodEvent))
             {
                 return -1;
@@ -2909,7 +2777,8 @@ int main(int argc, char* argv[])
         else if (sioPwrGoodConfig.type == ConfigType::DBUS)
         {
             static sdbusplus::bus::match::match sioPwrGoodEventMonitor =
-                power_control::sioPwrGoodEventMonitor();
+                power_control::dbusGPIOMatcher(sioPwrGoodConfig,
+                                               sioPowerGoodHandler);
         }
         else
         {
@@ -2922,7 +2791,7 @@ int main(int argc, char* argv[])
         if (sioOnControlConfig.type == ConfigType::GPIO)
         {
             if (!requestGPIOEvents(sioOnControlConfig.lineName,
-                                   sioOnControlHandler, sioOnControlLine,
+                                   sioOnControlGPIOHandler, sioOnControlLine,
                                    sioOnControlEvent))
             {
                 return -1;
@@ -2931,7 +2800,8 @@ int main(int argc, char* argv[])
         else if (sioOnControlConfig.type == ConfigType::DBUS)
         {
             static sdbusplus::bus::match::match sioOnControlEventMonitor =
-                power_control::sioOnControlEventMonitor();
+                power_control::dbusGPIOMatcher(sioOnControlConfig,
+                                               sioOnControlHandler);
         }
         else
         {
@@ -2944,7 +2814,7 @@ int main(int argc, char* argv[])
         // Request SIO_S5 GPIO events
         if (sioS5Config.type == ConfigType::GPIO)
         {
-            if (!requestGPIOEvents(sioS5Config.lineName, sioS5Handler,
+            if (!requestGPIOEvents(sioS5Config.lineName, sioS5GPIOHandler,
                                    sioS5Line, sioS5Event))
             {
                 return -1;
@@ -2953,7 +2823,7 @@ int main(int argc, char* argv[])
         else if (sioS5Config.type == ConfigType::DBUS)
         {
             static sdbusplus::bus::match::match sioS5EventMonitor =
-                power_control::sioS5EventMonitor();
+                power_control::dbusGPIOMatcher(sioS5Config, sioS5Handler);
         }
         else
         {
@@ -2966,8 +2836,9 @@ int main(int argc, char* argv[])
     // Request POWER_BUTTON GPIO events
     if (powerButtonConfig.type == ConfigType::GPIO)
     {
-        if (!requestGPIOEvents(powerButtonConfig.lineName, powerButtonHandler,
-                               powerButtonLine, powerButtonEvent))
+        if (!requestGPIOEvents(powerButtonConfig.lineName,
+                               powerButtonGPIOHandler, powerButtonLine,
+                               powerButtonEvent))
         {
             return -1;
         }
@@ -2975,14 +2846,16 @@ int main(int argc, char* argv[])
     else if (powerButtonConfig.type == ConfigType::DBUS)
     {
         static sdbusplus::bus::match::match powerButtonEventMonitor =
-            power_control::powerButtonEventMonitor();
+            power_control::dbusGPIOMatcher(powerButtonConfig,
+                                           powerButtonHandler);
     }
 
     // Request RESET_BUTTON GPIO events
     if (resetButtonConfig.type == ConfigType::GPIO)
     {
-        if (!requestGPIOEvents(resetButtonConfig.lineName, resetButtonHandler,
-                               resetButtonLine, resetButtonEvent))
+        if (!requestGPIOEvents(resetButtonConfig.lineName,
+                               resetButtonGPIOHandler, resetButtonLine,
+                               resetButtonEvent))
         {
             return -1;
         }
@@ -2990,7 +2863,8 @@ int main(int argc, char* argv[])
     else if (resetButtonConfig.type == ConfigType::DBUS)
     {
         static sdbusplus::bus::match::match resetButtonEventMonitor =
-            power_control::resetButtonEventMonitor();
+            power_control::dbusGPIOMatcher(resetButtonConfig,
+                                           resetButtonHandler);
     }
 
     // Request NMI_BUTTON GPIO events
@@ -2998,14 +2872,14 @@ int main(int argc, char* argv[])
     {
         if (!nmiButtonConfig.lineName.empty())
         {
-            requestGPIOEvents(nmiButtonConfig.lineName, nmiButtonHandler,
+            requestGPIOEvents(nmiButtonConfig.lineName, nmiButtonGPIOHandler,
                               nmiButtonLine, nmiButtonEvent);
         }
     }
     else if (nmiButtonConfig.type == ConfigType::DBUS)
     {
         static sdbusplus::bus::match::match nmiButtonEventMonitor =
-            power_control::nmiButtonEventMonitor();
+            power_control::dbusGPIOMatcher(nmiButtonConfig, nmiButtonHandler);
     }
 
     // Request ID_BUTTON GPIO events
@@ -3013,14 +2887,14 @@ int main(int argc, char* argv[])
     {
         if (!idButtonConfig.lineName.empty())
         {
-            requestGPIOEvents(idButtonConfig.lineName, idButtonHandler,
+            requestGPIOEvents(idButtonConfig.lineName, idButtonGPIOHandler,
                               idButtonLine, idButtonEvent);
         }
     }
     else if (idButtonConfig.type == ConfigType::DBUS)
     {
         static sdbusplus::bus::match::match idButtonEventMonitor =
-            power_control::idButtonEventMonitor();
+            power_control::dbusGPIOMatcher(idButtonConfig, idButtonHandler);
     }
 
 #ifdef USE_PLT_RST
@@ -3034,8 +2908,9 @@ int main(int argc, char* argv[])
     // Request POST_COMPLETE GPIO events
     if (postCompleteConfig.type == ConfigType::GPIO)
     {
-        if (!requestGPIOEvents(postCompleteConfig.lineName, postCompleteHandler,
-                               postCompleteLine, postCompleteEvent))
+        if (!requestGPIOEvents(postCompleteConfig.lineName,
+                               postCompleteGPIOHandler, postCompleteLine,
+                               postCompleteEvent))
         {
             return -1;
         }
@@ -3043,7 +2918,8 @@ int main(int argc, char* argv[])
     else if (postCompleteConfig.type == ConfigType::DBUS)
     {
         static sdbusplus::bus::match::match postCompleteEventMonitor =
-            power_control::postCompleteEventMonitor();
+            power_control::dbusGPIOMatcher(postCompleteConfig,
+                                           postCompleteHandler);
     }
     else
     {
