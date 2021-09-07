@@ -65,7 +65,7 @@ struct ConfigData
     std::string dbusName;
     std::string path;
     std::string interface;
-    int polarity;
+    bool polarity;
     ConfigType type;
 };
 
@@ -1175,27 +1175,38 @@ static int setMaskedGPIOOutputForMs(gpiod::line& maskedGPIOLine,
     return 0;
 }
 
-static int setGPIOOutputForMs(const std::string& name, const int value,
+static int setGPIOOutputForMs(struct ConfigData config, const int value,
                               const int durationMs)
 {
-    // If the requested GPIO is masked, use the mask line to set the output
-    if (powerButtonMask && name == powerOutConfig.lineName)
+    int polarizedvalue;
+    if (!config.polarity)
     {
-        return setMaskedGPIOOutputForMs(powerButtonMask, name, value,
+        polarizedvalue = value;
+    }
+    else
+    {
+        polarizedvalue = !value;
+    }
+    // If the requested GPIO is masked, use the mask line to set the output
+    if (powerButtonMask && config.lineName == powerOutConfig.lineName)
+    {
+        return setMaskedGPIOOutputForMs(powerButtonMask, config.lineName, polarizedvalue,
                                         durationMs);
     }
-    if (resetButtonMask && name == resetOutConfig.lineName)
+    if (resetButtonMask && config.lineName == resetOutConfig.lineName)
     {
-        return setMaskedGPIOOutputForMs(resetButtonMask, name, value,
+        return setMaskedGPIOOutputForMs(resetButtonMask, config.lineName, polarizedvalue,
                                         durationMs);
     }
 
     // No mask set, so request and set the GPIO normally
     gpiod::line gpioLine;
-    if (!setGPIOOutput(name, value, gpioLine))
+    if (!setGPIOOutput(config.lineName, polarizedvalue, gpioLine))
     {
         return -1;
     }
+    std::string name;
+    name = config.lineName;
     gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
     gpioAssertTimer.async_wait([gpioLine, value,
                                 name](const boost::system::error_code ec) {
@@ -1221,13 +1232,7 @@ static int setGPIOOutputForMs(const std::string& name, const int value,
 
 static void powerOn()
 {
-    if (powerOutConfig.polarity != -1)
-    {
-        setGPIOOutputForMs(powerOutConfig.lineName, powerOutConfig.polarity,
-                           TimerMap["powerPulseTimeMs"]);
-        return;
-    }
-    setGPIOOutputForMs(powerOutConfig.lineName, 0,
+    setGPIOOutputForMs(powerOutConfig, 0,
                        TimerMap["powerPulseTimeMs"]);
 }
 #ifdef CHASSIS_SYSTEM_RESET
@@ -1314,33 +1319,16 @@ static void slotPowerCycle()
 #endif
 static void gracefulPowerOff()
 {
-    if (powerOutConfig.polarity != -1)
-    {
-        setGPIOOutputForMs(powerOutConfig.lineName, powerOutConfig.polarity,
-                           TimerMap["powerPulseTimeMs"]);
-        return;
-    }
-    setGPIOOutputForMs(powerOutConfig.lineName, 0,
+    setGPIOOutputForMs(powerOutConfig, 0,
                        TimerMap["powerPulseTimeMs"]);
 }
 
 static void forcePowerOff()
 {
-    if (powerOutConfig.polarity != -1)
+    if (setGPIOOutputForMs(powerOutConfig, 0,
+                           TimerMap["forceOffPulseTimeMs"]) < 0)
     {
-        if (setGPIOOutputForMs(powerOutConfig.lineName, powerOutConfig.polarity,
-                               TimerMap["forceOffPulseTimeMs"]) < 0)
-        {
-            return;
-        }
-    }
-    else
-    {
-        if (setGPIOOutputForMs(powerOutConfig.lineName, 0,
-                               TimerMap["forceOffPulseTimeMs"]) < 0)
-        {
-            return;
-        }
+        return;
     }
 
     // If the force off timer expires, then the PCH power-button override
@@ -1381,11 +1369,11 @@ static void reset()
 {
     if (resetOutConfig.polarity != -1)
     {
-        setGPIOOutputForMs(resetOutConfig.lineName, resetOutConfig.polarity,
+        setGPIOOutputForMs(resetOutConfig, resetOutConfig.polarity,
                            TimerMap["resetPulseTimeMs"]);
         return;
     }
-    setGPIOOutputForMs(resetOutConfig.lineName, 1,
+    setGPIOOutputForMs(resetOutConfig, 1,
                        TimerMap["resetPulseTimeMs"]);
 }
 
@@ -2581,10 +2569,13 @@ static int loadConfigValues()
                         errMsg.c_str());
                     return -1;
                 }
-                tempGpioData->polarity = temp;
+                if (temp == 1)
+                    tempGpioData->polarity = true;
+                else
+                    tempGpioData->polarity = false;
             }
             else
-                tempGpioData->polarity = -1;
+                tempGpioData->polarity = false;
         }
         else
         {
@@ -3388,21 +3379,19 @@ int main(int argc, char* argv[])
     gpiod::line line;
     if (!powerOutConfig.lineName.empty())
     {
-        int trigger;
-        switch (resetOutConfig.polarity)
+        if (!powerOutConfig.polarity)
         {
-            case 0:
-                trigger = 1;
-                break;
-            case 1:
-                trigger = 0;
-                break;
-            default:
-                trigger = 1;
+            if (!setGPIOOutput(powerOutConfig.lineName, 1, line))
+            {
+                return -1;
+            }
         }
-        if (!setGPIOOutput(powerOutConfig.lineName, trigger, line))
+        else
         {
-            return -1;
+            if (!setGPIOOutput(powerOutConfig.lineName, 0, line))
+            {
+                return -1;
+            }
         }
     }
     else
@@ -3414,21 +3403,19 @@ int main(int argc, char* argv[])
 
     if (!resetOutConfig.lineName.empty())
     {
-        int trigger;
-        switch (resetOutConfig.polarity)
+        if (!resetOutConfig.polarity)
         {
-            case 0:
-                trigger = 1;
-                break;
-            case 1:
-                trigger = 0;
-                break;
-            default:
-                trigger = 1;
+            if (!setGPIOOutput(resetOutConfig.lineName, 1, line))
+            {
+                return -1;
+            }
         }
-        if (!setGPIOOutput(resetOutConfig.lineName, trigger, line))
+        else
         {
-            return -1;
+            if (!setGPIOOutput(resetOutConfig.lineName, 0, line))
+            {
+                return -1;
+            }
         }
     }
     else
