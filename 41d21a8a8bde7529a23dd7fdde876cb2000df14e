@@ -1,0 +1,124 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c39109b6_f698ad98",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1368,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-07T20:30:13Z",
+      "side": 1,
+      "message": "Looks like this function needs to be updated like the powerOut functions above.",
+      "revId": "41d21a8a8bde7529a23dd7fdde876cb2000df14e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31e6d3f7_a04f101e",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 2564,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-07T20:30:13Z",
+      "side": 1,
+      "message": "Can this message be one line to avoid the \u0027\\\u0027 and tabs?",
+      "revId": "41d21a8a8bde7529a23dd7fdde876cb2000df14e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "537cfc9e_d235d876",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 2572,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-07T20:30:13Z",
+      "side": 1,
+      "message": "If \"Polarity\" can still be an int, should this be treated as 0 is false and all other values are true?\n\nSo, would this work\ntempGpioData-\u003epolarity \u003d (temp !\u003d 0)",
+      "range": {
+        "startLine": 2569,
+        "startChar": 0,
+        "endLine": 2572,
+        "endChar": 51
+      },
+      "revId": "41d21a8a8bde7529a23dd7fdde876cb2000df14e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8c273a40_c5411d2f",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 2575,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-07T20:30:13Z",
+      "side": 1,
+      "message": "OpenBMC style is to use curly braces even on single-line if-else statements.",
+      "revId": "41d21a8a8bde7529a23dd7fdde876cb2000df14e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fff93639_d77649e5",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3391,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-07T20:30:13Z",
+      "side": 1,
+      "message": "Can this just be\n            if (!setGPIOOutput(powerOutConfig.lineName, !powerOutConfig.polarity, line))\n            {\n                return -1;\n            }",
+      "range": {
+        "startLine": 3379,
+        "startChar": 0,
+        "endLine": 3391,
+        "endChar": 13
+      },
+      "revId": "41d21a8a8bde7529a23dd7fdde876cb2000df14e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8e6aea3e_5f7a9253",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3415,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-07T20:30:13Z",
+      "side": 1,
+      "message": "Same here?",
+      "range": {
+        "startLine": 3403,
+        "startChar": 0,
+        "endLine": 3415,
+        "endChar": 13
+      },
+      "revId": "41d21a8a8bde7529a23dd7fdde876cb2000df14e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
