@@ -1792,6 +1792,7 @@ static void powerStateOff(const Event event)
         {
             if (sioEnabled == true)
             {
+                sioPowerGoodWatchdogTimerStart();
                 setPowerState(PowerState::waitForSIOPowerGood);
             }
             else
@@ -1883,6 +1884,7 @@ static void powerStateCycleOff(const Event event)
             powerCycleTimer.cancel();
             if (sioEnabled == true)
             {
+                sioPowerGoodWatchdogTimerStart();
                 setPowerState(PowerState::waitForSIOPowerGood);
             }
             else
