@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "34a48e5c_a6f87165",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1189,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-09-08T11:54:58Z",
+      "side": 1,
+      "message": "To be honest, this logic is confusing to me, but if Jason is fine with it so be it.\n\nI would have expected that the presence of ConfigData implied that that ConfigData *had* the polarity, not that the ConfigData ends up inverting the default polarity.  The way this logic is specifying, it means that someone has to know the \"default\" polarity for each pin in order to reverse engineer the desired value for their machine.",
+      "range": {
+        "startLine": 1181,
+        "startChar": 0,
+        "endLine": 1189,
+        "endChar": 5
+      },
+      "revId": "41d21a8a8bde7529a23dd7fdde876cb2000df14e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b2694b3d_234517cf",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1209,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-09-08T11:54:58Z",
+      "side": 1,
+      "message": "`const std::string\u0026 name \u003d config.lineName`?",
+      "range": {
+        "startLine": 1208,
+        "startChar": 0,
+        "endLine": 1209,
+        "endChar": 27
+      },
+      "revId": "41d21a8a8bde7529a23dd7fdde876cb2000df14e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c39109b6_f698ad98",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 6
@@ -30,6 +76,24 @@
       "writtenOn": "2021-09-07T20:30:13Z",
       "side": 1,
       "message": "Can this message be one line to avoid the \u0027\\\u0027 and tabs?",
+      "revId": "41d21a8a8bde7529a23dd7fdde876cb2000df14e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd6383c1_0e85f394",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 2564,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-09-08T11:54:58Z",
+      "side": 1,
+      "message": "There is an update to our global .clang-format which should probably be replicated to this repository.  It adds \"BreakStringLiterals: false\" which allows long strings.",
+      "parentUuid": "31e6d3f7_a04f101e",
       "revId": "41d21a8a8bde7529a23dd7fdde876cb2000df14e",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
@@ -70,6 +134,24 @@
       "writtenOn": "2021-09-07T20:30:13Z",
       "side": 1,
       "message": "OpenBMC style is to use curly braces even on single-line if-else statements.",
+      "revId": "41d21a8a8bde7529a23dd7fdde876cb2000df14e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8d85c50a_b8eb3029",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 2575,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-09-08T11:54:58Z",
+      "side": 1,
+      "message": "I\u0027m surprised the .clang-format doesn\u0027t enforce this.  Maybe only clang-tidy does.",
+      "parentUuid": "8c273a40_c5411d2f",
       "revId": "41d21a8a8bde7529a23dd7fdde876cb2000df14e",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
