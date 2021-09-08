@@ -606,12 +606,10 @@ static std::string getRestartCause(RestartCause cause)
             return "xyz.openbmc_project.State.Host.RestartCause.WatchdogTimer";
             break;
         case RestartCause::powerPolicyOn:
-            return "xyz.openbmc_project.State.Host.RestartCause."
-                   "PowerPolicyAlwaysOn";
+            return "xyz.openbmc_project.State.Host.RestartCause.PowerPolicyAlwaysOn";
             break;
         case RestartCause::powerPolicyRestore:
-            return "xyz.openbmc_project.State.Host.RestartCause."
-                   "PowerPolicyPreviousState";
+            return "xyz.openbmc_project.State.Host.RestartCause.PowerPolicyPreviousState";
             break;
         case RestartCause::softReset:
             return "xyz.openbmc_project.State.Host.RestartCause.SoftReset";
@@ -806,8 +804,8 @@ static void invokePowerRestorePolicy(const std::string& policy)
         sendPowerControlEvent(Event::powerOnRequest);
         setRestartCauseProperty(getRestartCause(RestartCause::powerPolicyOn));
     }
-    else if (policy == "xyz.openbmc_project.Control.Power.RestorePolicy."
-                       "Policy.Restore")
+    else if (policy ==
+             "xyz.openbmc_project.Control.Power.RestorePolicy.Policy.Restore")
     {
         if (wasPowerDropped())
         {
@@ -1365,8 +1363,7 @@ static void forcePowerOff()
         }
 
         phosphor::logging::log<phosphor::logging::level::INFO>(
-            "PCH Power-button override failed. Issuing Unconditional Powerdown "
-            "SMBus command.");
+            "PCH Power-button override failed. Issuing Unconditional Powerdown SMBus command.");
         const static constexpr size_t pchDevBusAddress = 3;
         const static constexpr size_t pchDevSlaveAddress = 0x44;
         const static constexpr size_t pchCmdReg = 0;
@@ -1375,8 +1372,7 @@ static void forcePowerOff()
                    pchPowerDownCmd) < 0)
         {
             phosphor::logging::log<phosphor::logging::level::ERR>(
-                "Unconditional Powerdown command failed! Not sure what to do "
-                "now.");
+                "Unconditional Powerdown command failed! Not sure what to do now.");
         }
     });
 }
@@ -2212,8 +2208,8 @@ static void setNmiSource()
         "/xyz/openbmc_project/Chassis/Control/NMISource",
         "org.freedesktop.DBus.Properties", "Set",
         "xyz.openbmc_project.Chassis.Control.NMISource", "BMCSource",
-        std::variant<std::string>{"xyz.openbmc_project.Chassis.Control."
-                                  "NMISource.BMCSourceSignal.FpBtn"});
+        std::variant<std::string>{
+            "xyz.openbmc_project.Chassis.Control.NMISource.BMCSourceSignal.FpBtn"});
     // set Enable Property
     nmiSetEnableProperty(true);
 }
@@ -2392,8 +2388,7 @@ static int loadConfigValues()
             else
             {
                 phosphor::logging::log<phosphor::logging::level::ERR>(
-                    "The \'LineName\' field must be defined for GPIO "
-                    "configuration");
+                    "The \'LineName\' field must be defined for GPIO configuration");
                 return -1;
             }
             if (gpioConfig.contains("Polarity"))
@@ -2410,8 +2405,7 @@ static int loadConfigValues()
                 else
                 {
                     std::string errMsg =
-                        "Polarity defined but not properly setup. Please "
-                        "only ActiveHigh or ActiveLow. Currently set to " +
+                        "Polarity defined but not properly setup. Please only ActiveHigh or ActiveLow. Currently set to " +
                         polarity;
                     phosphor::logging::log<phosphor::logging::level::ERR>(
                         errMsg.c_str());
@@ -2671,8 +2665,7 @@ int main(int argc, char* argv[])
         else
         {
             phosphor::logging::log<phosphor::logging::level::ERR>(
-                "sioOnControl name should be configured from json"
-                "config file\n");
+                "sioOnControl name should be configured from jsonconfig file\n");
             return -1;
         }
 
@@ -2926,8 +2919,9 @@ int main(int argc, char* argv[])
                     return 0;
                 }
             }
-            else if (requested == "xyz.openbmc_project.State.Host.Transition."
-                                  "GracefulWarmReboot")
+            else if (
+                requested ==
+                "xyz.openbmc_project.State.Host.Transition.GracefulWarmReboot")
             {
                 // if reset button is masked, ignore this
                 if (!resetButtonMask)
@@ -2943,8 +2937,9 @@ int main(int argc, char* argv[])
                     return 0;
                 }
             }
-            else if (requested == "xyz.openbmc_project.State.Host.Transition."
-                                  "ForceWarmReboot")
+            else if (
+                requested ==
+                "xyz.openbmc_project.State.Host.Transition.ForceWarmReboot")
             {
                 // if reset button is masked, ignore this
                 if (!resetButtonMask)
@@ -3121,16 +3116,16 @@ int main(int argc, char* argv[])
                 {
                     slotPowerOff();
                 }
-                else if (requested == "xyz.openbmc_project.State.Chassis."
-                                      "Transition.PowerCycle")
+                else if (
+                    requested ==
+                    "xyz.openbmc_project.State.Chassis.Transition.PowerCycle")
                 {
                     slotPowerCycle();
                 }
                 else
                 {
                     phosphor::logging::log<phosphor::logging::level::ERR>(
-                        "Unrecognized chassis system state transition "
-                        "request.\n");
+                        "Unrecognized chassis system state transition request.\n");
                     throw std::invalid_argument(
                         "Unrecognized Transition Request");
                     return 0;
