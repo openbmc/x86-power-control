@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "521d032e_ec19d081",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1189,
+      "author": {
+        "id": 1000854
+      },
+      "writtenOn": "2021-09-08T17:41:28Z",
+      "side": 1,
+      "message": "The challenge here is that, for each pin we have to define if it is active low or active high. This is what the polarity parameter remember. Then we have transient state which are driven by GPIO value, and drive a flip/flop approach, which explain the logic. I am not a big fan of it, but by pushing it here, it is lowering code modifications.",
+      "parentUuid": "34a48e5c_a6f87165",
+      "range": {
+        "startLine": 1181,
+        "startChar": 0,
+        "endLine": 1189,
+        "endChar": 5
+      },
+      "revId": "41d21a8a8bde7529a23dd7fdde876cb2000df14e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b2694b3d_234517cf",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 6
