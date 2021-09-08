@@ -127,16 +127,16 @@ static bool nmiButtonMasked = false;
 
 // This map contains all timer values that are to be read from json config
 boost::container::flat_map<std::string, int> TimerMap = {
-    {"powerPulseTimeMs", 200},
-    {"forceOffPulseTimeMs", 15000},
-    {"resetPulseTimeMs", 500},
-    {"powerCycleTimeMs", 5000},
-    {"sioPowerGoodWatchdogTimeMs", 1000},
-    {"psPowerOKWatchdogTimeMs", 8000},
-    {"gracefulPowerOffTimeS", (5 * 60)},
-    {"warmResetCheckTimeMs", 500},
-    {"powerOffSaveTimeMs", 7000},
-    {"slotPowerCycleTimeMs", 200}};
+    {"PowerPulseMs", 200},
+    {"ForceOffPulseMs", 15000},
+    {"ResetPulseMs", 500},
+    {"PowerCycleMs", 5000},
+    {"SioPowerGoodWatchdogMs", 1000},
+    {"PsPowerOKWatchdogMs", 8000},
+    {"GracefulPowerOffS", (5 * 60)},
+    {"WarmResetCheckMs", 500},
+    {"PowerOffSaveMs", 7000},
+    {"SlotPowerCycleMs", 200}};
 const static std::filesystem::path powerControlDir = "/var/lib/power-control";
 const static constexpr std::string_view powerStateFile = "power-state";
 
@@ -543,7 +543,7 @@ static void setSlotPowerState(const SlotPowerState state)
 static void savePowerState(const PowerState state)
 {
     powerStateSaveTimer.expires_after(
-        std::chrono::milliseconds(TimerMap["powerOffSaveTimeMs"]));
+        std::chrono::milliseconds(TimerMap["PowerOffSaveMs"]));
     powerStateSaveTimer.async_wait([state](const boost::system::error_code ec) {
         if (ec)
         {
@@ -702,7 +702,7 @@ static void systemPowerGoodFailedLog()
         "MESSAGE=PowerControl: system power good failed to assert (VR failure)",
         "PRIORITY=%i", LOG_INFO, "REDFISH_MESSAGE_ID=%s",
         "OpenBMC.0.1.SystemPowerGoodFailed", "REDFISH_MESSAGE_ARGS=%d",
-        TimerMap["sioPowerGoodWatchdogTimeMs"], NULL);
+        TimerMap["SioPowerGoodWatchdogMs"], NULL);
 }
 
 static void psPowerOKFailedLog()
@@ -711,7 +711,7 @@ static void psPowerOKFailedLog()
         "MESSAGE=PowerControl: power supply power good failed to assert",
         "PRIORITY=%i", LOG_INFO, "REDFISH_MESSAGE_ID=%s",
         "OpenBMC.0.1.PowerSupplyPowerGoodFailed", "REDFISH_MESSAGE_ARGS=%d",
-        TimerMap["psPowerOKWatchdogTimeMs"], NULL);
+        TimerMap["PsPowerOKWatchdogMs"], NULL);
 }
 
 static void powerRestorePolicyLog()
@@ -1231,7 +1231,7 @@ static int setGPIOOutputForMs(const ConfigData& config, const int value,
 
 static void powerOn()
 {
-    setGPIOOutputForMs(powerOutConfig, 0, TimerMap["powerPulseTimeMs"]);
+    setGPIOOutputForMs(powerOutConfig, 0, TimerMap["PowerPulseMs"]);
 }
 #ifdef CHASSIS_SYSTEM_RESET
 static int slotPowerOn()
@@ -1292,7 +1292,7 @@ static void slotPowerCycle()
         "Slot Power Cycle started\n");
     slotPowerOff();
     slotPowerCycleTimer.expires_after(
-        std::chrono::milliseconds(TimerMap["slotPowerCycleTimeMs"]));
+        std::chrono::milliseconds(TimerMap["SlotPowerCycleMs"]));
     slotPowerCycleTimer.async_wait([](const boost::system::error_code ec) {
         if (ec)
         {
@@ -1317,13 +1317,12 @@ static void slotPowerCycle()
 #endif
 static void gracefulPowerOff()
 {
-    setGPIOOutputForMs(powerOutConfig, 0, TimerMap["powerPulseTimeMs"]);
+    setGPIOOutputForMs(powerOutConfig, 0, TimerMap["PowerPulseMs"]);
 }
 
 static void forcePowerOff()
 {
-    if (setGPIOOutputForMs(powerOutConfig, 0, TimerMap["forceOffPulseTimeMs"]) <
-        0)
+    if (setGPIOOutputForMs(powerOutConfig, 0, TimerMap["ForceOffPulseMs"]) < 0)
     {
         return;
     }
@@ -1364,7 +1363,7 @@ static void forcePowerOff()
 
 static void reset()
 {
-    setGPIOOutputForMs(resetOutConfig, 0, TimerMap["resetPulseTimeMs"]);
+    setGPIOOutputForMs(resetOutConfig, 0, TimerMap["ResetPulseMs"]);
 }
 
 static void gracefulPowerOffTimerStart()
@@ -1372,7 +1371,7 @@ static void gracefulPowerOffTimerStart()
     phosphor::logging::log<phosphor::logging::level::INFO>(
         "Graceful power-off timer started");
     gracefulPowerOffTimer.expires_after(
-        std::chrono::seconds(TimerMap["gracefulPowerOffTimeS"]));
+        std::chrono::seconds(TimerMap["GracefulPowerOffS"]));
     gracefulPowerOffTimer.async_wait([](const boost::system::error_code ec) {
         if (ec)
         {
@@ -1412,7 +1411,7 @@ static void powerCycleTimerStart()
     phosphor::logging::log<phosphor::logging::level::INFO>(
         "Power-cycle timer started");
     powerCycleTimer.expires_after(
-        std::chrono::milliseconds(TimerMap["powerCycleTimeMs"]));
+        std::chrono::milliseconds(TimerMap["PowerCycleMs"]));
     powerCycleTimer.async_wait([](const boost::system::error_code ec) {
         if (ec)
         {
@@ -1446,7 +1445,7 @@ static void psPowerOKWatchdogTimerStart()
     phosphor::logging::log<phosphor::logging::level::INFO>(
         "power supply power OK watchdog timer started");
     psPowerOKWatchdogTimer.expires_after(
-        std::chrono::milliseconds(TimerMap["psPowerOKWatchdogTimeMs"]));
+        std::chrono::milliseconds(TimerMap["PsPowerOKWatchdogMs"]));
     psPowerOKWatchdogTimer.async_wait([](const boost::system::error_code ec) {
         if (ec)
         {
@@ -1481,7 +1480,7 @@ static void warmResetCheckTimerStart()
     phosphor::logging::log<phosphor::logging::level::INFO>(
         "Warm reset check timer started");
     warmResetCheckTimer.expires_after(
-        std::chrono::milliseconds(TimerMap["warmResetCheckTimeMs"]));
+        std::chrono::milliseconds(TimerMap["WarmResetCheckMs"]));
     warmResetCheckTimer.async_wait([](const boost::system::error_code ec) {
         if (ec)
         {
@@ -1676,7 +1675,7 @@ static void sioPowerGoodWatchdogTimerStart()
     phosphor::logging::log<phosphor::logging::level::INFO>(
         "SIO power good watchdog timer started");
     sioPowerGoodWatchdogTimer.expires_after(
-        std::chrono::milliseconds(TimerMap["sioPowerGoodWatchdogTimeMs"]));
+        std::chrono::milliseconds(TimerMap["SioPowerGoodWatchdogMs"]));
     sioPowerGoodWatchdogTimer.async_wait(
         [](const boost::system::error_code ec) {
             if (ec)
