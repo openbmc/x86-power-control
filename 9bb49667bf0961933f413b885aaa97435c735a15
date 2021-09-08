@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2c29868d_2c0f1bf2",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2573,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-08T20:54:43Z",
+      "side": 1,
+      "message": "If we are going to use the polarity to drive the GPIO, it may be safer to make it mandatory in the config file like the \"LineName\" above and return an error here instead of defaulting to false.  But I\u0027m okay either way since this maintains the current default setting.",
+      "revId": "9bb49667bf0961933f413b885aaa97435c735a15",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}

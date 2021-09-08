@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "de7e48c1_11762cce",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1189,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-08T20:54:43Z",
+      "side": 1,
+      "message": "Hmm... These are good points.  We only use setGPIOOutputForMs() in a few places and it is always to assert the GPIO.  If it would be cleaner, I\u0027d be okay changing it to something like assertGPIOforMs() and then use the polarity to assert the GPIO instead of taking the value as a parameter.",
+      "parentUuid": "521d032e_ec19d081",
+      "range": {
+        "startLine": 1181,
+        "startChar": 0,
+        "endLine": 1189,
+        "endChar": 5
+      },
+      "revId": "41d21a8a8bde7529a23dd7fdde876cb2000df14e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b2694b3d_234517cf",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 6
