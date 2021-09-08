@@ -2,6 +2,57 @@
   "comments": [
     {
       "key": {
+        "uuid": "fe118375_d4675c62",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1178,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-09-08T23:32:41Z",
+      "side": 1,
+      "message": "Do we really want to pass the `ConfigData` struct by value here?  I\u0027d have expected a const reference or the like.",
+      "revId": "9bb49667bf0961933f413b885aaa97435c735a15",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "495efa0e_a3bcc27b",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1208,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-09-08T23:32:41Z",
+      "side": 1,
+      "message": "I may be mistaken (I\u0027m not a C++ guru), but I think as-is this will lead to undefined behavior by dereferencing a dangling reference, because this function (with a local copy of `config`) returns, leaving the callback function in the `.async_wait()` with a stale `name` reference.  (Changing the `config` parameter to a reference as suggested above should fix it though, I think.)",
+      "revId": "9bb49667bf0961933f413b885aaa97435c735a15",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bbd7c7cb_f079304b",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2550,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-09-08T23:32:41Z",
+      "side": 1,
+      "message": "Perhaps I\u0027m misunderstanding what\u0027s going on here, but does this imply we\u0027re going to have config bits like `\"Polarity\": \"1\"`, with a string value for the key, instead of `\"Polarity\": 1` with a numeric value?  If so, I\u0027m a bit confused as to why...\n\nI\u0027m somewhat tempted to suggest having this config item be a json bool (\"ActiveLow\" or something) so as to avoid the question of what meaning to assign integer values other than zero and one, though I guess that might be a bit more invasive to apply back to all the existing signals...",
+      "revId": "9bb49667bf0961933f413b885aaa97435c735a15",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2c29868d_2c0f1bf2",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 8
