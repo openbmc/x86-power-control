@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "62eb3c35_812e0be7",
+        "filename": "power-control-x86/config/power-config-host0.json",
+        "patchSetId": 12
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-09T19:55:48Z",
+      "side": 1,
+      "message": "ActiveLow?",
+      "revId": "08cfb414b48f2e2cc5b1b7d9a95d8cd783d40a50",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a7e87727_8408aa48",
+        "filename": "power-control-x86/config/power-config-host0.json",
+        "patchSetId": 12
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-09T19:55:48Z",
+      "side": 1,
+      "message": "The current default for NMI_OUT looks like it is ActiveHigh.",
+      "revId": "08cfb414b48f2e2cc5b1b7d9a95d8cd783d40a50",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "463acc17_3cb0ed62",
+        "filename": "power-control-x86/config/power-config-host0.json",
+        "patchSetId": 12
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-09T19:55:48Z",
+      "side": 1,
+      "message": "For these GPIOs from line 21 that are set to ActiveHigh, it looks like the current default is ActiveLow for all of them except PS_PWROK and SIO_POWER_GOOD.",
+      "revId": "08cfb414b48f2e2cc5b1b7d9a95d8cd783d40a50",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}

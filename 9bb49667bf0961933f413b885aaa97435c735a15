@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "e2b3ce1a_c02decf2",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1178,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-09T19:55:48Z",
+      "side": 1,
+      "message": "Did it not work as a reference?\n\nI\u0027d expect it to build with \"const ConfigData\u0026 config\".",
+      "parentUuid": "76b028ff_7df4ea6f",
+      "revId": "9bb49667bf0961933f413b885aaa97435c735a15",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "495efa0e_a3bcc27b",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 8
