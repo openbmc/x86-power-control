@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "76b028ff_7df4ea6f",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1178,
+      "author": {
+        "id": 1000854
+      },
+      "writtenOn": "2021-09-09T00:25:02Z",
+      "side": 1,
+      "message": "I can put a const reference, and will do it tomorrow.",
+      "parentUuid": "fe118375_d4675c62",
+      "revId": "9bb49667bf0961933f413b885aaa97435c735a15",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "495efa0e_a3bcc27b",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 8
@@ -30,6 +48,24 @@
       "writtenOn": "2021-09-08T23:32:41Z",
       "side": 1,
       "message": "I may be mistaken (I\u0027m not a C++ guru), but I think as-is this will lead to undefined behavior by dereferencing a dangling reference, because this function (with a local copy of `config`) returns, leaving the callback function in the `.async_wait()` with a stale `name` reference.  (Changing the `config` parameter to a reference as suggested above should fix it though, I think.)",
+      "revId": "9bb49667bf0961933f413b885aaa97435c735a15",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "72906ec0_4e91906d",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1208,
+      "author": {
+        "id": 1000854
+      },
+      "writtenOn": "2021-09-09T00:25:02Z",
+      "side": 1,
+      "message": "Depending on the compiler the unnamed function definition for the async_wait call will capture the reference and create a copy of the required values as long as they are locally declared. So the name shall be ok, but I might be wrong.",
+      "parentUuid": "495efa0e_a3bcc27b",
       "revId": "9bb49667bf0961933f413b885aaa97435c735a15",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "c52b51d9_9937c7d1",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2550,
+      "author": {
+        "id": 1000854
+      },
+      "writtenOn": "2021-09-09T00:25:02Z",
+      "side": 1,
+      "message": "I try to keep it simple. Everything was declared as string into the json, so I kept a string approach avoiding the frustrating error of the double quote vs none when declaring an integer. I made the conversion into the c++ code as you observed it. I am ok to put a bool value directly into json, but I think only true and false are normalized (not 0 or 1)",
+      "parentUuid": "bbd7c7cb_f079304b",
+      "revId": "9bb49667bf0961933f413b885aaa97435c735a15",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2c29868d_2c0f1bf2",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 8
@@ -64,6 +118,24 @@
       "writtenOn": "2021-09-08T20:54:43Z",
       "side": 1,
       "message": "If we are going to use the polarity to drive the GPIO, it may be safer to make it mandatory in the config file like the \"LineName\" above and return an error here instead of defaulting to false.  But I\u0027m okay either way since this maintains the current default setting.",
+      "revId": "9bb49667bf0961933f413b885aaa97435c735a15",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "88102f66_a9e80359",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2573,
+      "author": {
+        "id": 1000854
+      },
+      "writtenOn": "2021-09-09T00:25:02Z",
+      "side": 1,
+      "message": "Look like everybody wants it. So let\u0027s do it. We could also have done it in a step by step manner.",
+      "parentUuid": "2c29868d_2c0f1bf2",
       "revId": "9bb49667bf0961933f413b885aaa97435c735a15",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
