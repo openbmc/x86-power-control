@@ -34,6 +34,29 @@
       "revId": "4f4b8cd2b7b1697b3be7a49fa14af1264a49e35b",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "db38dcf9_43a00758",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 1189,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-09-13T14:27:06Z",
+      "side": 1,
+      "message": "Was there anything that needed to be adjusted with this logic now that the config is \"ActiveHigh\"/\"ActiveLow\"?  As I remarked in PS6, I still find this logic non-obvious.\n\nMaybe the \u0027obviousness\u0027 solution is to switch \u0027value\u0027 to be a boolean named \"active\"?",
+      "range": {
+        "startLine": 1182,
+        "startChar": 0,
+        "endLine": 1189,
+        "endChar": 5
+      },
+      "revId": "4f4b8cd2b7b1697b3be7a49fa14af1264a49e35b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
