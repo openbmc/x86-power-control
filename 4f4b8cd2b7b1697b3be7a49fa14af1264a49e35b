@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "5b6bfa83_6fe755af",
+        "filename": "power-control-x86/config/power-config-host0.json",
+        "patchSetId": 15
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-13T19:11:28Z",
+      "side": 1,
+      "message": "Yep.  I agree with Patrick.  I have thought about how to make it more flexible and configurable but only at a very high level.  I had some vague thoughts of making each state a separate object that could be optionally included and customized with its response to the various events.  But I didn\u0027t have any good ideas on how to implement that (or even if it\u0027s a good approach).",
+      "parentUuid": "bff1bad0_15129531",
+      "revId": "4f4b8cd2b7b1697b3be7a49fa14af1264a49e35b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "db38dcf9_43a00758",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 15
@@ -48,6 +66,30 @@
       "writtenOn": "2021-09-13T14:27:06Z",
       "side": 1,
       "message": "Was there anything that needed to be adjusted with this logic now that the config is \"ActiveHigh\"/\"ActiveLow\"?  As I remarked in PS6, I still find this logic non-obvious.\n\nMaybe the \u0027obviousness\u0027 solution is to switch \u0027value\u0027 to be a boolean named \"active\"?",
+      "range": {
+        "startLine": 1182,
+        "startChar": 0,
+        "endLine": 1189,
+        "endChar": 5
+      },
+      "revId": "4f4b8cd2b7b1697b3be7a49fa14af1264a49e35b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ea3690b0_1fdb7bcb",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 1189,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-13T19:11:28Z",
+      "side": 1,
+      "message": "Yes, I think this can be clarified a bit.  I had an idea to make an assertGPIOForMs() helper function that would derive the assert value from the polarity.  I can push it as a separate patch.",
+      "parentUuid": "db38dcf9_43a00758",
       "range": {
         "startLine": 1182,
         "startChar": 0,
