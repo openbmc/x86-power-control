@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bb3c1e35_51f72be7",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2574,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-13T19:43:20Z",
+      "side": 1,
+      "message": "nit: Our style-guide prefers for acronyms to keep the same case, so GPIO would be all caps here.",
+      "revId": "f660610262bb4aac9273fdb9b8570547be4574c4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5a5781fb_d6fb076a",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2608,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-13T19:43:20Z",
+      "side": 1,
+      "message": "And all caps GPIO here.",
+      "revId": "f660610262bb4aac9273fdb9b8570547be4574c4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "27e5e9fd_c1e7a749",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2610,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-13T19:43:20Z",
+      "side": 1,
+      "message": "I believe we prefer explicitly capturing variables.  However, I don\u0027t think you need to capture anything here as the \"cfg\" should be static and automatically captured.",
+      "range": {
+        "startLine": 2610,
+        "startChar": 38,
+        "endLine": 2610,
+        "endChar": 39
+      },
+      "revId": "f660610262bb4aac9273fdb9b8570547be4574c4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
