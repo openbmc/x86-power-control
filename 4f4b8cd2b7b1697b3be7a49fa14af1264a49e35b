@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "445c620e_d41004d9",
+        "filename": "power-control-x86/config/power-config-host0.json",
+        "patchSetId": 15
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000299
+      },
+      "writtenOn": "2021-09-13T13:38:56Z",
+      "side": 1,
+      "message": "Thanks. This polarity field helps other x86-platforms to adapt x86-power-control.\nAlso, other x86-platforms does not have all the states that Intel platforms has. Can the state machine be made configurable as well?",
+      "revId": "4f4b8cd2b7b1697b3be7a49fa14af1264a49e35b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
