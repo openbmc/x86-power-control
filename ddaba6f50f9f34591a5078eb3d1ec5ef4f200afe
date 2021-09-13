@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "8962dc50_94034486",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1065,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-13T23:07:39Z",
+      "side": 1,
+      "message": "Would \u0027eventHandler\u0027 be more clear for the name?",
+      "range": {
+        "startLine": 1065,
+        "startChar": 49,
+        "endLine": 1065,
+        "endChar": 61
+      },
+      "revId": "ddaba6f50f9f34591a5078eb3d1ec5ef4f200afe",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b6834e49_9a9cd771",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 3
@@ -13,6 +36,24 @@
       "writtenOn": "2021-09-03T21:57:14Z",
       "side": 1,
       "message": "From what I\u0027ve read I *think* this should be OK, but I\u0027m far from a C++ expert, so if someone with deeper knowledge of the language than I could confirm that this isn\u0027t going to do something silly like leak a closure on every invocation or something, that would be appreciated.",
+      "revId": "ddaba6f50f9f34591a5078eb3d1ec5ef4f200afe",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "43a8d9dd_2446ba9f",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1081,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-09-13T23:07:39Z",
+      "side": 1,
+      "message": "This works on my system, but there is a more common implementation for these kinds of loops that is very close to this.  Basically, just move the async_wait() call into a function and re-call the function from the handler:\n\nstatic void waitForGPIOEvent(const std::string\u0026 name,\n                             const std::function\u003cvoid(bool)\u003e\u0026 innerHandler,\n                             gpiod::line\u0026 line,\n                             boost::asio::posix::stream_descriptor\u0026 event)\n{\n    event.async_wait(\n        boost::asio::posix::stream_descriptor::wait_read,\n        [\u0026name, innerHandler, \u0026line,\n         \u0026event](const boost::system::error_code ec) {\n            if (ec)\n            {\n                std::string errMsg \u003d\n                    name + \" fd handler error: \" + ec.message();\n                phosphor::logging::log\u003cphosphor::logging::level::ERR\u003e(\n                    errMsg.c_str());\n                // TODO: throw here to force power-control to restart?\n                return;\n            }\n            gpiod::line_event line_event \u003d line.event_read();\n            innerHandler(line_event.event_type \u003d\u003d\n                         gpiod::line_event::RISING_EDGE);\n            waitForGPIOEvent(name, innerHandler, line, event);\n        });\n}\n\nI tested with calling waitForGPIOEvent() instead of async_wait() on line 1123 below and it also works on my system.",
+      "parentUuid": "b6834e49_9a9cd771",
       "revId": "ddaba6f50f9f34591a5078eb3d1ec5ef4f200afe",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
