@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "2ad15904_f3f74f90",
+        "filename": "power-control-x86/config/power-config-host0.json",
+        "patchSetId": 15
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000854
+      },
+      "writtenOn": "2021-09-14T13:20:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5b6bfa83_6fe755af",
+      "revId": "4f4b8cd2b7b1697b3be7a49fa14af1264a49e35b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "db38dcf9_43a00758",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 15
@@ -99,6 +117,30 @@
       "revId": "4f4b8cd2b7b1697b3be7a49fa14af1264a49e35b",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "11565d2d_3469c688",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 1189,
+      "author": {
+        "id": 1000854
+      },
+      "writtenOn": "2021-09-14T13:20:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ea3690b0_1fdb7bcb",
+      "range": {
+        "startLine": 1182,
+        "startChar": 0,
+        "endLine": 1189,
+        "endChar": 5
+      },
+      "revId": "4f4b8cd2b7b1697b3be7a49fa14af1264a49e35b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
