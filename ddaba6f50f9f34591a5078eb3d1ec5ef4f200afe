@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "229d3eba_281392e6",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1065,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-09-14T00:07:11Z",
+      "side": 1,
+      "message": "Sure -- especially in the context of the other change eliminating the \"intermediate\" handler.",
+      "parentUuid": "8962dc50_94034486",
+      "range": {
+        "startLine": 1065,
+        "startChar": 49,
+        "endLine": 1065,
+        "endChar": 61
+      },
+      "revId": "ddaba6f50f9f34591a5078eb3d1ec5ef4f200afe",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b6834e49_9a9cd771",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 3
@@ -57,6 +81,24 @@
       "revId": "ddaba6f50f9f34591a5078eb3d1ec5ef4f200afe",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "edfcd4f1_7ca0d2f6",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1081,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-09-14T00:07:11Z",
+      "side": 1,
+      "message": "Ah -- yeah, that does look like a cleaner arrangement, thanks.",
+      "parentUuid": "43a8d9dd_2446ba9f",
+      "revId": "ddaba6f50f9f34591a5078eb3d1ec5ef4f200afe",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
