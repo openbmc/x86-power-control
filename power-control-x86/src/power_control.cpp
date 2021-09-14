@@ -1395,6 +1395,12 @@ static void gracefulPowerOffTimerStart()
     });
 }
 
+static void startGracefulPowerOffWait()
+{
+    setPowerState(PowerState::gracefulTransitionToOff);
+    gracefulPowerOffTimerStart();
+}
+
 static void powerCycleTimerStart()
 {
     phosphor::logging::log<phosphor::logging::level::INFO>(
@@ -1421,6 +1427,12 @@ static void powerCycleTimerStart()
             "Power-cycle timer completed");
         sendPowerControlEvent(Event::powerCycleTimerExpired);
     });
+}
+
+static void startPowerCycleWait()
+{
+    setPowerState(PowerState::cycleOff);
+    powerCycleTimerStart();
 }
 
 static void psPowerOKWatchdogTimerStart()
@@ -1452,6 +1464,12 @@ static void psPowerOKWatchdogTimerStart()
     });
 }
 
+static void startPSPowerOKWatchdogWait()
+{
+    setPowerState(PowerState::waitForPSPowerOK);
+    psPowerOKWatchdogTimerStart();
+}
+
 static void warmResetCheckTimerStart()
 {
     phosphor::logging::log<phosphor::logging::level::INFO>(
@@ -1478,6 +1496,12 @@ static void warmResetCheckTimerStart()
             "Warm reset check timer completed");
         sendPowerControlEvent(Event::warmResetDetected);
     });
+}
+
+static void startWarmResetCheckWait()
+{
+    setPowerState(PowerState::checkForWarmReset);
+    warmResetCheckTimerStart();
 }
 
 static void pohCounterTimerStart()
@@ -1671,6 +1695,12 @@ static void sioPowerGoodWatchdogTimerStart()
         });
 }
 
+static void startSIOPowerGoodWait()
+{
+    sioPowerGoodWatchdogTimerStart();
+    setPowerState(PowerState::waitForSIOPowerGood);
+}
+
 static void powerStateOn(const Event event)
 {
     logEvent(__FUNCTION__, event);
@@ -1690,21 +1720,18 @@ static void powerStateOn(const Event event)
 #else
         case Event::postCompleteDeAssert:
 #endif
-            setPowerState(PowerState::checkForWarmReset);
             addRestartCause(RestartCause::softReset);
-            warmResetCheckTimerStart();
+            startWarmResetCheckWait();
             break;
         case Event::powerButtonPressed:
-            setPowerState(PowerState::gracefulTransitionToOff);
-            gracefulPowerOffTimerStart();
+            startGracefulPowerOffWait();
             break;
         case Event::powerOffRequest:
             setPowerState(PowerState::transitionToOff);
             forcePowerOff();
             break;
         case Event::gracefulPowerOffRequest:
-            setPowerState(PowerState::gracefulTransitionToOff);
-            gracefulPowerOffTimerStart();
+            startGracefulPowerOffWait();
             gracefulPowerOff();
             break;
         case Event::powerCycleRequest:
@@ -1712,8 +1739,7 @@ static void powerStateOn(const Event event)
             forcePowerOff();
             break;
         case Event::gracefulPowerCycleRequest:
-            setPowerState(PowerState::gracefulTransitionToCycleOff);
-            gracefulPowerOffTimerStart();
+            startGracefulPowerOffWait();
             gracefulPowerOff();
             break;
         case Event::resetRequest:
@@ -1738,8 +1764,7 @@ static void powerStateWaitForPSPowerOK(const Event event)
             psPowerOKWatchdogTimer.cancel();
             if (sioEnabled == true)
             {
-                sioPowerGoodWatchdogTimerStart();
-                setPowerState(PowerState::waitForSIOPowerGood);
+                startSIOPowerGoodWait();
             }
             else
             {
@@ -1806,12 +1831,10 @@ static void powerStateOff(const Event event)
             setPowerState(PowerState::on);
             break;
         case Event::powerButtonPressed:
-            psPowerOKWatchdogTimerStart();
-            setPowerState(PowerState::waitForPSPowerOK);
+            startPSPowerOKWatchdogWait();
             break;
         case Event::powerOnRequest:
-            psPowerOKWatchdogTimerStart();
-            setPowerState(PowerState::waitForPSPowerOK);
+            startPSPowerOKWatchdogWait();
             powerOn();
             break;
         default:
@@ -1896,12 +1919,10 @@ static void powerStateCycleOff(const Event event)
             break;
         case Event::powerButtonPressed:
             powerCycleTimer.cancel();
-            psPowerOKWatchdogTimerStart();
-            setPowerState(PowerState::waitForPSPowerOK);
+            startPSPowerOKWatchdogWait();
             break;
         case Event::powerCycleTimerExpired:
-            psPowerOKWatchdogTimerStart();
-            setPowerState(PowerState::waitForPSPowerOK);
+            startPSPowerOKWatchdogWait();
             powerOn();
             break;
         default:
@@ -1919,8 +1940,7 @@ static void powerStateTransitionToCycleOff(const Event event)
         case Event::psPowerOKDeAssert:
             // Cancel any GPIO assertions held during the transition
             gpioAssertTimer.cancel();
-            setPowerState(PowerState::cycleOff);
-            powerCycleTimerStart();
+            startPowerCycleWait();
             break;
         default:
             phosphor::logging::log<phosphor::logging::level::INFO>(
@@ -1936,8 +1956,7 @@ static void powerStateGracefulTransitionToCycleOff(const Event event)
     {
         case Event::psPowerOKDeAssert:
             gracefulPowerOffTimer.cancel();
-            setPowerState(PowerState::cycleOff);
-            powerCycleTimerStart();
+            startPowerCycleWait();
             break;
         case Event::gracefulPowerOffTimerExpired:
             setPowerState(PowerState::on);
