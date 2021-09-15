@@ -2464,7 +2464,7 @@ static int loadConfigValues()
             "loadConfigValues : Cannot open config path");
         return -1;
     }
-    auto jsonData = nlohmann::json::parse(configFile, nullptr);
+    auto jsonData = nlohmann::json::parse(configFile, nullptr, true, true);
 
     if (jsonData.is_discarded())
     {
