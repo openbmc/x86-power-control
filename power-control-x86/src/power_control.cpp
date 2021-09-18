@@ -1206,11 +1206,13 @@ static int setGPIOOutputForMs(const ConfigData& config, const int value,
         return -1;
     }
     const std::string name = config.lineName;
+    const int tmpValue = polarizedvalue;
+
     gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
-    gpioAssertTimer.async_wait([gpioLine, value,
+    gpioAssertTimer.async_wait([gpioLine, tmpValue,
                                 name](const boost::system::error_code ec) {
         // Set the GPIO line back to the opposite value
-        gpioLine.set_value(!value);
+        gpioLine.set_value(!tmpValue);
         std::string logMsg = name + " released";
         phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
         if (ec)
@@ -3161,12 +3163,12 @@ int main(int argc, char* argv[])
         conn->request_name(rstCauseDbusName.c_str());
     }
 
-    hostDbusName += node;
-    chassisDbusName += node;
-    osDbusName += node;
-    buttonDbusName += node;
-    nmiDbusName += node;
-    rstCauseDbusName += node;
+    hostDbusName = "xyz.openbmc_project.State.Host" + node;
+    chassisDbusName = "xyz.openbmc_project.State.Chassis" + node;
+    osDbusName = "xyz.openbmc_project.State.OperatingSystem" + node;
+    buttonDbusName = "xyz.openbmc_project.Chassis.Buttons" + node;
+    nmiDbusName = "xyz.openbmc_project.Control.Host.NMI" + node;
+    rstCauseDbusName = "xyz.openbmc_project.Control.Host.RestartCause" + node;
 
     // Request all the dbus names
     conn->request_name(hostDbusName.c_str());
@@ -3739,7 +3741,8 @@ int main(int argc, char* argv[])
                     {
                         return 1;
                     }
-                    if (!setGPIOOutput(powerOutConfig.lineName, 1,
+                    if (!setGPIOOutput(powerOutConfig.lineName,
+                                       !powerOutConfig.polarity,
                                        powerButtonMask))
                     {
                         throw std::runtime_error("Failed to request GPIO");
@@ -3796,7 +3799,8 @@ int main(int argc, char* argv[])
                     {
                         return 1;
                     }
-                    if (!setGPIOOutput(resetOutConfig.lineName, 1,
+                    if (!setGPIOOutput(resetOutConfig.lineName,
+                                       !resetOutConfig.polarity,
                                        resetButtonMask))
                     {
                         throw std::runtime_error("Failed to request GPIO");
