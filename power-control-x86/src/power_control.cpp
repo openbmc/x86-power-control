@@ -1206,11 +1206,12 @@ static int setGPIOOutputForMs(const ConfigData& config, const int value,
         return -1;
     }
     const std::string name = config.lineName;
+
     gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
-    gpioAssertTimer.async_wait([gpioLine, value,
+    gpioAssertTimer.async_wait([gpioLine, polarizedvalue,
                                 name](const boost::system::error_code ec) {
         // Set the GPIO line back to the opposite value
-        gpioLine.set_value(!value);
+        gpioLine.set_value(!polarizedvalue);
         std::string logMsg = name + " released";
         phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
         if (ec)
@@ -3739,7 +3740,8 @@ int main(int argc, char* argv[])
                     {
                         return 1;
                     }
-                    if (!setGPIOOutput(powerOutConfig.lineName, 1,
+                    if (!setGPIOOutput(powerOutConfig.lineName,
+                                       !powerOutConfig.polarity,
                                        powerButtonMask))
                     {
                         throw std::runtime_error("Failed to request GPIO");
@@ -3796,7 +3798,8 @@ int main(int argc, char* argv[])
                     {
                         return 1;
                     }
-                    if (!setGPIOOutput(resetOutConfig.lineName, 1,
+                    if (!setGPIOOutput(resetOutConfig.lineName,
+                                       !resetOutConfig.polarity,
                                        resetButtonMask))
                     {
                         throw std::runtime_error("Failed to request GPIO");
