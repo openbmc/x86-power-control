@@ -3413,7 +3413,8 @@ int main(int argc, char* argv[])
 
     if (powerOkConfig.type == ConfigType::GPIO)
     {
-        if (psPowerOKLine.get_value() > 0)
+        if (psPowerOKLine.get_value() > 0 ||
+            sioPowerGoodLine.get_value() == sioPwrGoodConfig.polarity)
         {
             powerState = PowerState::on;
         }
