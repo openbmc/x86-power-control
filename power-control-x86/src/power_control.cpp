@@ -1739,8 +1739,15 @@ static void powerStateWaitForPSPowerOK(const Event event)
             psPowerOKWatchdogTimer.cancel();
             if (sioEnabled == true)
             {
-                sioPowerGoodWatchdogTimerStart();
-                setPowerState(PowerState::waitForSIOPowerGood);
+                if (sioPowerGoodLine.get_value() == sioPwrGoodConfig.polarity)
+                {
+                    setPowerState(PowerState::on);
+                }
+                else
+                {
+                    sioPowerGoodWatchdogTimerStart();
+                    setPowerState(PowerState::waitForSIOPowerGood);
+                }
             }
             else
             {
@@ -1792,7 +1799,15 @@ static void powerStateOff(const Event event)
         {
             if (sioEnabled == true)
             {
-                setPowerState(PowerState::waitForSIOPowerGood);
+                if (sioPowerGoodLine.get_value() == sioPwrGoodConfig.polarity)
+                {
+                    setPowerState(PowerState::on);
+                }
+                else
+                {
+                    sioPowerGoodWatchdogTimerStart();
+                    setPowerState(PowerState::waitForSIOPowerGood);
+                }
             }
             else
             {
