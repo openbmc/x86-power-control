@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e9d619e9_db1b8ec9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-09-19T07:09:12Z",
+      "side": 1,
+      "message": "A bit more info on the nature of the bug would be useful here.",
+      "revId": "29ad0b9e873371bd361293c7ad9be8cb7c5c37d7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ae2640ae_83d48ef9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-09-19T07:09:12Z",
+      "side": 1,
+      "message": "Duplicate s-o-b line can be dropped.",
+      "revId": "29ad0b9e873371bd361293c7ad9be8cb7c5c37d7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "981d736e_0e1c3d48",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1209,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-09-19T07:09:12Z",
+      "side": 1,
+      "message": "Is there a particular reason we want to use a separate variable for this instead of just capturing `polarizedValue` in the lambda and using it directly?",
+      "revId": "29ad0b9e873371bd361293c7ad9be8cb7c5c37d7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1091a381_6f936f7c",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3186,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-09-19T07:09:12Z",
+      "side": 1,
+      "message": "I\u0027m guessing this was just an accident while resolving a merge conflict or something, but this looks like a revert of commit c4005bd4414d, which I don\u0027t think we want.",
+      "revId": "29ad0b9e873371bd361293c7ad9be8cb7c5c37d7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
