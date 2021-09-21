@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e29d88fb_cd2f74c6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-09-21T00:10:28Z",
+      "side": 1,
+      "message": "I might again lobby for a bit more info in the commit message, e.g. \"In addition to psPowerOK, also accept an asserted sioPowerGood line as an indicator that the host is initially powered on when the daemon starts up.  This also allows us to properly support HPE ProLiant systems.\"  (or whatever as appropriate.)",
+      "revId": "7ca10a9c745a0f838d50b4fe573c08aef15d0973",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b5907a9f_34407b7c",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3419,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-09-21T00:10:28Z",
+      "side": 1,
+      "message": "Could this just be ORed in with the psPowerOK condition instead?  (Looks like it would be functionally equivalent, and reduce duplication a bit.)",
+      "revId": "7ca10a9c745a0f838d50b4fe573c08aef15d0973",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
