@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "66e8bcc3_2b661fbd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000854
+      },
+      "writtenOn": "2021-09-21T00:14:09Z",
+      "side": 1,
+      "message": "The challenge here is that the commit message is 50 chars max. It is pretty tough to put good explanation into such short messages. I will give it a try.",
+      "parentUuid": "e29d88fb_cd2f74c6",
+      "revId": "7ca10a9c745a0f838d50b4fe573c08aef15d0973",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b5907a9f_34407b7c",
         "filename": "power-control-x86/src/power_control.cpp",
         "patchSetId": 2
@@ -33,6 +51,24 @@
       "revId": "7ca10a9c745a0f838d50b4fe573c08aef15d0973",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9dadf278_a22f2f6e",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3419,
+      "author": {
+        "id": 1000854
+      },
+      "writtenOn": "2021-09-21T00:14:09Z",
+      "side": 1,
+      "message": "Will do it now.",
+      "parentUuid": "b5907a9f_34407b7c",
+      "revId": "7ca10a9c745a0f838d50b4fe573c08aef15d0973",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
