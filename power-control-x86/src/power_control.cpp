@@ -1190,40 +1190,31 @@ static int setMaskedGPIOOutputForMs(gpiod::line& maskedGPIOLine,
 static int setGPIOOutputForMs(const ConfigData& config, const int value,
                               const int durationMs)
 {
-    int polarizedvalue;
-    if (!config.polarity)
-    {
-        polarizedvalue = value;
-    }
-    else
-    {
-        polarizedvalue = !value;
-    }
     // If the requested GPIO is masked, use the mask line to set the output
     if (powerButtonMask && config.lineName == powerOutConfig.lineName)
     {
-        return setMaskedGPIOOutputForMs(powerButtonMask, config.lineName,
-                                        polarizedvalue, durationMs);
+        return setMaskedGPIOOutputForMs(powerButtonMask, config.lineName, value,
+                                        durationMs);
     }
     if (resetButtonMask && config.lineName == resetOutConfig.lineName)
     {
-        return setMaskedGPIOOutputForMs(resetButtonMask, config.lineName,
-                                        polarizedvalue, durationMs);
+        return setMaskedGPIOOutputForMs(resetButtonMask, config.lineName, value,
+                                        durationMs);
     }
 
     // No mask set, so request and set the GPIO normally
     gpiod::line gpioLine;
-    if (!setGPIOOutput(config.lineName, polarizedvalue, gpioLine))
+    if (!setGPIOOutput(config.lineName, value, gpioLine))
     {
         return -1;
     }
     const std::string name = config.lineName;
 
     gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
-    gpioAssertTimer.async_wait([gpioLine, polarizedvalue,
+    gpioAssertTimer.async_wait([gpioLine, value,
                                 name](const boost::system::error_code ec) {
         // Set the GPIO line back to the opposite value
-        gpioLine.set_value(!polarizedvalue);
+        gpioLine.set_value(!value);
         std::string logMsg = name + " released";
         phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
         if (ec)
@@ -1242,9 +1233,14 @@ static int setGPIOOutputForMs(const ConfigData& config, const int value,
     return 0;
 }
 
+static int assertGPIOForMs(const ConfigData& config, const int durationMs)
+{
+    return setGPIOOutputForMs(config, config.polarity, durationMs);
+}
+
 static void powerOn()
 {
-    setGPIOOutputForMs(powerOutConfig, 0, TimerMap["PowerPulseMs"]);
+    assertGPIOForMs(powerOutConfig, TimerMap["PowerPulseMs"]);
 }
 #ifdef CHASSIS_SYSTEM_RESET
 static int slotPowerOn()
@@ -1330,12 +1326,12 @@ static void slotPowerCycle()
 #endif
 static void gracefulPowerOff()
 {
-    setGPIOOutputForMs(powerOutConfig, 0, TimerMap["PowerPulseMs"]);
+    assertGPIOForMs(powerOutConfig, TimerMap["PowerPulseMs"]);
 }
 
 static void forcePowerOff()
 {
-    if (setGPIOOutputForMs(powerOutConfig, 0, TimerMap["ForceOffPulseMs"]) < 0)
+    if (assertGPIOForMs(powerOutConfig, TimerMap["ForceOffPulseMs"]) < 0)
     {
         return;
     }
@@ -1376,7 +1372,7 @@ static void forcePowerOff()
 
 static void reset()
 {
-    setGPIOOutputForMs(resetOutConfig, 0, TimerMap["ResetPulseMs"]);
+    assertGPIOForMs(resetOutConfig, TimerMap["ResetPulseMs"]);
 }
 
 static void gracefulPowerOffTimerStart()
