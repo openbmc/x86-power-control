@@ -1231,6 +1231,16 @@ static int setGPIOOutputForMs(const ConfigData& config, const int value,
     return 0;
 }
 
+static bool assertGPIO(const ConfigData& config, gpiod::line& gpioLine)
+{
+    return setGPIOOutput(config.lineName, config.polarity, gpioLine);
+}
+
+static bool deassertGPIO(const ConfigData& config, gpiod::line& gpioLine)
+{
+    return setGPIOOutput(config.lineName, !config.polarity, gpioLine);
+}
+
 static int assertGPIOForMs(const ConfigData& config, const int durationMs)
 {
     return setGPIOOutputForMs(config, config.polarity, durationMs);
@@ -2775,15 +2785,14 @@ int main(int argc, char* argv[])
     // initialize NMI_OUT GPIO.
     if (!nmiOutConfig.lineName.empty())
     {
-        setGPIOOutput(nmiOutConfig.lineName, 0, nmiOutLine);
+        deassertGPIO(nmiOutConfig, nmiOutLine);
     }
 
     // Initialize POWER_OUT and RESET_OUT GPIO.
     gpiod::line line;
     if (!powerOutConfig.lineName.empty())
     {
-        if (!setGPIOOutput(powerOutConfig.lineName, !powerOutConfig.polarity,
-                           line))
+        if (!deassertGPIO(powerOutConfig, line))
         {
             return -1;
         }
@@ -2797,8 +2806,7 @@ int main(int argc, char* argv[])
 
     if (!resetOutConfig.lineName.empty())
     {
-        if (!setGPIOOutput(resetOutConfig.lineName, !resetOutConfig.polarity,
-                           line))
+        if (!deassertGPIO(resetOutConfig, line))
         {
             return -1;
         }
@@ -3151,9 +3159,7 @@ int main(int argc, char* argv[])
                     {
                         return 1;
                     }
-                    if (!setGPIOOutput(powerOutConfig.lineName,
-                                       !powerOutConfig.polarity,
-                                       powerButtonMask))
+                    if (!deassertGPIO(powerOutConfig, powerButtonMask))
                     {
                         throw std::runtime_error("Failed to request GPIO");
                         return 0;
@@ -3209,9 +3215,7 @@ int main(int argc, char* argv[])
                     {
                         return 1;
                     }
-                    if (!setGPIOOutput(resetOutConfig.lineName,
-                                       !resetOutConfig.polarity,
-                                       resetButtonMask))
+                    if (!deassertGPIO(resetOutConfig, resetButtonMask))
                     {
                         throw std::runtime_error("Failed to request GPIO");
                         return 0;
