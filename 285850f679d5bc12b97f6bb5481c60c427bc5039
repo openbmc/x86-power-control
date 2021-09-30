@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "79617c2c_a9c78f3f",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3096,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-09-30T00:40:39Z",
+      "side": 1,
+      "message": "This call site looks like it didn\u0027t get updated for the configurable polarity changes or something?  In any case, converting this one as well should take care of that too...",
+      "revId": "285850f679d5bc12b97f6bb5481c60c427bc5039",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
