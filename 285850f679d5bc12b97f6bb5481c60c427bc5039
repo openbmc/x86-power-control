@@ -16,6 +16,24 @@
       "revId": "285850f679d5bc12b97f6bb5481c60c427bc5039",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0f11377e_2286fb50",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3096,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-10-01T23:15:48Z",
+      "side": 1,
+      "message": "I had left this one because I don\u0027t have this GPIO in my config file, so I don\u0027t know if it\u0027s AssertHigh or AssertLow to set the right polarity.  If someone can tell the polarity, I will update this call, too.",
+      "parentUuid": "79617c2c_a9c78f3f",
+      "revId": "285850f679d5bc12b97f6bb5481c60c427bc5039",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
