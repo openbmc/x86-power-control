@@ -34,6 +34,24 @@
       "revId": "285850f679d5bc12b97f6bb5481c60c427bc5039",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "57efb886_d81a3b0c",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3096,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-10-04T03:33:40Z",
+      "side": 1,
+      "message": "Ah, true -- Naveen, could you perhaps shed some light there?  (Looks like the default config file in the repo could use a corresponding update to add that entry too.)",
+      "parentUuid": "0f11377e_2286fb50",
+      "revId": "285850f679d5bc12b97f6bb5481c60c427bc5039",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
