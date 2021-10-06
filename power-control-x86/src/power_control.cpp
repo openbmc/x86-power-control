@@ -888,7 +888,7 @@ static void powerRestorePolicyDelay(int delay)
                         policy = std::get<std::string>(
                             propertiesChanged.begin()->second);
                     }
-                    catch (std::exception& e)
+                    catch (const std::exception& e)
                     {
                         phosphor::logging::log<phosphor::logging::level::ERR>(
                             "Unable to read power restore policy value");
@@ -951,7 +951,7 @@ static void powerRestorePolicyStart()
                     delay =
                         std::get<uint16_t>(propertiesChanged.begin()->second);
                 }
-                catch (std::exception& e)
+                catch (const std::exception& e)
                 {
                     phosphor::logging::log<phosphor::logging::level::ERR>(
                         "Unable to read power restore delay value");
@@ -1007,7 +1007,7 @@ static void powerRestorePolicyCheck()
                     acBoot = std::get<std::string>(
                         propertiesChanged.begin()->second);
                 }
-                catch (std::exception& e)
+                catch (const std::exception& e)
                 {
                     phosphor::logging::log<phosphor::logging::level::ERR>(
                         "Unable to read AC Boot status");
@@ -1103,7 +1103,7 @@ static bool requestGPIOEvents(
         gpioLine.request(
             {"power-control", gpiod::line_request::EVENT_BOTH_EDGES});
     }
-    catch (std::exception&)
+    catch (const std::exception&)
     {
         std::string errMsg = "Failed to request events for " + name;
         phosphor::logging::log<phosphor::logging::level::ERR>(errMsg.c_str());
@@ -1142,7 +1142,7 @@ static bool setGPIOOutput(const std::string& name, const int value,
         gpioLine.request({__FUNCTION__, gpiod::line_request::DIRECTION_OUTPUT},
                          value);
     }
-    catch (std::exception&)
+    catch (const std::exception&)
     {
         std::string errMsg = "Failed to request " + name + " output";
         phosphor::logging::log<phosphor::logging::level::ERR>(errMsg.c_str());
@@ -1583,7 +1583,7 @@ static void currentHostStateMonitor()
             {
                 message.read(intfName, properties);
             }
-            catch (std::exception& e)
+            catch (const std::exception& e)
             {
                 phosphor::logging::log<phosphor::logging::level::ERR>(
                     "Unable to read host state");
@@ -2174,7 +2174,7 @@ static void nmiSourcePropertyMonitor(void)
                         }
                     }
                 }
-                catch (std::exception& e)
+                catch (const std::exception& e)
                 {
                     phosphor::logging::log<phosphor::logging::level::ERR>(
                         "Unable to read NMI source");
@@ -2248,7 +2248,7 @@ static void hostMiscHandler(sdbusplus::message::message& msg)
     {
         msg.read(interfaceName, propertiesChanged);
     }
-    catch (std::exception& e)
+    catch (const std::exception& e)
     {
         phosphor::logging::log<phosphor::logging::level::ERR>(
             "Unable to read Host Misc status");
@@ -2471,7 +2471,7 @@ static bool getDbusMsgGPIOState(sdbusplus::message::message& msg,
         value = std::get<bool>(propertiesChanged.begin()->second);
         return true;
     }
-    catch (std::exception& e)
+    catch (const std::exception& e)
     {
         std::string logmsg =
             "exception while reading dbus property: " + lineName;
