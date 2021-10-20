@@ -2416,7 +2416,7 @@ static int loadConfigValues()
             // params corresponding to the gpio config instance
             for (auto& [key, dbusParamName] : dbusParams)
             {
-                if (!gpios.contains(dbusParamName))
+                if (!gpioConfig.contains(dbusParamName))
                 {
                     std::string errMsg =
                         "The " + dbusParamName +
@@ -2426,12 +2426,12 @@ static int loadConfigValues()
                     return -1;
                 }
             }
-            tempGpioData->dbusName = gpios[dbusParams[DbusConfigType::name]];
-            tempGpioData->path = gpios[dbusParams[DbusConfigType::path]];
+            tempGpioData->dbusName = gpioConfig[dbusParams[DbusConfigType::name]];
+            tempGpioData->path = gpioConfig[dbusParams[DbusConfigType::path]];
             tempGpioData->interface =
-                gpios[dbusParams[DbusConfigType::interface]];
+                gpioConfig[dbusParams[DbusConfigType::interface]];
             tempGpioData->lineName =
-                gpios[dbusParams[DbusConfigType::property]];
+                gpioConfig[dbusParams[DbusConfigType::property]];
         }
     }
 
@@ -2497,11 +2497,11 @@ static sdbusplus::bus::match::match
         static_cast<sdbusplus::bus::bus&>(*conn),
         "type='signal',interface='org.freedesktop.DBus.Properties',member='"
         "PropertiesChanged',arg0='" +
-            cfg.dbusName + "'",
+            cfg.interface + "'",
         std::move(pulseEventMatcherCallback));
 }
 
-int getProperty(ConfigData& configData)
+bool getProperty(ConfigData& configData)
 {
     auto method = conn->new_method_call(
         configData.dbusName.c_str(), configData.path.c_str(),
@@ -2515,9 +2515,9 @@ int getProperty(ConfigData& configData)
             "Error reading from Bus");
         return -1;
     }
-    std::variant<int> resp;
+    std::variant<bool> resp;
     reply.read(resp);
-    auto respValue = std::get_if<int>(&resp);
+    auto respValue = std::get_if<bool>(&resp);
     if (!respValue)
     {
         phosphor::logging::log<phosphor::logging::level::ERR>(
