@@ -2416,7 +2416,7 @@ static int loadConfigValues()
             // params corresponding to the gpio config instance
             for (auto& [key, dbusParamName] : dbusParams)
             {
-                if (!gpios.contains(dbusParamName))
+                if (!gpioConfig.contains(dbusParamName))
                 {
                     std::string errMsg =
                         "The " + dbusParamName +
@@ -2426,12 +2426,13 @@ static int loadConfigValues()
                     return -1;
                 }
             }
-            tempGpioData->dbusName = gpios[dbusParams[DbusConfigType::name]];
-            tempGpioData->path = gpios[dbusParams[DbusConfigType::path]];
+            tempGpioData->dbusName =
+                gpioConfig[dbusParams[DbusConfigType::name]];
+            tempGpioData->path = gpioConfig[dbusParams[DbusConfigType::path]];
             tempGpioData->interface =
-                gpios[dbusParams[DbusConfigType::interface]];
+                gpioConfig[dbusParams[DbusConfigType::interface]];
             tempGpioData->lineName =
-                gpios[dbusParams[DbusConfigType::property]];
+                gpioConfig[dbusParams[DbusConfigType::property]];
         }
     }
 
