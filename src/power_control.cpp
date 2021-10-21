@@ -1099,7 +1099,7 @@ static bool requestGPIOEvents(
     try
     {
         gpioLine.request(
-            {"power-control", gpiod::line_request::EVENT_BOTH_EDGES});
+            {"power-control", gpiod::line_request::EVENT_BOTH_EDGES, {}});
     }
     catch (const std::exception&)
     {
@@ -1137,8 +1137,8 @@ static bool setGPIOOutput(const std::string& name, const int value,
     // Request GPIO output to specified value
     try
     {
-        gpioLine.request({__FUNCTION__, gpiod::line_request::DIRECTION_OUTPUT},
-                         value);
+        gpioLine.request(
+            {__FUNCTION__, gpiod::line_request::DIRECTION_OUTPUT, {}}, value);
     }
     catch (const std::exception&)
     {
@@ -2226,12 +2226,11 @@ static void pltRstHandler(bool pltRst)
     }
 }
 
-static void hostMiscHandler(sdbusplus::message::message& msg)
+[[maybe_unused]] static void hostMiscHandler(sdbusplus::message::message& msg)
 {
     std::string interfaceName;
     boost::container::flat_map<std::string, std::variant<bool>>
         propertiesChanged;
-    bool pltRst;
     try
     {
         msg.read(interfaceName, propertiesChanged);
