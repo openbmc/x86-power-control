@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c336a4c4_9b126e15",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-10-21T02:26:06Z",
+      "side": 1,
+      "message": "Given that this patch is for the x86-power-control repo, I\u0027m not sure having the \"x86-power-control:\" prefix tag on the subject is adding much.",
+      "revId": "20ecdb1f0a9c592533a2d793c9ca6aea75beb40c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "006cef32_d93db3a9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-10-21T02:26:06Z",
+      "side": 1,
+      "message": "Wrapping the commit message body at 72 chars (per https://github.com/openbmc/docs/blob/master/CONTRIBUTING.md#formatting-commit-messages) would be good.",
+      "revId": "20ecdb1f0a9c592533a2d793c9ca6aea75beb40c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "376f6664_443dc280",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-10-21T02:26:06Z",
+      "side": 1,
+      "message": "This is fairly vague; what was changed about the parsing logic and why?",
+      "revId": "20ecdb1f0a9c592533a2d793c9ca6aea75beb40c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
