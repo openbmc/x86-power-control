@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
-#include "i2c.hpp"
-
 #include <sys/sysinfo.h>
 #include <systemd/sd-journal.h>
 
@@ -1352,17 +1350,7 @@ static void forcePowerOff()
         }
 
         phosphor::logging::log<phosphor::logging::level::INFO>(
-            "PCH Power-button override failed. Issuing Unconditional Powerdown SMBus command.");
-        const static constexpr size_t pchDevBusAddress = 3;
-        const static constexpr size_t pchDevSlaveAddress = 0x44;
-        const static constexpr size_t pchCmdReg = 0;
-        const static constexpr size_t pchPowerDownCmd = 0x02;
-        if (i2cSet(pchDevBusAddress, pchDevSlaveAddress, pchCmdReg,
-                   pchPowerDownCmd) < 0)
-        {
-            phosphor::logging::log<phosphor::logging::level::ERR>(
-                "Unconditional Powerdown command failed! Not sure what to do now.");
-        }
+            "PCH Power-button override failed. Not sure what to do now.");
     });
 }
 
