@@ -133,7 +133,7 @@ boost::container::flat_map<std::string, int> TimerMap = {
     {"PowerCycleMs", 5000},
     {"SioPowerGoodWatchdogMs", 1000},
     {"PsPowerOKWatchdogMs", 8000},
-    {"GracefulPowerOffS", (5 * 60)},
+    {"GracefulPowerOffMs", (5 * 60) * 1000},
     {"WarmResetCheckMs", 500},
     {"PowerOffSaveMs", 7000},
     {"SlotPowerCycleMs", 200}};
@@ -1376,7 +1376,7 @@ static void gracefulPowerOffTimerStart()
     phosphor::logging::log<phosphor::logging::level::INFO>(
         "Graceful power-off timer started");
     gracefulPowerOffTimer.expires_after(
-        std::chrono::seconds(TimerMap["GracefulPowerOffS"]));
+        std::chrono::milliseconds(TimerMap["GracefulPowerOffMs"]));
     gracefulPowerOffTimer.async_wait([](const boost::system::error_code ec) {
         if (ec)
         {
