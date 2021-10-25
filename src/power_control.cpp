@@ -124,17 +124,12 @@ static gpiod::line resetButtonMask;
 static bool nmiButtonMasked = false;
 
 // This map contains all timer values that are to be read from json config
-boost::container::flat_map<std::string, int> TimerMap = {
-    {"PowerPulseMs", 200},
-    {"ForceOffPulseMs", 15000},
-    {"ResetPulseMs", 500},
-    {"PowerCycleMs", 5000},
-    {"SioPowerGoodWatchdogMs", 1000},
-    {"PsPowerOKWatchdogMs", 8000},
-    {"GracefulPowerOffS", (5 * 60)},
-    {"WarmResetCheckMs", 500},
-    {"PowerOffSaveMs", 7000},
-    {"SlotPowerCycleMs", 200}};
+boost::container::flat_map<std::string, float> TimerMap = {
+    {"PowerPulse", 0.2},           {"ForceOffPulse", 15.0},
+    {"ResetPulse", 0.5},           {"PowerCycle", 5.0},
+    {"SioPowerGoodWatchdog", 1.0}, {"PsPowerOKWatchdog", 8.0},
+    {"GracefulPowerOff", 300.0},   {"WarmResetCheck", 0.5},
+    {"PowerOffSave", 7.0},         {"SlotPowerCycle", 0.2}};
 const static std::filesystem::path powerControlDir = "/var/lib/power-control";
 const static constexpr std::string_view powerStateFile = "power-state";
 
@@ -541,7 +536,8 @@ static void setSlotPowerState(const SlotPowerState state)
 static void savePowerState(const PowerState state)
 {
     powerStateSaveTimer.expires_after(
-        std::chrono::milliseconds(TimerMap["PowerOffSaveMs"]));
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::duration<float>(TimerMap["PowerOffSave"])));
     powerStateSaveTimer.async_wait([state](const boost::system::error_code ec) {
         if (ec)
         {
@@ -697,8 +693,8 @@ static void systemPowerGoodFailedLog()
     sd_journal_send(
         "MESSAGE=PowerControl: system power good failed to assert (VR failure)",
         "PRIORITY=%i", LOG_INFO, "REDFISH_MESSAGE_ID=%s",
-        "OpenBMC.0.1.SystemPowerGoodFailed", "REDFISH_MESSAGE_ARGS=%d",
-        TimerMap["SioPowerGoodWatchdogMs"], NULL);
+        "OpenBMC.0.1.SystemPowerGoodFailed", "REDFISH_MESSAGE_ARGS=%f",
+        TimerMap["SioPowerGoodWatchdog"], NULL);
 }
 
 static void psPowerOKFailedLog()
@@ -706,8 +702,8 @@ static void psPowerOKFailedLog()
     sd_journal_send(
         "MESSAGE=PowerControl: power supply power good failed to assert",
         "PRIORITY=%i", LOG_INFO, "REDFISH_MESSAGE_ID=%s",
-        "OpenBMC.0.1.PowerSupplyPowerGoodFailed", "REDFISH_MESSAGE_ARGS=%d",
-        TimerMap["PsPowerOKWatchdogMs"], NULL);
+        "OpenBMC.0.1.PowerSupplyPowerGoodFailed", "REDFISH_MESSAGE_ARGS=%f",
+        TimerMap["PsPowerOKWatchdog"], NULL);
 }
 
 static void powerRestorePolicyLog()
@@ -1152,15 +1148,17 @@ static bool setGPIOOutput(const std::string& name, const int value,
     return true;
 }
 
-static int setMaskedGPIOOutputForMs(gpiod::line& maskedGPIOLine,
-                                    const std::string& name, const int value,
-                                    const int durationMs)
+static int setMaskedGPIOOutput(gpiod::line& maskedGPIOLine,
+                               const std::string& name, const int value,
+                               const float duration)
 {
     // Set the masked GPIO line to the specified value
     maskedGPIOLine.set_value(value);
     std::string logMsg = name + " set to " + std::to_string(value);
     phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
-    gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
+    gpioAssertTimer.expires_after(
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::duration<float>(duration)));
     gpioAssertTimer.async_wait([maskedGPIOLine, value,
                                 name](const boost::system::error_code ec) {
         // Set the masked GPIO line back to the opposite value
@@ -1183,19 +1181,19 @@ static int setMaskedGPIOOutputForMs(gpiod::line& maskedGPIOLine,
     return 0;
 }
 
-static int setGPIOOutputForMs(const ConfigData& config, const int value,
-                              const int durationMs)
+static int setGPIOOutput(const ConfigData& config, const int value,
+                         const float duration)
 {
     // If the requested GPIO is masked, use the mask line to set the output
     if (powerButtonMask && config.lineName == powerOutConfig.lineName)
     {
-        return setMaskedGPIOOutputForMs(powerButtonMask, config.lineName, value,
-                                        durationMs);
+        return setMaskedGPIOOutput(powerButtonMask, config.lineName, value,
+                                   duration);
     }
     if (resetButtonMask && config.lineName == resetOutConfig.lineName)
     {
-        return setMaskedGPIOOutputForMs(resetButtonMask, config.lineName, value,
-                                        durationMs);
+        return setMaskedGPIOOutput(resetButtonMask, config.lineName, value,
+                                   duration);
     }
 
     // No mask set, so request and set the GPIO normally
@@ -1205,8 +1203,9 @@ static int setGPIOOutputForMs(const ConfigData& config, const int value,
         return -1;
     }
     const std::string name = config.lineName;
-
-    gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
+    gpioAssertTimer.expires_after(
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::duration<float>(duration)));
     gpioAssertTimer.async_wait([gpioLine, value,
                                 name](const boost::system::error_code ec) {
         // Set the GPIO line back to the opposite value
@@ -1229,14 +1228,14 @@ static int setGPIOOutputForMs(const ConfigData& config, const int value,
     return 0;
 }
 
-static int assertGPIOForMs(const ConfigData& config, const int durationMs)
+static int assertGPIO(const ConfigData& config, const float duration)
 {
-    return setGPIOOutputForMs(config, config.polarity, durationMs);
+    return setGPIOOutput(config, config.polarity, duration);
 }
 
 static void powerOn()
 {
-    assertGPIOForMs(powerOutConfig, TimerMap["PowerPulseMs"]);
+    assertGPIO(powerOutConfig, TimerMap["PowerPulse"]);
 }
 #ifdef CHASSIS_SYSTEM_RESET
 static int slotPowerOn()
@@ -1297,7 +1296,8 @@ static void slotPowerCycle()
         "Slot Power Cycle started\n");
     slotPowerOff();
     slotPowerCycleTimer.expires_after(
-        std::chrono::milliseconds(TimerMap["SlotPowerCycleMs"]));
+         std::chrono::duration_cast<std::chrono::milliseconds>
+         (std::chrono::duration<float>(TimerMap["SlotPowerCycle"]));    
     slotPowerCycleTimer.async_wait([](const boost::system::error_code ec) {
         if (ec)
         {
@@ -1322,12 +1322,12 @@ static void slotPowerCycle()
 #endif
 static void gracefulPowerOff()
 {
-    assertGPIOForMs(powerOutConfig, TimerMap["PowerPulseMs"]);
+    assertGPIO(powerOutConfig, TimerMap["PowerPulse"]);
 }
 
 static void forcePowerOff()
 {
-    if (assertGPIOForMs(powerOutConfig, TimerMap["ForceOffPulseMs"]) < 0)
+    if (assertGPIO(powerOutConfig, TimerMap["ForceOffPulse"]) < 0)
     {
         return;
     }
@@ -1355,15 +1355,18 @@ static void forcePowerOff()
 
 static void reset()
 {
-    assertGPIOForMs(resetOutConfig, TimerMap["ResetPulseMs"]);
+    assertGPIO(resetOutConfig, TimerMap["ResetPulse"]);
 }
 
 static void gracefulPowerOffTimerStart()
 {
     phosphor::logging::log<phosphor::logging::level::INFO>(
         "Graceful power-off timer started");
+
     gracefulPowerOffTimer.expires_after(
-        std::chrono::seconds(TimerMap["GracefulPowerOffS"]));
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::duration<float>(TimerMap["GracefulPowerOff"])));
+
     gracefulPowerOffTimer.async_wait([](const boost::system::error_code ec) {
         if (ec)
         {
@@ -1391,7 +1394,8 @@ static void powerCycleTimerStart()
     phosphor::logging::log<phosphor::logging::level::INFO>(
         "Power-cycle timer started");
     powerCycleTimer.expires_after(
-        std::chrono::milliseconds(TimerMap["PowerCycleMs"]));
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::duration<float>(TimerMap["PowerCycle"])));
     powerCycleTimer.async_wait([](const boost::system::error_code ec) {
         if (ec)
         {
@@ -1419,7 +1423,8 @@ static void psPowerOKWatchdogTimerStart()
     phosphor::logging::log<phosphor::logging::level::INFO>(
         "power supply power OK watchdog timer started");
     psPowerOKWatchdogTimer.expires_after(
-        std::chrono::milliseconds(TimerMap["PsPowerOKWatchdogMs"]));
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::duration<float>(TimerMap["PsPowerOKWatchdog"])));
     psPowerOKWatchdogTimer.async_wait([](const boost::system::error_code ec) {
         if (ec)
         {
@@ -1448,7 +1453,8 @@ static void warmResetCheckTimerStart()
     phosphor::logging::log<phosphor::logging::level::INFO>(
         "Warm reset check timer started");
     warmResetCheckTimer.expires_after(
-        std::chrono::milliseconds(TimerMap["WarmResetCheckMs"]));
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::duration<float>(TimerMap["WarmResetCheck"])));
     warmResetCheckTimer.async_wait([](const boost::system::error_code ec) {
         if (ec)
         {
@@ -1637,7 +1643,8 @@ static void sioPowerGoodWatchdogTimerStart()
     phosphor::logging::log<phosphor::logging::level::INFO>(
         "SIO power good watchdog timer started");
     sioPowerGoodWatchdogTimer.expires_after(
-        std::chrono::milliseconds(TimerMap["SioPowerGoodWatchdogMs"]));
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::duration<float>(TimerMap["SioPowerGoodWatchdog"])));
     sioPowerGoodWatchdogTimer.async_wait(
         [](const boost::system::error_code ec) {
             if (ec)
