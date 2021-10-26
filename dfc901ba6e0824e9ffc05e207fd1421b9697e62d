@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0cddf92a_d2335e9c",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1336,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-10-26T22:20:01Z",
+      "side": 1,
+      "message": "Looks like this comment should be amended too.",
+      "revId": "dfc901ba6e0824e9ffc05e207fd1421b9697e62d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
