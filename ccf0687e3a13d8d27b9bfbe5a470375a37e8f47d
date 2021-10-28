@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "343c011e_f19d9961",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2517,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-10-28T19:55:34Z",
+      "side": 1,
+      "message": "Should this return false now?  I think a -1 may become true in bool.",
+      "revId": "ccf0687e3a13d8d27b9bfbe5a470375a37e8f47d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "12faed54_66d0c8f5",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2526,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-10-28T19:55:34Z",
+      "side": 1,
+      "message": "Here, too.",
+      "revId": "ccf0687e3a13d8d27b9bfbe5a470375a37e8f47d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
