@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f464940c_e97e718b",
+        "filename": "power-control-x86/src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2526,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-11-04T21:59:28Z",
+      "side": 1,
+      "message": "I\u0027m not super enthusiastic about this change -- the current code tries to distinguish a failure to retrieve the property\u0027s value by returning -1, but the existing callers generally ignore this and just treat the return value as a bool anyway, so it ends up being kind of useless.  However, I do think it would be good to distinguish \"we hit an error while trying to read the property\" from \"we read the property and it\u0027s false\".  The proposed replacement code conflates those cases, which seems like it could potentially lead to some pretty surprising (or possibly disastrous) behavior depending on what signal(s) you might be trying to get from dbus.  I guess ideally I\u0027d like to see us add some actual error-checking to the callers of this function, probably by changing the signature to something with an out param (or perhaps preferably just returning a `std::optional\u003cbool\u003e`) so we can clearly distinguish the \"did we hit an error\" return value from the \"what was the value\" return value.",
+      "revId": "906a281cd65844b92ab57ab43a04ad5f57b87d77",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
