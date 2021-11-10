@@ -23,7 +23,7 @@
 #include <boost/container/flat_set.hpp>
 #include <gpiod.hpp>
 #include <nlohmann/json.hpp>
-#include <phosphor-logging/log.hpp>
+#include <phosphor-logging/lg2.hpp>
 #include <sdbusplus/asio/object_server.hpp>
 
 #include <filesystem>
@@ -188,18 +188,16 @@ static constexpr uint8_t beepPowerFail = 8;
 
 static void beep(const uint8_t& beepPriority)
 {
-    std::string logMsg = "Beep with priority: " + std::to_string(beepPriority);
-    phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
+    lg2::info("Beep with priority: {BEEP_PRIORITY}", "BEEP_PRIORITY",
+              beepPriority);
 
     conn->async_method_call(
         [](boost::system::error_code ec) {
             if (ec)
             {
-                std::string errMsg =
-                    "beep returned error with async_method_call (ec = " +
-                    ec.message();
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    errMsg.c_str());
+                lg2::error(
+                    "beep returned error with async_method_call (ec = {ERROR_MSG}",
+                    "ERROR_MSG", ec.message());
                 return;
             }
         },
@@ -262,12 +260,8 @@ static std::string getPowerStateName(PowerState state)
 }
 static void logStateTransition(const PowerState state)
 {
-    std::string logMsg = "Host" + node + ": Moving to \"" +
-                         getPowerStateName(state) + "\" state";
-    phosphor::logging::log<phosphor::logging::level::INFO>(
-        logMsg.c_str(),
-        phosphor::logging::entry("STATE=%s", getPowerStateName(state).c_str()),
-        phosphor::logging::entry("HOST=%s", node.c_str()));
+    lg2::info("Host{HOST}: Moving to \"{STATE}\" state", "HOST", node, "STATE",
+              getPowerStateName(state));
 }
 
 enum class Event
@@ -376,11 +370,8 @@ static std::string getEventName(Event event)
 }
 static void logEvent(const std::string_view stateHandler, const Event event)
 {
-    std::string logMsg{stateHandler};
-    logMsg += ": " + getEventName(event) + " event received";
-    phosphor::logging::log<phosphor::logging::level::INFO>(
-        logMsg.c_str(),
-        phosphor::logging::entry("EVENT=%s", getEventName(event).c_str()));
+    lg2::info("{STATE_HANDLER}: {EVENT} event received", "STATE_HANDLER",
+              stateHandler, "EVENT", getEventName(event));
 }
 
 // Power state handlers
@@ -440,9 +431,8 @@ static void sendPowerControlEvent(const Event event)
     std::function<void(const Event)> handler = getPowerStateHandler(powerState);
     if (handler == nullptr)
     {
-        std::string errMsg = "Failed to find handler for power state: " +
-                             std::to_string(static_cast<int>(powerState));
-        phosphor::logging::log<phosphor::logging::level::INFO>(errMsg.c_str());
+        lg2::info("Failed to find handler for power state: {STATE}", "STATE",
+                  static_cast<int>(powerState));
         return;
     }
     handler(event);
@@ -549,10 +539,8 @@ static void savePowerState(const PowerState state)
             // completion.
             if (ec != boost::asio::error::operation_aborted)
             {
-                std::string errMsg =
-                    "Power-state save async_wait failed: " + ec.message();
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    errMsg.c_str());
+                lg2::error("Power-state save async_wait failed: {ERROR_MSG}",
+                           "ERROR_MSG", ec.message());
             }
             return;
         }
@@ -629,8 +617,7 @@ static void clearRestartCause()
 }
 static void setRestartCauseProperty(const std::string& cause)
 {
-    std::string logMsg = "RestartCause set to " + cause;
-    phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
+    lg2::info("RestartCause set to {RESTART_CAUSE}", "RESTART_CAUSE", cause);
     restartCauseIface->set_property("RestartCause", cause);
 }
 
@@ -643,8 +630,7 @@ static void resetACBootProperty()
             [](boost::system::error_code ec) {
                 if (ec)
                 {
-                    phosphor::logging::log<phosphor::logging::level::ERR>(
-                        "failed to reset ACBoot property");
+                    lg2::error("failed to reset ACBoot property");
                 }
             },
             "xyz.openbmc_project.Settings",
@@ -753,10 +739,8 @@ static int initializePowerStateStorage()
     {
         if (ec.value() != 0)
         {
-            std::string errMsg = "failed to create " +
-                                 powerControlDir.string() + ": " + ec.message();
-            phosphor::logging::log<phosphor::logging::level::ERR>(
-                errMsg.c_str());
+            lg2::error("failed to create {DIR_NAME}: {ERROR_MSG}", "DIR_NAME",
+                       powerControlDir.string(), "ERROR_MSG", ec.message());
             return -1;
         }
     }
@@ -774,8 +758,7 @@ static bool wasPowerDropped()
     std::ifstream powerStateStream(powerControlDir / powerStateFile);
     if (!powerStateStream.is_open())
     {
-        phosphor::logging::log<phosphor::logging::level::ERR>(
-            "Failed to open power state file");
+        lg2::error("Failed to open power state file");
         return false;
     }
 
@@ -794,8 +777,8 @@ static void invokePowerRestorePolicy(const std::string& policy)
     }
     policyInvoked = true;
 
-    std::string logMsg = "Power restore delay expired, invoking " + policy;
-    phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
+    lg2::info("Power restore delay expired, invoking {POLICY}", "POLICY",
+              policy);
     if (policy ==
         "xyz.openbmc_project.Control.Power.RestorePolicy.Policy.AlwaysOn")
     {
@@ -807,16 +790,14 @@ static void invokePowerRestorePolicy(const std::string& policy)
     {
         if (wasPowerDropped())
         {
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "Power was dropped, restoring Host On state");
+            lg2::info("Power was dropped, restoring Host On state");
             sendPowerControlEvent(Event::powerOnRequest);
             setRestartCauseProperty(
                 getRestartCause(RestartCause::powerPolicyRestore));
         }
         else
         {
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "No power drop, restoring Host Off state");
+            lg2::info("No power drop, restoring Host Off state");
         }
     }
     // We're done with the previous power state for the restore policy, so store
@@ -848,9 +829,7 @@ static void powerRestorePolicyDelay(int delay)
 
     static boost::asio::steady_timer powerRestorePolicyTimer(io);
     powerRestorePolicyTimer.expires_after(std::chrono::seconds(delay));
-    std::string logMsg =
-        "Power restore delay of " + std::to_string(delay) + " seconds started";
-    phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
+    lg2::info("Power restore delay of {DELAY} seconds started", "DELAY", delay);
     powerRestorePolicyTimer.async_wait([](const boost::system::error_code ec) {
         if (ec)
         {
@@ -858,44 +837,43 @@ static void powerRestorePolicyDelay(int delay)
             // completion.
             if (ec != boost::asio::error::operation_aborted)
             {
-                std::string errMsg =
-                    "power restore policy async_wait failed: " + ec.message();
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    errMsg.c_str());
+                lg2::error(
+                    "power restore policy async_wait failed: {ERROR_MSG}",
+                    "ERROR_MSG", ec.message());
             }
             return;
         }
         // Get Power Restore Policy
         // In case PowerRestorePolicy is not available, set a match for it
         static std::unique_ptr<sdbusplus::bus::match::match>
-            powerRestorePolicyMatch = std::make_unique<
-                sdbusplus::bus::match::match>(
-                *conn,
-                "type='signal',interface='org.freedesktop.DBus.Properties',"
-                "member='PropertiesChanged',arg0namespace='xyz.openbmc_"
-                "project.Control.Power.RestorePolicy'",
-                [](sdbusplus::message::message& msg) {
-                    std::string interfaceName;
-                    boost::container::flat_map<std::string,
-                                               std::variant<std::string>>
-                        propertiesChanged;
-                    std::string policy;
-                    try
-                    {
-                        msg.read(interfaceName, propertiesChanged);
-                        policy = std::get<std::string>(
-                            propertiesChanged.begin()->second);
-                    }
-                    catch (const std::exception& e)
-                    {
-                        phosphor::logging::log<phosphor::logging::level::ERR>(
-                            "Unable to read power restore policy value");
+            powerRestorePolicyMatch =
+                std::make_unique<sdbusplus::bus::match::match>(
+                    *conn,
+                    "type='signal',interface='org.freedesktop.DBus.Properties',"
+                    "member='PropertiesChanged',arg0namespace='xyz.openbmc_"
+                    "project.Control.Power.RestorePolicy'",
+                    [](sdbusplus::message::message& msg) {
+                        std::string interfaceName;
+                        boost::container::flat_map<std::string,
+                                                   std::variant<std::string>>
+                            propertiesChanged;
+                        std::string policy;
+                        try
+                        {
+                            msg.read(interfaceName, propertiesChanged);
+                            policy = std::get<std::string>(
+                                propertiesChanged.begin()->second);
+                        }
+                        catch (const std::exception& e)
+                        {
+                            lg2::error(
+                                "Unable to read power restore policy value");
+                            powerRestorePolicyMatch.reset();
+                            return;
+                        }
+                        invokePowerRestorePolicy(policy);
                         powerRestorePolicyMatch.reset();
-                        return;
-                    }
-                    invokePowerRestorePolicy(policy);
-                    powerRestorePolicyMatch.reset();
-                });
+                    });
 
         // Check if it's already on DBus
         conn->async_method_call(
@@ -910,8 +888,7 @@ static void powerRestorePolicyDelay(int delay)
                     std::get_if<std::string>(&policyProperty);
                 if (policy == nullptr)
                 {
-                    phosphor::logging::log<phosphor::logging::level::ERR>(
-                        "Unable to read power restore policy value");
+                    lg2::error("Unable to read power restore policy value");
                     return;
                 }
                 invokePowerRestorePolicy(*policy);
@@ -926,8 +903,7 @@ static void powerRestorePolicyDelay(int delay)
 
 static void powerRestorePolicyStart()
 {
-    phosphor::logging::log<phosphor::logging::level::INFO>(
-        "Power restore policy started");
+    lg2::info("Power restore policy started");
     powerRestorePolicyLog();
 
     // Get the desired delay time
@@ -951,8 +927,7 @@ static void powerRestorePolicyStart()
                 }
                 catch (const std::exception& e)
                 {
-                    phosphor::logging::log<phosphor::logging::level::ERR>(
-                        "Unable to read power restore delay value");
+                    lg2::error("Unable to read power restore delay value");
                     powerRestoreDelayMatch.reset();
                     return;
                 }
@@ -972,8 +947,7 @@ static void powerRestorePolicyStart()
             const uint16_t* delay = std::get_if<uint16_t>(&delayProperty);
             if (delay == nullptr)
             {
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    "Unable to read power restore delay value");
+                lg2::error("Unable to read power restore delay value");
                 return;
             }
             powerRestorePolicyDelay(*delay);
@@ -1007,8 +981,7 @@ static void powerRestorePolicyCheck()
                 }
                 catch (const std::exception& e)
                 {
-                    phosphor::logging::log<phosphor::logging::level::ERR>(
-                        "Unable to read AC Boot status");
+                    lg2::error("Unable to read AC Boot status");
                     acBootMatch.reset();
                     return;
                 }
@@ -1036,8 +1009,7 @@ static void powerRestorePolicyCheck()
                 std::get_if<std::string>(&acBootProperty);
             if (acBoot == nullptr)
             {
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    "Unable to read AC Boot status");
+                lg2::error("Unable to read AC Boot status");
                 return;
             }
             if (*acBoot == "Unknown")
@@ -1062,24 +1034,23 @@ static void waitForGPIOEvent(const std::string& name,
                              gpiod::line& line,
                              boost::asio::posix::stream_descriptor& event)
 {
-    event.async_wait(
-        boost::asio::posix::stream_descriptor::wait_read,
-        [&name, eventHandler, &line,
-         &event](const boost::system::error_code ec) {
-            if (ec)
-            {
-                std::string errMsg =
-                    name + " fd handler error: " + ec.message();
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    errMsg.c_str());
-                // TODO: throw here to force power-control to restart?
-                return;
-            }
-            gpiod::line_event line_event = line.event_read();
-            eventHandler(line_event.event_type ==
-                         gpiod::line_event::RISING_EDGE);
-            waitForGPIOEvent(name, eventHandler, line, event);
-        });
+    event.async_wait(boost::asio::posix::stream_descriptor::wait_read,
+                     [&name, eventHandler, &line,
+                      &event](const boost::system::error_code ec) {
+                         if (ec)
+                         {
+                             lg2::error(
+                                 "{GPIO_NAME} fd handler error: {ERROR_MSG}",
+                                 "GPIO_NAME", name, "ERROR_MSG", ec.message());
+                             // TODO: throw here to force power-control to
+                             // restart?
+                             return;
+                         }
+                         gpiod::line_event line_event = line.event_read();
+                         eventHandler(line_event.event_type ==
+                                      gpiod::line_event::RISING_EDGE);
+                         waitForGPIOEvent(name, eventHandler, line, event);
+                     });
 }
 
 static bool requestGPIOEvents(
@@ -1091,8 +1062,7 @@ static bool requestGPIOEvents(
     gpioLine = gpiod::find_line(name);
     if (!gpioLine)
     {
-        std::string errMsg = "Failed to find the " + name + " line";
-        phosphor::logging::log<phosphor::logging::level::ERR>(errMsg.c_str());
+        lg2::error("Failed to find the {GPIO_NAME} line", "GPIO_NAME", name);
         return false;
     }
 
@@ -1103,16 +1073,15 @@ static bool requestGPIOEvents(
     }
     catch (const std::exception&)
     {
-        std::string errMsg = "Failed to request events for " + name;
-        phosphor::logging::log<phosphor::logging::level::ERR>(errMsg.c_str());
+        lg2::error("Failed to request events for {GPIO_NAME}", "GPIO_NAME",
+                   name);
         return false;
     }
 
     int gpioLineFd = gpioLine.event_get_fd();
     if (gpioLineFd < 0)
     {
-        std::string errMsg = "Failed to name " + name + " fd";
-        phosphor::logging::log<phosphor::logging::level::ERR>(errMsg.c_str());
+        lg2::error("Failed to name {GPIO_NAME} fd", "GPIO_NAME", name);
         return false;
     }
 
@@ -1129,8 +1098,7 @@ static bool setGPIOOutput(const std::string& name, const int value,
     gpioLine = gpiod::find_line(name);
     if (!gpioLine)
     {
-        std::string errMsg = "Failed to find the " + name + " line";
-        phosphor::logging::log<phosphor::logging::level::ERR>(errMsg.c_str());
+        lg2::error("Failed to find the {GPIO_NAME} line", "GPIO_NAME", name);
         return false;
     }
 
@@ -1142,13 +1110,12 @@ static bool setGPIOOutput(const std::string& name, const int value,
     }
     catch (const std::exception&)
     {
-        std::string errMsg = "Failed to request " + name + " output";
-        phosphor::logging::log<phosphor::logging::level::ERR>(errMsg.c_str());
+        lg2::error("Failed to request {GPIO_NAME} output", "GPIO_NAME", name);
         return false;
     }
 
-    std::string logMsg = name + " set to " + std::to_string(value);
-    phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
+    lg2::info("{GPIO_NAME} set to {GPIO_VALUE}", "GPIO_NAME", name,
+              "GPIO_VALUE", value);
     return true;
 }
 
@@ -1158,28 +1125,25 @@ static int setMaskedGPIOOutputForMs(gpiod::line& maskedGPIOLine,
 {
     // Set the masked GPIO line to the specified value
     maskedGPIOLine.set_value(value);
-    std::string logMsg = name + " set to " + std::to_string(value);
-    phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
+    lg2::info("{GPIO_NAME} set to {GPIO_VALUE}", "GPIO_NAME", name,
+              "GPIO_VALUE", value);
     gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
-    gpioAssertTimer.async_wait([maskedGPIOLine, value,
-                                name](const boost::system::error_code ec) {
-        // Set the masked GPIO line back to the opposite value
-        maskedGPIOLine.set_value(!value);
-        std::string logMsg = name + " released";
-        phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
-        if (ec)
-        {
-            // operation_aborted is expected if timer is canceled before
-            // completion.
-            if (ec != boost::asio::error::operation_aborted)
+    gpioAssertTimer.async_wait(
+        [maskedGPIOLine, value, name](const boost::system::error_code ec) {
+            // Set the masked GPIO line back to the opposite value
+            maskedGPIOLine.set_value(!value);
+            lg2::info("{GPIO_NAME} released", "GPIO_NAME", name);
+            if (ec)
             {
-                std::string errMsg =
-                    name + " async_wait failed: " + ec.message();
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    errMsg.c_str());
+                // operation_aborted is expected if timer is canceled before
+                // completion.
+                if (ec != boost::asio::error::operation_aborted)
+                {
+                    lg2::error("{GPIO_NAME} async_wait failed: {ERROR_MSG}",
+                               "GPIO_NAME", name, "ERROR_MSG", ec.message());
+                }
             }
-        }
-    });
+        });
     return 0;
 }
 
@@ -1207,25 +1171,22 @@ static int setGPIOOutputForMs(const ConfigData& config, const int value,
     const std::string name = config.lineName;
 
     gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
-    gpioAssertTimer.async_wait([gpioLine, value,
-                                name](const boost::system::error_code ec) {
-        // Set the GPIO line back to the opposite value
-        gpioLine.set_value(!value);
-        std::string logMsg = name + " released";
-        phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
-        if (ec)
-        {
-            // operation_aborted is expected if timer is canceled before
-            // completion.
-            if (ec != boost::asio::error::operation_aborted)
+    gpioAssertTimer.async_wait(
+        [gpioLine, value, name](const boost::system::error_code ec) {
+            // Set the GPIO line back to the opposite value
+            gpioLine.set_value(!value);
+            lg2::info("{GPIO_NAME} released", "GPIO_NAME", name);
+            if (ec)
             {
-                std::string errMsg =
-                    name + " async_wait failed: " + ec.message();
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    errMsg.c_str());
+                // operation_aborted is expected if timer is canceled before
+                // completion.
+                if (ec != boost::asio::error::operation_aborted)
+                {
+                    lg2::error("{GPIO_NAME} async_wait failed: {ERROR_MSG}",
+                               "GPIO_NAME", name, "ERROR_MSG", ec.message());
+                }
             }
-        }
-    });
+        });
     return 0;
 }
 
@@ -1249,8 +1210,7 @@ static int slotPowerOn()
         if (slotPowerLine.get_value() > 0)
         {
             setSlotPowerState(SlotPowerState::on);
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "Slot Power is switched On\n");
+            lg2::info("Slot Power is switched On\n");
         }
         else
         {
@@ -1259,8 +1219,7 @@ static int slotPowerOn()
     }
     else
     {
-        phosphor::logging::log<phosphor::logging::level::INFO>(
-            "Slot Power is already in 'On' state\n");
+        lg2::info("Slot Power is already in 'On' state\n");
         return -1;
     }
     return 0;
@@ -1275,8 +1234,7 @@ static int slotPowerOff()
         {
             setSlotPowerState(SlotPowerState::off);
             setPowerState(PowerState::off);
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "Slot Power is switched Off\n");
+            lg2::info("Slot Power is switched Off\n");
         }
         else
         {
@@ -1285,16 +1243,14 @@ static int slotPowerOff()
     }
     else
     {
-        phosphor::logging::log<phosphor::logging::level::INFO>(
-            "Slot Power is already in 'Off' state\n");
+        lg2::info("Slot Power is already in 'Off' state\n");
         return -1;
     }
     return 0;
 }
 static void slotPowerCycle()
 {
-    phosphor::logging::log<phosphor::logging::level::INFO>(
-        "Slot Power Cycle started\n");
+    lg2::info("Slot Power Cycle started\n");
     slotPowerOff();
     slotPowerCycleTimer.expires_after(
         std::chrono::milliseconds(TimerMap["SlotPowerCycleMs"]));
@@ -1303,20 +1259,16 @@ static void slotPowerCycle()
         {
             if (ec != boost::asio::error::operation_aborted)
             {
-                std::string errMsg =
-                    "Slot Power cycle timer async_wait failed: " + ec.message();
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    errMsg.c_str());
+                lg2::error(
+                    "Slot Power cycle timer async_wait failed: {ERROR_MSG}",
+                    "ERROR_MSG", ec.message());
             }
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "Slot Power cycle timer canceled\n");
+            lg2::info("Slot Power cycle timer canceled\n");
             return;
         }
-        phosphor::logging::log<phosphor::logging::level::INFO>(
-            "Slot Power cycle timer completed\n");
+        lg2::info("Slot Power cycle timer completed\n");
         slotPowerOn();
-        phosphor::logging::log<phosphor::logging::level::INFO>(
-            "Slot Power Cycle Completed\n");
+        lg2::info("Slot Power Cycle Completed\n");
     });
 }
 #endif
@@ -1340,16 +1292,13 @@ static void forcePowerOff()
             // completion.
             if (ec != boost::asio::error::operation_aborted)
             {
-                std::string errMsg =
-                    "Force power off async_wait failed: " + ec.message();
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    errMsg.c_str());
+                lg2::error("Force power off async_wait failed: {ERROR_MSG}",
+                           "ERROR_MSG", ec.message());
             }
             return;
         }
 
-        phosphor::logging::log<phosphor::logging::level::INFO>(
-            "Power-button override failed. Not sure what to do now.");
+        lg2::info("Power-button override failed. Not sure what to do now.");
     });
 }
 
@@ -1360,8 +1309,7 @@ static void reset()
 
 static void gracefulPowerOffTimerStart()
 {
-    phosphor::logging::log<phosphor::logging::level::INFO>(
-        "Graceful power-off timer started");
+    lg2::info("Graceful power-off timer started");
     gracefulPowerOffTimer.expires_after(
         std::chrono::seconds(TimerMap["GracefulPowerOffS"]));
     gracefulPowerOffTimer.async_wait([](const boost::system::error_code ec) {
@@ -1371,25 +1319,20 @@ static void gracefulPowerOffTimerStart()
             // completion.
             if (ec != boost::asio::error::operation_aborted)
             {
-                std::string errMsg =
-                    "Graceful power-off async_wait failed: " + ec.message();
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    errMsg.c_str());
+                lg2::error("Graceful power-off async_wait failed: {ERROR_MSG}",
+                           "ERROR_MSG", ec.message());
             }
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "Graceful power-off timer canceled");
+            lg2::info("Graceful power-off timer canceled");
             return;
         }
-        phosphor::logging::log<phosphor::logging::level::INFO>(
-            "Graceful power-off timer completed");
+        lg2::info("Graceful power-off timer completed");
         sendPowerControlEvent(Event::gracefulPowerOffTimerExpired);
     });
 }
 
 static void powerCycleTimerStart()
 {
-    phosphor::logging::log<phosphor::logging::level::INFO>(
-        "Power-cycle timer started");
+    lg2::info("Power-cycle timer started");
     powerCycleTimer.expires_after(
         std::chrono::milliseconds(TimerMap["PowerCycleMs"]));
     powerCycleTimer.async_wait([](const boost::system::error_code ec) {
@@ -1399,25 +1342,20 @@ static void powerCycleTimerStart()
             // completion.
             if (ec != boost::asio::error::operation_aborted)
             {
-                std::string errMsg =
-                    "Power-cycle async_wait failed: " + ec.message();
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    errMsg.c_str());
+                lg2::error("Power-cycle async_wait failed: {ERROR_MSG}",
+                           "ERROR_MSG", ec.message());
             }
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "Power-cycle timer canceled");
+            lg2::info("Power-cycle timer canceled");
             return;
         }
-        phosphor::logging::log<phosphor::logging::level::INFO>(
-            "Power-cycle timer completed");
+        lg2::info("Power-cycle timer completed");
         sendPowerControlEvent(Event::powerCycleTimerExpired);
     });
 }
 
 static void psPowerOKWatchdogTimerStart()
 {
-    phosphor::logging::log<phosphor::logging::level::INFO>(
-        "power supply power OK watchdog timer started");
+    lg2::info("power supply power OK watchdog timer started");
     psPowerOKWatchdogTimer.expires_after(
         std::chrono::milliseconds(TimerMap["PsPowerOKWatchdogMs"]));
     psPowerOKWatchdogTimer.async_wait([](const boost::system::error_code ec) {
@@ -1427,26 +1365,21 @@ static void psPowerOKWatchdogTimerStart()
             // completion.
             if (ec != boost::asio::error::operation_aborted)
             {
-                std::string errMsg =
-                    "power supply power OK watchdog async_wait failed: " +
-                    ec.message();
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    errMsg.c_str());
+                lg2::error(
+                    "power supply power OK watchdog async_wait failed: {ERROR_MSG}",
+                    "ERROR_MSG", ec.message());
             }
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "power supply power OK watchdog timer canceled");
+            lg2::info("power supply power OK watchdog timer canceled");
             return;
         }
-        phosphor::logging::log<phosphor::logging::level::INFO>(
-            "power supply power OK watchdog timer expired");
+        lg2::info("power supply power OK watchdog timer expired");
         sendPowerControlEvent(Event::psPowerOKWatchdogTimerExpired);
     });
 }
 
 static void warmResetCheckTimerStart()
 {
-    phosphor::logging::log<phosphor::logging::level::INFO>(
-        "Warm reset check timer started");
+    lg2::info("Warm reset check timer started");
     warmResetCheckTimer.expires_after(
         std::chrono::milliseconds(TimerMap["WarmResetCheckMs"]));
     warmResetCheckTimer.async_wait([](const boost::system::error_code ec) {
@@ -1456,24 +1389,20 @@ static void warmResetCheckTimerStart()
             // completion.
             if (ec != boost::asio::error::operation_aborted)
             {
-                std::string errMsg =
-                    "Warm reset check async_wait failed: " + ec.message();
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    errMsg.c_str());
+                lg2::error("Warm reset check async_wait failed: {ERROR_MSG}",
+                           "ERROR_MSG", ec.message());
             }
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "Warm reset check timer canceled");
+            lg2::info("Warm reset check timer canceled");
             return;
         }
-        phosphor::logging::log<phosphor::logging::level::INFO>(
-            "Warm reset check timer completed");
+        lg2::info("Warm reset check timer completed");
         sendPowerControlEvent(Event::warmResetDetected);
     });
 }
 
 static void pohCounterTimerStart()
 {
-    phosphor::logging::log<phosphor::logging::level::INFO>("POH timer started");
+    lg2::info("POH timer started");
     // Set the time-out as 1 hour, to align with POH command in ipmid
     pohCounterTimer.expires_after(std::chrono::hours(1));
     pohCounterTimer.async_wait([](const boost::system::error_code& ec) {
@@ -1483,13 +1412,10 @@ static void pohCounterTimerStart()
             // completion.
             if (ec != boost::asio::error::operation_aborted)
             {
-                std::string errMsg =
-                    "POH timer async_wait failed: " + ec.message();
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    errMsg.c_str());
+                lg2::error("POH timer async_wait failed: {ERROR_MSG}",
+                           "ERROR_MSG", ec.message());
             }
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "POH timer canceled");
+            lg2::info("POH timer canceled");
             return;
         }
 
@@ -1504,16 +1430,14 @@ static void pohCounterTimerStart()
                const std::variant<uint32_t>& pohCounterProperty) {
                 if (ec)
                 {
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "error to get poh counter");
+                    lg2::info("error to get poh counter");
                     return;
                 }
                 const uint32_t* pohCounter =
                     std::get_if<uint32_t>(&pohCounterProperty);
                 if (pohCounter == nullptr)
                 {
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "unable to read poh counter");
+                    lg2::info("unable to read poh counter");
                     return;
                 }
 
@@ -1521,9 +1445,7 @@ static void pohCounterTimerStart()
                     [](boost::system::error_code ec) {
                         if (ec)
                         {
-                            phosphor::logging::log<
-                                phosphor::logging::level::INFO>(
-                                "failed to set poh counter");
+                            lg2::info("failed to set poh counter");
                         }
                     },
                     "xyz.openbmc_project.Settings",
@@ -1572,14 +1494,12 @@ static void currentHostStateMonitor()
             }
             catch (const std::exception& e)
             {
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    "Unable to read host state");
+                lg2::error("Unable to read host state");
                 return;
             }
             if (properties.empty())
             {
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    "ERROR: Empty PropertiesChanged signal received");
+                lg2::error("ERROR: Empty PropertiesChanged signal received");
                 return;
             }
 
@@ -1592,10 +1512,8 @@ static void currentHostStateMonitor()
                 std::get_if<std::string>(&(properties.begin()->second));
             if (currentHostState == nullptr)
             {
-                std::string errMsg =
-                    properties.begin()->first + " property invalid";
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    errMsg.c_str());
+                lg2::error("{PROPERTY} property invalid", "PROPERTY",
+                           properties.begin()->first);
                 return;
             }
 
@@ -1634,32 +1552,27 @@ static void currentHostStateMonitor()
 
 static void sioPowerGoodWatchdogTimerStart()
 {
-    phosphor::logging::log<phosphor::logging::level::INFO>(
-        "SIO power good watchdog timer started");
+    lg2::info("SIO power good watchdog timer started");
     sioPowerGoodWatchdogTimer.expires_after(
         std::chrono::milliseconds(TimerMap["SioPowerGoodWatchdogMs"]));
-    sioPowerGoodWatchdogTimer.async_wait(
-        [](const boost::system::error_code ec) {
-            if (ec)
+    sioPowerGoodWatchdogTimer.async_wait([](const boost::system::error_code
+                                                ec) {
+        if (ec)
+        {
+            // operation_aborted is expected if timer is canceled before
+            // completion.
+            if (ec != boost::asio::error::operation_aborted)
             {
-                // operation_aborted is expected if timer is canceled before
-                // completion.
-                if (ec != boost::asio::error::operation_aborted)
-                {
-                    std::string errMsg =
-                        "SIO power good watchdog async_wait failed: " +
-                        ec.message();
-                    phosphor::logging::log<phosphor::logging::level::ERR>(
-                        errMsg.c_str());
-                }
-                phosphor::logging::log<phosphor::logging::level::INFO>(
-                    "SIO power good watchdog timer canceled");
-                return;
+                lg2::error(
+                    "SIO power good watchdog async_wait failed: {ERROR_MSG}",
+                    "ERROR_MSG", ec.message());
             }
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "SIO power good watchdog timer completed");
-            sendPowerControlEvent(Event::sioPowerGoodWatchdogTimerExpired);
-        });
+            lg2::info("SIO power good watchdog timer canceled");
+            return;
+        }
+        lg2::info("SIO power good watchdog timer completed");
+        sendPowerControlEvent(Event::sioPowerGoodWatchdogTimerExpired);
+    });
 }
 
 static void powerStateOn(const Event event)
@@ -1711,8 +1624,7 @@ static void powerStateOn(const Event event)
             reset();
             break;
         default:
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "No action taken.");
+            lg2::info("No action taken.");
             break;
     }
 }
@@ -1747,8 +1659,7 @@ static void powerStateWaitForPSPowerOK(const Event event)
             setPowerState(PowerState::on);
             break;
         default:
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "No action taken.");
+            lg2::info("No action taken.");
             break;
     }
 }
@@ -1767,8 +1678,7 @@ static void powerStateWaitForSIOPowerGood(const Event event)
             systemPowerGoodFailedLog();
             break;
         default:
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "No action taken.");
+            lg2::info("No action taken.");
             break;
     }
 }
@@ -1807,8 +1717,7 @@ static void powerStateOff(const Event event)
             powerOn();
             break;
         default:
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "No action taken.");
+            lg2::info("No action taken.");
             break;
     }
 }
@@ -1824,8 +1733,7 @@ static void powerStateTransitionToOff(const Event event)
             setPowerState(PowerState::off);
             break;
         default:
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "No action taken.");
+            lg2::info("No action taken.");
             break;
     }
 }
@@ -1858,8 +1766,7 @@ static void powerStateGracefulTransitionToOff(const Event event)
             reset();
             break;
         default:
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "No action taken.");
+            lg2::info("No action taken.");
             break;
     }
 }
@@ -1898,8 +1805,7 @@ static void powerStateCycleOff(const Event event)
             powerOn();
             break;
         default:
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "No action taken.");
+            lg2::info("No action taken.");
             break;
     }
 }
@@ -1916,8 +1822,7 @@ static void powerStateTransitionToCycleOff(const Event event)
             powerCycleTimerStart();
             break;
         default:
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "No action taken.");
+            lg2::info("No action taken.");
             break;
     }
 }
@@ -1951,8 +1856,7 @@ static void powerStateGracefulTransitionToCycleOff(const Event event)
             reset();
             break;
         default:
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "No action taken.");
+            lg2::info("No action taken.");
             break;
     }
 }
@@ -1976,8 +1880,7 @@ static void powerStateCheckForWarmReset(const Event event)
             beep(beepPowerFail);
             break;
         default:
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "No action taken.");
+            lg2::info("No action taken.");
             break;
     }
 }
@@ -1998,9 +1901,8 @@ static void sioPowerGoodHandler(bool state)
 
 static void sioOnControlHandler(bool state)
 {
-    std::string logMsg =
-        "SIO_ONCONTROL value changed: " + std::to_string(state);
-    phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
+    lg2::info("SIO_ONCONTROL value changed: {VALUE}", "VALUE",
+              static_cast<int>(state));
 }
 
 static void sioS5Handler(bool state)
@@ -2022,8 +1924,7 @@ static void powerButtonHandler(bool state)
         }
         else
         {
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "power button press masked");
+            lg2::info("power button press masked");
         }
     }
 }
@@ -2041,8 +1942,7 @@ static void resetButtonHandler(bool state)
         }
         else
         {
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "reset button press masked");
+            lg2::info("reset button press masked");
         }
     }
 }
@@ -2059,9 +1959,8 @@ void systemReset()
         [](boost::system::error_code ec) {
             if (ec)
             {
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    "Failed to call chassis system reset",
-                    phosphor::logging::entry("ERR=%s", ec.message().c_str()));
+                lg2::error("Failed to call chassis system reset", "ERR",
+                           ec.message());
             }
         },
         systemdBusname, systemdPath, systemdInterface, "StartUnit",
@@ -2075,8 +1974,7 @@ static void nmiSetEnableProperty(bool value)
         [](boost::system::error_code ec) {
             if (ec)
             {
-                phosphor::logging::log<phosphor::logging::level::INFO>(
-                    "failed to set NMI source");
+                lg2::info("failed to set NMI source");
             }
         },
         "xyz.openbmc_project.Settings",
@@ -2091,50 +1989,44 @@ static void nmiReset(void)
     static constexpr const uint8_t value = 1;
     const static constexpr int nmiOutPulseTimeMs = 200;
 
-    phosphor::logging::log<phosphor::logging::level::INFO>("NMI out action");
+    lg2::info("NMI out action");
     nmiOutLine.set_value(value);
-    std::string logMsg =
-        nmiOutConfig.lineName + " set to " + std::to_string(value);
-    phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
+    lg2::info("{GPIO_NAME} set to {GPIO_VALUE}", "GPIO_NAME",
+              nmiOutConfig.lineName, "GPIO_VALUE", value);
     gpioAssertTimer.expires_after(std::chrono::milliseconds(nmiOutPulseTimeMs));
     gpioAssertTimer.async_wait([](const boost::system::error_code ec) {
         // restore the NMI_OUT GPIO line back to the opposite value
         nmiOutLine.set_value(!value);
-        std::string logMsg = nmiOutConfig.lineName + " released";
-        phosphor::logging::log<phosphor::logging::level::INFO>(logMsg.c_str());
+        lg2::info("{GPIO_NAME} released", "GPIO_NAME", nmiOutConfig.lineName);
         if (ec)
         {
             // operation_aborted is expected if timer is canceled before
             // completion.
             if (ec != boost::asio::error::operation_aborted)
             {
-                std::string errMsg = nmiOutConfig.lineName +
-                                     " async_wait failed: " + ec.message();
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    errMsg.c_str());
+                lg2::error("{GPIO_NAME} async_wait failed: {ERROR_MSG}",
+                           "GPIO_NAME", nmiOutConfig.lineName, "ERROR_MSG",
+                           ec.message());
             }
         }
     });
     // log to redfish
     nmiDiagIntLog();
-    phosphor::logging::log<phosphor::logging::level::INFO>(
-        "NMI out action completed");
+    lg2::info("NMI out action completed");
     // reset Enable Property
     nmiSetEnableProperty(false);
 }
 
 static void nmiSourcePropertyMonitor(void)
 {
-    phosphor::logging::log<phosphor::logging::level::INFO>(
-        "NMI Source Property Monitor");
+    lg2::info("NMI Source Property Monitor");
 
     static std::unique_ptr<sdbusplus::bus::match::match> nmiSourceMatch =
         std::make_unique<sdbusplus::bus::match::match>(
             *conn,
             "type='signal',interface='org.freedesktop.DBus.Properties',"
-            "member='PropertiesChanged',arg0namespace='xyz.openbmc_project."
-            "Chassis.Control."
-            "NMISource'",
+            "member='PropertiesChanged',"
+            "arg0namespace='xyz.openbmc_project.Chassis.Control.NMISource'",
             [](sdbusplus::message::message& msg) {
                 std::string interfaceName;
                 boost::container::flat_map<std::string,
@@ -2149,11 +2041,9 @@ static void nmiSourcePropertyMonitor(void)
                     {
                         value =
                             std::get<bool>(propertiesChanged.begin()->second);
-                        std::string logMsg =
-                            " NMI Enabled propertiesChanged value: " +
-                            std::to_string(value);
-                        phosphor::logging::log<phosphor::logging::level::INFO>(
-                            logMsg.c_str());
+                        lg2::info(
+                            " NMI Enabled propertiesChanged value: {VALUE}",
+                            "VALUE", value);
                         nmiEnabled = value;
                         if (nmiEnabled)
                         {
@@ -2163,8 +2053,7 @@ static void nmiSourcePropertyMonitor(void)
                 }
                 catch (const std::exception& e)
                 {
-                    phosphor::logging::log<phosphor::logging::level::ERR>(
-                        "Unable to read NMI source");
+                    lg2::error("Unable to read NMI source");
                     return;
                 }
             });
@@ -2176,8 +2065,7 @@ static void setNmiSource()
         [](boost::system::error_code ec) {
             if (ec)
             {
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    "failed to set NMI source");
+                lg2::error("failed to set NMI source");
             }
         },
         "xyz.openbmc_project.Settings",
@@ -2198,8 +2086,7 @@ static void nmiButtonHandler(bool state)
         nmiButtonPressLog();
         if (nmiButtonMasked)
         {
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                "NMI button press masked");
+            lg2::info("NMI button press masked");
         }
         else
         {
@@ -2236,14 +2123,12 @@ static void pltRstHandler(bool pltRst)
     }
     catch (const std::exception& e)
     {
-        phosphor::logging::log<phosphor::logging::level::ERR>(
-            "Unable to read Host Misc status");
+        lg2::error("Unable to read Host Misc status");
         return;
     }
     if (propertiesChanged.empty())
     {
-        phosphor::logging::log<phosphor::logging::level::ERR>(
-            "ERROR: Empty Host.Misc PropertiesChanged signal received");
+        lg2::error("ERROR: Empty Host.Misc PropertiesChanged signal received");
         return;
     }
 
@@ -2254,9 +2139,7 @@ static void pltRstHandler(bool pltRst)
             bool* pltRst = std::get_if<bool>(&value);
             if (pltRst == nullptr)
             {
-                std::string errMsg = property + " property invalid";
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    errMsg.c_str());
+                lg2::error("{PROPERTY} property invalid", "PROPERTY", property);
                 return;
             }
             pltRstHandler(*pltRst);
@@ -2286,16 +2169,14 @@ static int loadConfigValues()
     std::ifstream configFile(configFilePath.c_str());
     if (!configFile.is_open())
     {
-        phosphor::logging::log<phosphor::logging::level::ERR>(
-            "loadConfigValues : Cannot open config path");
+        lg2::error("loadConfigValues : Cannot open config path");
         return -1;
     }
     auto jsonData = nlohmann::json::parse(configFile, nullptr, true, true);
 
     if (jsonData.is_discarded())
     {
-        phosphor::logging::log<phosphor::logging::level::ERR>(
-            "Power config readings JSON parser failure");
+        lg2::error("Power config readings JSON parser failure");
         return -1;
     }
     auto gpios = jsonData["gpio_configs"];
@@ -2307,8 +2188,7 @@ static int loadConfigValues()
     {
         if (!gpioConfig.contains("Name"))
         {
-            phosphor::logging::log<phosphor::logging::level::ERR>(
-                "The 'Name' field must be defined in Json file");
+            lg2::error("The 'Name' field must be defined in Json file");
             return -1;
         }
 
@@ -2318,9 +2198,7 @@ static int loadConfigValues()
         auto signalMapIter = powerSignalMap.find(gpioName);
         if (signalMapIter == powerSignalMap.end())
         {
-            std::string errMsg = "Undefined Name  : " + gpioName;
-            phosphor::logging::log<phosphor::logging::level::ERR>(
-                errMsg.c_str());
+            lg2::error("Undefined Name  : {GPIO_NAME}", "GPIO_NAME", gpioName);
             return -1;
         }
 
@@ -2332,8 +2210,7 @@ static int loadConfigValues()
 
         if (!gpioConfig.contains("Type"))
         {
-            phosphor::logging::log<phosphor::logging::level::ERR>(
-                "The \'Type\' field must be defined in Json file");
+            lg2::error("The \'Type\' field must be defined in Json file");
             return -1;
         }
 
@@ -2348,9 +2225,7 @@ static int loadConfigValues()
         }
         else
         {
-            std::string errMsg = "Undefined Type : " + signalType;
-            phosphor::logging::log<phosphor::logging::level::ERR>(
-                errMsg.c_str());
+            lg2::error("Undefined Type : {TYPE}", "TYPE", signalType);
             return -1;
         }
 
@@ -2362,7 +2237,7 @@ static int loadConfigValues()
             }
             else
             {
-                phosphor::logging::log<phosphor::logging::level::ERR>(
+                lg2::error(
                     "The \'LineName\' field must be defined for GPIO configuration");
                 return -1;
             }
@@ -2379,20 +2254,16 @@ static int loadConfigValues()
                 }
                 else
                 {
-                    std::string errMsg =
-                        "Polarity defined but not properly setup. Please only ActiveHigh or ActiveLow. Currently set to " +
-                        polarity;
-                    phosphor::logging::log<phosphor::logging::level::ERR>(
-                        errMsg.c_str());
+                    lg2::error(
+                        "Polarity defined but not properly setup. Please only ActiveHigh or ActiveLow. Currently set to {POLARITY}",
+                        "POLARITY", polarity);
                     return -1;
                 }
             }
             else
             {
-                std::string errMsg =
-                    "Polarity field not found for " + tempGpioData->lineName;
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    errMsg.c_str());
+                lg2::error("Polarity field not found for {GPIO_NAME}",
+                           "GPIO_NAME", tempGpioData->lineName);
                 return -1;
             }
         }
@@ -2404,11 +2275,9 @@ static int loadConfigValues()
             {
                 if (!gpioConfig.contains(dbusParamName))
                 {
-                    std::string errMsg =
-                        "The " + dbusParamName +
-                        "field must be defined for Dbus configuration ";
-                    phosphor::logging::log<phosphor::logging::level::ERR>(
-                        errMsg.c_str());
+                    lg2::error(
+                        "The {DBUS_NAME} field must be defined for Dbus configuration ",
+                        "DBUS_NAME", dbusParamName);
                     return -1;
                 }
             }
@@ -2460,9 +2329,8 @@ static bool getDbusMsgGPIOState(sdbusplus::message::message& msg,
     }
     catch (const std::exception& e)
     {
-        std::string logmsg =
-            "exception while reading dbus property: " + lineName;
-        phosphor::logging::log<phosphor::logging::level::ERR>(logmsg.c_str());
+        lg2::error("exception while reading dbus property: {DBUS_NAME}",
+                   "DBUS_NAME", lineName);
         return false;
     }
 }
@@ -2498,8 +2366,7 @@ int getProperty(ConfigData& configData)
     auto reply = conn->call(method);
     if (reply.is_method_error())
     {
-        phosphor::logging::log<phosphor::logging::level::ERR>(
-            "Error reading from Bus");
+        lg2::error("Error reading from Bus");
         return -1;
     }
     std::variant<bool> resp;
@@ -2507,8 +2374,7 @@ int getProperty(ConfigData& configData)
     auto respValue = std::get_if<bool>(&resp);
     if (!respValue)
     {
-        phosphor::logging::log<phosphor::logging::level::ERR>(
-            "Error reading response");
+        lg2::error("Error reading response");
         return -1;
     }
     return (*respValue);
@@ -2523,17 +2389,15 @@ int main(int argc, char* argv[])
     {
         node = argv[1];
     }
-    std::string infoMsg =
-        "Start Chassis power control service for host : " + node;
-    phosphor::logging::log<phosphor::logging::level::INFO>(infoMsg.c_str());
+    lg2::info("Start Chassis power control service for host : {NODE}", "NODE",
+              node);
 
     conn = std::make_shared<sdbusplus::asio::connection>(io);
 
     // Load GPIO's through json config file
     if (loadConfigValues() == -1)
     {
-        std::string errMsg = "Host" + node + ": " + "Error in Parsing...";
-        phosphor::logging::log<phosphor::logging::level::ERR>(errMsg.c_str());
+        lg2::error("Host{NODE}: Error in Parsing...", "NODE", node);
     }
     /* Currently for single host based systems additional busname is added
     with "0" at the end of the name ex : xyz.openbmc_project.State.Host0.
@@ -2571,8 +2435,7 @@ int main(int argc, char* argv[])
         sioOnControlConfig.lineName.empty() || sioS5Config.lineName.empty())
     {
         sioEnabled = false;
-        phosphor::logging::log<phosphor::logging::level::INFO>(
-            "SIO control GPIOs not defined, disable SIO support.");
+        lg2::info("SIO control GPIOs not defined, disable SIO support.");
     }
 
     // Request PS_PWROK GPIO events
@@ -2592,8 +2455,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        phosphor::logging::log<phosphor::logging::level::ERR>(
-            "PowerOk name should be configured from json config file");
+        lg2::error("PowerOk name should be configured from json config file");
         return -1;
     }
 
@@ -2617,7 +2479,7 @@ int main(int argc, char* argv[])
         }
         else
         {
-            phosphor::logging::log<phosphor::logging::level::ERR>(
+            lg2::error(
                 "sioPwrGood name should be configured from json config file");
             return -1;
         }
@@ -2640,7 +2502,7 @@ int main(int argc, char* argv[])
         }
         else
         {
-            phosphor::logging::log<phosphor::logging::level::ERR>(
+            lg2::error(
                 "sioOnControl name should be configured from jsonconfig file\n");
             return -1;
         }
@@ -2661,8 +2523,7 @@ int main(int argc, char* argv[])
         }
         else
         {
-            phosphor::logging::log<phosphor::logging::level::ERR>(
-                "sioS5 name should be configured from json config file");
+            lg2::error("sioS5 name should be configured from json config file");
             return -1;
         }
     }
@@ -2754,7 +2615,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        phosphor::logging::log<phosphor::logging::level::ERR>(
+        lg2::error(
             "postComplete name should be configured from json config file");
         return -1;
     }
@@ -2777,8 +2638,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        phosphor::logging::log<phosphor::logging::level::ERR>(
-            "powerOut name should be configured from json config file");
+        lg2::error("powerOut name should be configured from json config file");
         return -1;
     }
 
@@ -2792,8 +2652,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        phosphor::logging::log<phosphor::logging::level::ERR>(
-            "ResetOut name should be configured from json config file");
+        lg2::error("ResetOut name should be configured from json config file");
         return -1;
     }
     // Release line
@@ -2831,8 +2690,7 @@ int main(int argc, char* argv[])
     if (nmiOutLine)
         nmiSourcePropertyMonitor();
 
-    phosphor::logging::log<phosphor::logging::level::INFO>(
-        "Initializing power state. ");
+    lg2::info("Initializing power state. ");
     logStateTransition(powerState);
 
     // Power Control Service
@@ -2858,8 +2716,7 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "Power Button Masked.");
+                    lg2::info("Power Button Masked.");
                     throw std::invalid_argument("Transition Request Masked");
                     return 0;
                 }
@@ -2875,8 +2732,7 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "Power Button Masked.");
+                    lg2::info("Power Button Masked.");
                     throw std::invalid_argument("Transition Request Masked");
                     return 0;
                 }
@@ -2892,8 +2748,7 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "Power Button Masked.");
+                    lg2::info("Power Button Masked.");
                     throw std::invalid_argument("Transition Request Masked");
                     return 0;
                 }
@@ -2910,8 +2765,7 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "Reset Button Masked.");
+                    lg2::info("Reset Button Masked.");
                     throw std::invalid_argument("Transition Request Masked");
                     return 0;
                 }
@@ -2928,16 +2782,14 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "Reset Button Masked.");
+                    lg2::info("Reset Button Masked.");
                     throw std::invalid_argument("Transition Request Masked");
                     return 0;
                 }
             }
             else
             {
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    "Unrecognized host state transition request.");
+                lg2::error("Unrecognized host state transition request.");
                 throw std::invalid_argument("Unrecognized Transition Request");
                 return 0;
             }
@@ -2972,8 +2824,7 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "Power Button Masked.");
+                    lg2::info("Power Button Masked.");
                     throw std::invalid_argument("Transition Request Masked");
                     return 0;
                 }
@@ -2989,8 +2840,7 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "Power Button Masked.");
+                    lg2::info("Power Button Masked.");
                     throw std::invalid_argument("Transition Request Masked");
                     return 0;
                 }
@@ -3006,16 +2856,14 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "Power Button Masked.");
+                    lg2::info("Power Button Masked.");
                     throw std::invalid_argument("Transition Request Masked");
                     return 0;
                 }
             }
             else
             {
-                phosphor::logging::log<phosphor::logging::level::ERR>(
-                    "Unrecognized chassis state transition request.");
+                lg2::error("Unrecognized chassis state transition request.");
                 throw std::invalid_argument("Unrecognized Transition Request");
                 return 0;
             }
@@ -3050,7 +2898,7 @@ int main(int argc, char* argv[])
             }
             else
             {
-                phosphor::logging::log<phosphor::logging::level::ERR>(
+                lg2::error(
                     "Unrecognized chassis system state transition request.");
                 throw std::invalid_argument("Unrecognized Transition Request");
                 return 0;
@@ -3103,7 +2951,7 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    phosphor::logging::log<phosphor::logging::level::ERR>(
+                    lg2::error(
                         "Unrecognized chassis system state transition request.\n");
                     throw std::invalid_argument(
                         "Unrecognized Transition Request");
@@ -3145,8 +2993,7 @@ int main(int argc, char* argv[])
                         throw std::runtime_error("Failed to request GPIO");
                         return 0;
                     }
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "Power Button Masked.");
+                    lg2::info("Power Button Masked.");
                 }
                 else
                 {
@@ -3154,8 +3001,7 @@ int main(int argc, char* argv[])
                     {
                         return 1;
                     }
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "Power Button Un-masked");
+                    lg2::info("Power Button Un-masked");
                     powerButtonMask.reset();
                 }
                 // Update the mask setting
@@ -3203,8 +3049,7 @@ int main(int argc, char* argv[])
                         throw std::runtime_error("Failed to request GPIO");
                         return 0;
                     }
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "Reset Button Masked.");
+                    lg2::info("Reset Button Masked.");
                 }
                 else
                 {
@@ -3212,8 +3057,7 @@ int main(int argc, char* argv[])
                     {
                         return 1;
                     }
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "Reset Button Un-masked");
+                    lg2::info("Reset Button Un-masked");
                     resetButtonMask.reset();
                 }
                 // Update the mask setting
@@ -3254,14 +3098,12 @@ int main(int argc, char* argv[])
                 }
                 if (requested)
                 {
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "NMI Button Masked.");
+                    lg2::info("NMI Button Masked.");
                     nmiButtonMasked = true;
                 }
                 else
                 {
-                    phosphor::logging::log<phosphor::logging::level::INFO>(
-                        "NMI Button Un-masked.");
+                    lg2::info("NMI Button Un-masked.");
                     nmiButtonMasked = false;
                 }
                 // Update the mask setting
@@ -3377,9 +3219,8 @@ int main(int argc, char* argv[])
                 return 0;
             }
 
-            std::string logMsg = "RestartCause requested: " + requested;
-            phosphor::logging::log<phosphor::logging::level::INFO>(
-                logMsg.c_str());
+            lg2::info("RestartCause requested: {RESTART_CAUSE}",
+                      "RESTART_CAUSE", requested);
             resp = requested;
             return 1;
         });
