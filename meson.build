@@ -34,6 +34,8 @@ deps = [
   dependency('libgpiodcxx', fallback: ['libgpiod', 'gpiodcxx_dep'], default_options: ['bindings=cxx']),
   dependency('systemd'),
   dependency('sdbusplus', fallback: ['sdbusplus', 'sdbusplus_dep']),
+  dependency('phosphor-logging', fallback: ['phosphor-logging', 'phosphor_logging_dep']),
+
 ]
 
 executable(
