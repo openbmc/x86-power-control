@@ -2498,7 +2498,7 @@ static sdbusplus::bus::match::match
         static_cast<sdbusplus::bus::bus&>(*conn),
         "type='signal',interface='org.freedesktop.DBus.Properties',member='"
         "PropertiesChanged',arg0='" +
-            cfg.dbusName + "'",
+            cfg.interface + "'",
         std::move(pulseEventMatcherCallback));
 }
 
@@ -2516,9 +2516,9 @@ int getProperty(ConfigData& configData)
             "Error reading from Bus");
         return -1;
     }
-    std::variant<int> resp;
+    std::variant<bool> resp;
     reply.read(resp);
-    auto respValue = std::get_if<int>(&resp);
+    auto respValue = std::get_if<bool>(&resp);
     if (!respValue)
     {
         phosphor::logging::log<phosphor::logging::level::ERR>(
