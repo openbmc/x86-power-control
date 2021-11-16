@@ -169,6 +169,30 @@
     },
     {
       "key": {
+        "uuid": "5745d9ac_2e0223db",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1001239
+      },
+      "writtenOn": "2021-11-16T22:41:46Z",
+      "side": 1,
+      "message": "*quantities \u003d units. Sorry for the confusion.",
+      "parentUuid": "d8360ee3_c6493bc9",
+      "range": {
+        "startLine": 127,
+        "startChar": 40,
+        "endLine": 127,
+        "endChar": 45
+      },
+      "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "543dfbd7_b7cb7c65",
         "filename": "src/power_control.cpp",
         "patchSetId": 3
