@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "5a254443_4ed11b4a",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-11-16T22:25:15Z",
+      "side": 1,
+      "message": "\u003e Zev was mentioning that elsewhere Ed has indicated a direction to standardize on float seconds for timing configuration values. \n\n\u003e There\u0027s some discussion of that in the prior comments on this change (https://gerrit.openbmc-project.xyz/c/openbmc/x86-power-control/+/48208/2..3#message-8d8f9b0dc669713ea6635a34709127a349629943).\n\nHmm.  Ok.  At a dbus level I\u0027ve been trying to get everything standardized on what Time/EpochTime uses, which is uint64 of microseconds.\n\n\u003e For our purposes here I\u0027d expect a single-precision float to be plenty accurate, but I\u0027d be fine with switching to double if that\u0027s deemed preferable.\n\nI would recommend double mostly for consistency.  I see very few places where we use \u0027float\u0027 in the code base (other than some of the ADC code in  dbus-sensors that is similar to this code change) and if you use \u0027double\u0027 there is less thought required.  Since so much uses \u0027double\u0027 in libraries over \u0027float\u0027 there is usually less conversions involved in just sticking with \u0027double\u0027.",
+      "parentUuid": "16f21739_bf4b5433",
+      "range": {
+        "startLine": 127,
+        "startChar": 40,
+        "endLine": 127,
+        "endChar": 45
+      },
+      "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "543dfbd7_b7cb7c65",
         "filename": "src/power_control.cpp",
         "patchSetId": 3
