@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "731d6ddb_af4b3762",
+        "filename": "config/power-config-host0.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1001239
+      },
+      "writtenOn": "2021-11-16T20:52:43Z",
+      "side": 1,
+      "message": "Good catch, thanks !",
+      "parentUuid": "0d2dfa41_fe6f7af2",
+      "revId": "45e886467bf77ec14c9cca3687afe2c256ae8f74",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "47ad3671_4e8774fb",
         "filename": "config/power-config-host0.json",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2021-11-16T20:18:16Z",
       "side": 1,
       "message": "300 instead of 3?",
+      "revId": "45e886467bf77ec14c9cca3687afe2c256ae8f74",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ce3daab9_15ca1e13",
+        "filename": "config/power-config-host0.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1001239
+      },
+      "writtenOn": "2021-11-16T20:52:43Z",
+      "side": 1,
+      "message": "Yes this should be 300",
+      "parentUuid": "47ad3671_4e8774fb",
       "revId": "45e886467bf77ec14c9cca3687afe2c256ae8f74",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "8d1da6f3_e273b8db",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1001239
+      },
+      "writtenOn": "2021-11-16T20:52:43Z",
+      "side": 1,
+      "message": "Yes, I will fix this",
+      "parentUuid": "3f2f108b_20b60dda",
+      "revId": "45e886467bf77ec14c9cca3687afe2c256ae8f74",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1fc829ce_afe629db",
         "filename": "src/power_control.cpp",
         "patchSetId": 2
@@ -64,6 +118,24 @@
       "writtenOn": "2021-11-16T20:18:16Z",
       "side": 1,
       "message": "I\u0027d guess we want to switch `%d` out for something else (`%f` perhaps) here now?  (I guess we don\u0027t have `__attribute__((printf(...))`-style compile-time checking on these, which is unfortunate.)",
+      "revId": "45e886467bf77ec14c9cca3687afe2c256ae8f74",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "63b98496_dc36d175",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 696,
+      "author": {
+        "id": 1001239
+      },
+      "writtenOn": "2021-11-16T20:52:43Z",
+      "side": 1,
+      "message": "Good catch. I will fix this",
+      "parentUuid": "1fc829ce_afe629db",
       "revId": "45e886467bf77ec14c9cca3687afe2c256ae8f74",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "609a741e_d5ab8f56",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 705,
+      "author": {
+        "id": 1001239
+      },
+      "writtenOn": "2021-11-16T20:52:43Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "c9e00ce7_a58b970a",
+      "revId": "45e886467bf77ec14c9cca3687afe2c256ae8f74",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2877fae0_f5951d61",
         "filename": "src/power_control.cpp",
         "patchSetId": 2
@@ -98,6 +188,24 @@
       "writtenOn": "2021-11-16T20:18:16Z",
       "side": 1,
       "message": "Hmm...I\u0027m far from being a C++ expert, but from a glance at the boost docs (https://www.boost.org/doc/libs/1_66_0/doc/html/boost_asio/reference/basic_waitable_timer/expires_after.html), would it work to just pass the `std::chrono::duration` directly to `.expires_after()` and bypass the `duration_cast`?  (Here and in a bunch of other places of course.)",
+      "revId": "45e886467bf77ec14c9cca3687afe2c256ae8f74",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47d1172f_81fc5ad1",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1161,
+      "author": {
+        "id": 1001239
+      },
+      "writtenOn": "2021-11-16T20:52:43Z",
+      "side": 1,
+      "message": "Unfortunately it did not work. Please suggest if you have a better way.",
+      "parentUuid": "2877fae0_f5951d61",
       "revId": "45e886467bf77ec14c9cca3687afe2c256ae8f74",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
