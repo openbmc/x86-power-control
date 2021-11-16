@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b929b23c_7ec2ceb6",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-11-16T22:02:34Z",
+      "side": 1,
+      "message": "Why not standardize on ms rather than involving floating point math?\n\nWhy not \u0027double\u0027 instead of \u0027float\u0027?",
+      "range": {
+        "startLine": 127,
+        "startChar": 40,
+        "endLine": 127,
+        "endChar": 45
+      },
+      "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "543dfbd7_b7cb7c65",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 540,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-11-16T22:02:34Z",
+      "side": 1,
+      "message": "If you do end up using float/double here you might consider \u0027duration\u003cdouble, 1\u003e\u0027 or \u0027duration\u003cdouble, std::ratio\u003c1\u003e\u003e\u0027.  I had to look up what the default template arguments to duration mean otherwise to ensure you did the correct thing here.",
+      "range": {
+        "startLine": 540,
+        "startChar": 34,
+        "endLine": 540,
+        "endChar": 40
+      },
+      "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3f8c37a1_f72d1c63",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1152,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-11-16T22:02:34Z",
+      "side": 1,
+      "message": "Can you remove these \u0027const\u0027s while you\u0027re at it?  There are a bunch of \u0027const int\u0027 and \u0027const float\u0027 in this file it looks like which are pointless (r-value POD arguments do not include \u0027const\u0027 in the function name mangling so there is no difference).",
+      "range": {
+        "startLine": 1152,
+        "startChar": 56,
+        "endLine": 1152,
+        "endChar": 61
+      },
+      "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
