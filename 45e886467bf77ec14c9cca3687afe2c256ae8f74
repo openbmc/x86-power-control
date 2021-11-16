@@ -281,6 +281,24 @@
       "revId": "45e886467bf77ec14c9cca3687afe2c256ae8f74",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c03e1ce_3a5d8d1e",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1161,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2021-11-16T21:45:19Z",
+      "side": 1,
+      "message": "I thought it would work too, but in our testing, the boost expires_after() function only takes integer-based duration objects, so it fails to compile with a float-based duration object.  We had to add the cast to change the float duration to an integer duration to get it to build.\n\nI don\u0027t know if it would be better, but we could consider global integer duration objects that we cast only once at start-up...",
+      "parentUuid": "47d1172f_81fc5ad1",
+      "revId": "45e886467bf77ec14c9cca3687afe2c256ae8f74",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
