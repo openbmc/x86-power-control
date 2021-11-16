@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "3869324b_4678dcab",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1001239
+      },
+      "writtenOn": "2021-11-16T22:34:35Z",
+      "side": 1,
+      "message": "\"At a dbus level I\u0027ve been trying to get everything standardized on what Time/EpochTime uses, which is uint64 of microseconds.\"\n\nIf that is the direction, we should all then use microseconds for the time. The float to integer conversion looks confusing  - just my 2 cents on this topic. Anyway, I am fine either way, please let me know whichever way you all want to proceed.",
+      "parentUuid": "5a254443_4ed11b4a",
+      "range": {
+        "startLine": 127,
+        "startChar": 40,
+        "endLine": 127,
+        "endChar": 45
+      },
+      "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "543dfbd7_b7cb7c65",
         "filename": "src/power_control.cpp",
         "patchSetId": 3
