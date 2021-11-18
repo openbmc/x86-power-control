@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "734d42d0_63b467b1",
+        "filename": "config/power-config-host0.json",
+        "patchSetId": 3
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2021-11-18T08:41:48Z",
+      "side": 1,
+      "message": "Suggest to attach the unit like \"Ms\" did.",
+      "range": {
+        "startLine": 77,
+        "startChar": 15,
+        "endLine": 85,
+        "endChar": 25
+      },
+      "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b929b23c_7ec2ceb6",
         "filename": "src/power_control.cpp",
         "patchSetId": 3
