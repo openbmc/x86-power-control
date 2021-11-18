@@ -33,6 +33,24 @@
       "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d53e13fc_8d1e4b84",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2804,
+      "author": {
+        "id": 1000153
+      },
+      "writtenOn": "2021-11-18T21:06:36Z",
+      "side": 1,
+      "message": "+1.  I wouldn\u0027t really expect this to be done in x86-power-control at all.  There\u0027s a systemd target (whos name is escaping me this second) that we use to determine the \"readiness\" of the BMC.  Power control being up doesn\u0027t mean the BMC is ready.",
+      "parentUuid": "d7c2cae1_06c3f2e7",
+      "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
