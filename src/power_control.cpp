@@ -85,6 +85,7 @@ static ConfigData resetButtonConfig;
 static ConfigData idButtonConfig;
 static ConfigData nmiButtonConfig;
 static ConfigData slotPowerConfig;
+static ConfigData hpmStbyEnConfig;
 
 // map for storing list of gpio parameters whose config are to be read from x86
 // power control json config
@@ -101,7 +102,8 @@ boost::container::flat_map<std::string, ConfigData*> powerSignalMap = {
     {"ResetButton", &resetButtonConfig},
     {"IdButton", &idButtonConfig},
     {"NMIButton", &nmiButtonConfig},
-    {"SlotPower", &slotPowerConfig}};
+    {"SlotPower", &slotPowerConfig},
+    {"HpmStbyEn", &hpmStbyEnConfig}};
 
 static std::string hostDbusName = "xyz.openbmc_project.State.Host";
 static std::string chassisDbusName = "xyz.openbmc_project.State.Chassis";
@@ -3461,6 +3463,18 @@ int main(int argc, char* argv[])
     restartCauseIface->initialize();
 
     currentHostStateMonitor();
+
+    if (!hpmStbyEnConfig.lineName.empty())
+    {
+        // Set to indicate BMC's power control module is ready to take
+        // the inputs [PWR_GOOD] from the HPM FPGA
+        gpiod::line hpmLine;
+        if (!setGPIOOutput(hpmStbyEnConfig.lineName, hpmStbyEnConfig.polarity,
+                           hpmLine))
+        {
+            return -1;
+        }
+    }
 
     io.run();
 
