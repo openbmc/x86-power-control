@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "198346cf_9041c963",
+        "filename": "config/power-config-host0.json",
+        "patchSetId": 3
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-11-18T09:54:53Z",
+      "side": 1,
+      "message": "Part of the point of the change was to eliminate the need for that by making everything be a single uniform unit (seconds).",
+      "parentUuid": "734d42d0_63b467b1",
+      "range": {
+        "startLine": 77,
+        "startChar": 15,
+        "endLine": 85,
+        "endChar": 25
+      },
+      "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b929b23c_7ec2ceb6",
         "filename": "src/power_control.cpp",
         "patchSetId": 3
