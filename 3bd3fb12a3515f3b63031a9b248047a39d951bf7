@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "66f33a7f_3e57ed9e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-11-18T20:50:03Z",
+      "side": 1,
+      "message": "FWIW, this description is I think a bit overly specific -- e3c246d4i (a Xeon system) has just such a GPIO, for example, and as far as I know no CPLD (it\u0027s just read by the BIOS so it can wait for the BMC to come online before proceeding with the boot sequence).",
+      "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7c2cae1_06c3f2e7",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2804,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-11-18T20:50:03Z",
+      "side": 1,
+      "message": "I would have expected this to be done significantly later -- presumably we don\u0027t want to assert the ready signal if we\u0027re not yet actually ready (and there are plenty of things after this point that could still fail before we are).",
+      "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
