@@ -80,6 +80,7 @@ static ConfigData resetButtonConfig;
 static ConfigData idButtonConfig;
 static ConfigData nmiButtonConfig;
 static ConfigData slotPowerConfig;
+static ConfigData bmcReadyConfig;
 
 // map for storing list of gpio parameters whose config are to be read from x86
 // power control json config
@@ -96,7 +97,8 @@ boost::container::flat_map<std::string, ConfigData*> powerSignalMap = {
     {"ResetButton", &resetButtonConfig},
     {"IdButton", &idButtonConfig},
     {"NMIButton", &nmiButtonConfig},
-    {"SlotPower", &slotPowerConfig}};
+    {"SlotPower", &slotPowerConfig},
+    {"BmcReady", &bmcReadyConfig}};
 
 static std::string hostDbusName = "xyz.openbmc_project.State.Host";
 static std::string chassisDbusName = "xyz.openbmc_project.State.Chassis";
@@ -2795,6 +2797,15 @@ int main(int argc, char* argv[])
         phosphor::logging::log<phosphor::logging::level::ERR>(
             "ResetOut name should be configured from json config file");
         return -1;
+    }
+
+    if (!bmcReadyConfig.lineName.empty())
+    {
+        if (!setGPIOOutput(bmcReadyConfig.lineName, bmcReadyConfig.polarity,
+                           line))
+        {
+            return -1;
+        }
     }
     // Release line
     line.reset();
