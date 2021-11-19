@@ -22,6 +22,30 @@
       "revId": "6f0c18de8125b6fcb0f40598f57587010a5106ec",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5f77f2ee_6b05b86c",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2487,
+      "author": {
+        "id": 1001135
+      },
+      "writtenOn": "2021-11-19T04:59:34Z",
+      "side": 1,
+      "message": "Since this interface itself is read from the power-control config files, there won\u0027t be any side effects.\nThis changes limits the dbus match function search scope so that we can monitor a specific property change rather than multiple dbus property changes.",
+      "parentUuid": "76a4cde6_45f3320c",
+      "range": {
+        "startLine": 2487,
+        "startChar": 16,
+        "endLine": 2487,
+        "endChar": 25
+      },
+      "revId": "6f0c18de8125b6fcb0f40598f57587010a5106ec",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
