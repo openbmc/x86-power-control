@@ -240,6 +240,29 @@
     },
     {
       "key": {
+        "uuid": "b521be18_6aafa735",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 539,
+      "author": {
+        "id": 1000411
+      },
+      "writtenOn": "2021-11-25T11:47:59Z",
+      "side": 1,
+      "message": "std::chrono::seconds?",
+      "range": {
+        "startLine": 539,
+        "startChar": 35,
+        "endLine": 539,
+        "endChar": 60
+      },
+      "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "543dfbd7_b7cb7c65",
         "filename": "src/power_control.cpp",
         "patchSetId": 3
