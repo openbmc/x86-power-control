@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "e833a581_d100a6aa",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-11-30T08:48:55Z",
+      "side": 1,
+      "message": "I might suggest something like:\n\n```\nSome boards use a GPIO driven by the BMC to signal to the host that the BMC is fully up and running (the host\u0027s BIOS or other components like a CPLD might wait for it to be asserted before allowing the host\u0027s boot sequence to proceed, for example).\n```",
+      "parentUuid": "18a213a7_2236dae9",
+      "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d7c2cae1_06c3f2e7",
         "filename": "src/power_control.cpp",
         "patchSetId": 2
@@ -84,6 +102,24 @@
       "side": 1,
       "message": "What do you suggest? What things are needed to be done before we can assert this pin?\nBasically after we activate this pin it is possible to power on the platform. For example manually with a button. And I think we don\u0027t want to delay this functionality for too long for the user experience.\nAlso activation of this pin should be done before restoring any power policy.",
       "parentUuid": "d53e13fc_8d1e4b84",
+      "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fdfe60b1_0c0bf9cd",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2804,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-11-30T08:48:55Z",
+      "side": 1,
+      "message": "Well, even if we set aside the question of whether or not this daemon is even the right thing to be asserting `BMC_READY`, this seems to be a premature point in the daemon\u0027s start-up sequence to be doing so (at this point in main() we haven\u0027t yet finished initializing x86-power-contro\u0027s view of the host\u0027s existing power state, for example).\n\nThe question Ed has raised seems like quite a legitimate one to me though -- there are other parts of the BMC\u0027s functionality that are important to consider when declaring the BMC \"ready\" that aren\u0027t taken into account here at all.  For example, on systems I\u0027m familiar with, I think the IPMI service and kcsbridged should be running (so that the host can query the BMC for things like boot source settings and such).  With this approach we might very well end up asserting `BMC_READY` when the BMC is not, in fact, actually ready to do all the things it\u0027s supposed to do.",
+      "parentUuid": "a830cc78_5674eb30",
       "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
