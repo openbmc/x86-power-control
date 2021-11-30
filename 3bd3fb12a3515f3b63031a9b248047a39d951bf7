@@ -123,6 +123,24 @@
       "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5bc002f2_39cfb102",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2804,
+      "author": {
+        "id": 1000926
+      },
+      "writtenOn": "2021-11-30T09:43:18Z",
+      "side": 1,
+      "message": "This is a good point. Some systems truly would need to have BMC IPMI daemon started before the start of the main system. But at the same time I guess some don\u0027t. And these systems would prefer to set `BMC_READY` as soon as possible. I guess it means that we would need a systemd service that would assert these kind of signals?\n\nAs I understand, with the modern gpiolib framework it is not possible to permanently set GPIO signals with the sysfs. Does it mean that we would need another OpenBMC application to set `BMC_READY` signal? How should it be done? This is another question for the discussion.\n\nAlso the questions you are raising aren\u0027t specific to the `BMC_READY` signal from this commit.\nRight now `x86-power-control` performs all its power policies with no relation to start of IPMI or any other OpenBMC service. So the problems you are referring are not connected to this commit.\n\nMy point is that the raised issues are truly important, but it looks like they should be dealt separately. This commit simply provides an ability to launch AMD systems with OpenBMC.",
+      "parentUuid": "fdfe60b1_0c0bf9cd",
+      "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
