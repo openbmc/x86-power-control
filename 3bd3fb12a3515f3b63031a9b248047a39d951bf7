@@ -141,6 +141,24 @@
       "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab020fb8_e6c2ca4a",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2804,
+      "author": {
+        "id": 1000926
+      },
+      "writtenOn": "2021-11-30T09:46:27Z",
+      "side": 1,
+      "message": "Maybe there is a simpler solution?\nIf a user would want to start IPMI before `BMC_READY` it simply should override `xyz.openbmc_project.Chassis.Control.Power%40.service` of \u0027x86-power-control`.\nIn this case we don\u0027t need another application to set `BMC_READY` signal.",
+      "parentUuid": "5bc002f2_39cfb102",
+      "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
