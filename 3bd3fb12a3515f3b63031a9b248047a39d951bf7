@@ -177,6 +177,24 @@
       "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3d3eaca7_e54cf93e",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2804,
+      "author": {
+        "id": 1000153
+      },
+      "writtenOn": "2021-11-30T17:41:18Z",
+      "side": 1,
+      "message": "\u003e This is a good point. Some systems truly would need to have BMC IPMI daemon started before the start of the main system. But at the same time I guess some don\u0027t.\n\nWhich ones don\u0027t?  Generally the BMC ready signal is used to communicate to the host processor that the BMC is ready to handle commands (be they ipmi pldm or redfish).  Do your systems use it to mean something different?\n\n\u003e What things are needed to be done before we can assert this pin?\n\nAll daemons should be launched and ready.  Generally we would use something like multi-user.target to determine this.\n\n\u003eWithout BMC_READY being asserted though there is no system power on these boards, so it also seems appropriate to have x86-power-control control this pin.\n\nConsidering that x86-power-control doesn\u0027t control the \"readiness\" of the BMC (systemd does), that doesn\u0027t seem accurate.  MAYBE x86-power-control might be the thing that actually toggles the gpio, but it needs to be using something from systemd to determine when the right time to do it is.\n\n\n\u003e I also agree with the idea of overriding x86-power-control\u0027s systemd unit file to not start until after ipmid is started\n\nPlease don\u0027t do that.  It enforces incorrect dependencies within the system.  x86-power-control as an application and state machine has no need to wait for IPMI, and the systemd target is easily waited on with a match expression from within the app.\n\n\n\u003e If a user would want to start IPMI before `BMC_READY` it simply should override `xyz.openbmc_project.Chassis.Control.Power%40.service` of \u0027x86-power-control`.\n\nIt\u0027s much simpler if this is just a configure option within the repository itself.  Making a user understand systemd targets to configure their system is a tall order.",
+      "parentUuid": "9de4aa15_1e5444bc",
+      "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
