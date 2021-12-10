@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "26f04ed0_b51d9523",
+        "filename": "meson.build",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-12-10T12:17:18Z",
+      "side": 1,
+      "message": "In order for the \u0027fallback\u0027 to be useful, you also need a wrap file.",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5ec89bf2_69ef0c37",
         "filename": "src/power_control.cpp",
         "patchSetId": 2
@@ -47,6 +64,46 @@
       "writtenOn": "2021-12-10T01:41:23Z",
       "side": 1,
       "message": "Any particular reason for the reformatting here?  New version of clang-format changing its mind about how things should look perhaps?",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "afcb8caf_bb6cab8b",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 870,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-12-10T12:17:18Z",
+      "side": 1,
+      "message": "Do you want to emit the \u0027e\u0027 here?\n\n    lg2::error(\"Unable to read restore policy value: {ERROR}\", \"ERROR\", e);",
+      "range": {
+        "startLine": 869,
+        "startChar": 0,
+        "endLine": 870,
+        "endChar": 77
+      },
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a18c4bdc_e737b6c8",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 930,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-12-10T12:17:18Z",
+      "side": 1,
+      "message": "Might want to log the exception here also (and anywhere you are logging in a catch).",
       "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
