@@ -1,0 +1,395 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5ec89bf2_69ef0c37",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "Not a problem introduced by this patch, but it seems like we might as well take the opportunity to add the missing close-paren here.",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "575b111b_16314d11",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 434,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "Also a pre-existing issue, but this seems more like an error-level message than an info-level one.",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2446a872_8983c06d",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 849,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "Any particular reason for the reformatting here?  New version of clang-format changing its mind about how things should look perhaps?",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f312ae91_bf4a2fdb",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1038,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "(Same reformatting question...)",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "045c2344_68bf51f0",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1084,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "s/name/get/?",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c999fad8_a39e3777",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1132,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "(Reformatting...)",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a9754afa_a76defea",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1175,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "(Reformatting...)",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bb0942ef_3a600046",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1301,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "Error?",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f0c40c35_bd60e493",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1433,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "This looks more like an error...also, s/to get/getting/?",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "441d386c_6c875378",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1440,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "Error?",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f0a53472_bad0ebb7",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1448,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "Error?",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f3f36905_0c18b3fa",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1558,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "Reformatting...",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c65c9965_2e571bfb",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1962,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "This seems to be missing an `\": {ERR}\"` at the end I think...",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b3d85423_3e729993",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1977,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "Error?",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7ccf31c3_4615f74e",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2028,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "(Reformatting...)",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "006bed8e_670fbdfc",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2045,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "Leading space could be dropped I think.",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b6866a98_4bb75e34",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2172,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "Now that it\u0027s somewhat easier to do so, it might be nice to include the actual path in the error message (especially for multi-node systems).  The space before the colon could also be dropped.",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "72bff3c2_991d0ed6",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2201,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "This message could be a bit clearer about what\u0027s wrong I think...maybe something like \"{GPIO_NAME} is not a recognized power-control signal name\" (if I\u0027m interpreting the context right, which I\u0027m not absolutely certain of).",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a23dbd4_09918ad1",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2228,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "Similarly, I think \"undefined\" is a sort of misleading description here; \"unrecognized\" or \"invalid\" or something would be better IMO.",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8f73411a_25a84691",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2332,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "Nitpick: the colon here sort of makes it seem like what follows it is information about the exception, but it\u0027s not -- I think it\u0027d be ever so slightly clearer without it.",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6335c33a_bcd15dec",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2369,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "Anything slightly more informative we could include here?  (e.g. some errno-analogous message from the `reply` object or something?)  Including `configData.lineName` at least would be good.",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eb69265b_580c8e14",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2377,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "Similarly here, a bit more info could be useful.",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "008f72d0_74174e70",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2693,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-10T01:41:23Z",
+      "side": 1,
+      "message": "Trailing space could be dropped; also should we consider including what `powerState` is?",
+      "revId": "6c6c3cecd8ea1c524f4323b62b80365d936cf47b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
