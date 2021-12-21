@@ -11,15 +11,8 @@ several intentional design goals.
    soft power on/off/cycle.
 
 At this point in time, this daemon targets Lewisburg based, dual socket x86
-server platforms, such as S2600WFT.  It is likely that other platforms will work
-as well.
-
-Because this relies on the hardware passthrough support in the AST2500 to
-function, it requires a few patches to work correctly.
-
-This patch adds support to UBOOT to keep the passthrough enabled
-https://github.com/Intel-BMC/openbmc/blob/intel/meta-openbmc-mods/meta-common/
-recipes-bsp/u-boot/files/0005-enable-passthrough-in-uboot.patch
+server platforms, such as S2600WFT.  It is likely that other platforms will
+work as well.
 
 The DTS file for your platform will need the following GPIO definitions
 RESET_BUTTON
@@ -32,14 +25,16 @@ SIO_ONCONTROL
 SIO_POWER_GOOD
 SIO_S5
 
-x86-power-control uses default json file (power-config-host0.json) for GPIO configuration.
-However this can be customized by producing your own power-config-host0.json file.
+x86-power-control uses default json file (power-config-host0.json) for GPIO
+configuration.  However this can be customized by producing your own
+power-config-host0.json file.
 
 Definitions can be configured by two type:
 
 1. GPIO
 
- For the platform having direct GPIO access can use the type GPIO and define like below.
+For the platform having direct GPIO access can use the type GPIO and define
+like below.
 
     {
         "Name" : "PostComplete",
@@ -49,7 +44,8 @@ Definitions can be configured by two type:
 
 2. DBUS
 
- For the platform not having direct GPIO access can use dbus based event monitor by using the type DBUS.
+For the platform not having direct GPIO access can use dbus based event monitor
+by using the type DBUS.
 
     {
         "Name" : "PowerButton",
@@ -60,21 +56,8 @@ Definitions can be configured by two type:
         "Type" : "DBUS"
     },
 
- x86-power-control will monitor the property change from the given DbusName and take appropriate action.
- *define Property as a bool variable.
-
-On an aspeed, these are generally connected to E0, E1, E2, and E3 respectively.
-An example of this is available in the s2600WF config.
-
-This patch allows the passthrough to be reenabled to the default condition when
-the appropriate pin is released.  This allows power control to take control
-when needed by a user power action, but leave the hardware in control a majority
-of the time, reducing the possibility of bricking a system due to a failed BMC.
-
-https://github.com/Intel-BMC/openbmc/blob/intel/meta-openbmc-mods/meta-ast2500/recipes-kernel/linux/linux-aspeed/0002-Enable-pass-through-on-GPIOE1-and-GPIOE3-free.patch
-https://github.com/Intel-BMC/openbmc/blob/intel/meta-openbmc-mods/meta-ast2500/recipes-kernel/linux/linux-aspeed/0003-Enable-GPIOE0-and-GPIOE2-pass-through-by-default.patch
-https://github.com/Intel-BMC/openbmc/blob/intel/meta-openbmc-mods/meta-ast2500/recipes-kernel/linux/linux-aspeed/0006-Allow-monitoring-of-power-control-input-GPIOs.patch
-
+x86-power-control will monitor the property change from the given DbusName and
+take appropriate action.  *define Property as a bool variable.
 
 Caveats:
 This implementation does not currently implement the common targets that other
@@ -83,11 +66,18 @@ issues and boot inconsistencies during stress operations.
 
 ## Build Options
 
-#### USE_PLT_RST
-The POST Complete GPIO is usually held asserted by BIOS after POST complete
-and de-asserts on reset.  This de-assert behavior is currently used to detect
-warm resets.
+#### chassis-system-reset
+Enable chassis system power reset to allow removing power and restoring back.
+
+#### use-plt-rst
+The POST Complete GPIO is usually held asserted by BIOS after POST complete and
+de-asserts on reset.  This de-assert behavior is currently used to detect warm
+resets.
 
 Some systems are adding support for a PLT_RST eSPI signal that can be used to
-more accurately detect warm resets.  When this option is enabled, x86-power-control
-will use PLT_RST to detect warm resets instead of POST Complete.
+more accurately detect warm resets.  When this option is enabled,
+x86-power-control will use PLT_RST to detect warm resets instead of POST
+Complete.
+
+See https://github.com/Intel-BMC/host-misc-comm-manager for implementation
+example.
