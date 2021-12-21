@@ -14,16 +14,20 @@ At this point in time, this daemon targets Lewisburg based, dual socket x86
 server platforms, such as S2600WFT.  It is likely that other platforms will
 work as well.
 
-The DTS file for your platform will need the following GPIO definitions
-RESET_BUTTON
-RESET_OUT
-POWER_BUTTON
-POWER_OUT
-POST_COMPLETE
-PS_PWROK
-SIO_ONCONTROL
-SIO_POWER_GOOD
-SIO_S5
+The DTS file for your platform will need the following GPIO definitions (not
+all of them are necessary):
+- id-button
+- nmi-button
+- host-nmi-control
+- host-ready
+- power-button
+- power-chassis-good
+- power-chassis-control
+- reset-button
+- host-reset-control
+- host-sio-on-control
+- host-sio-pwr-good
+- host-sio-s5
 
 x86-power-control uses default json file (power-config-host0.json) for GPIO
 configuration.  However this can be customized by producing your own
@@ -38,7 +42,7 @@ like below.
 
     {
         "Name" : "PostComplete",
-        "LineName" : "POST_COMPLETE",
+        "LineName" : "host-ready",
         "Type" : "GPIO"
     },
 

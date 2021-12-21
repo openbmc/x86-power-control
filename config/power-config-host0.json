@@ -2,73 +2,73 @@
   "gpio_configs":[
     {
         "Name" : "IdButton",
-        "LineName" : "ID_BUTTON",
+        "LineName" : "id-button",
         "Type" : "GPIO",
         "Polarity" : "ActiveLow"
     },
     {
         "Name" : "NMIButton",
-        "LineName" : "NMI_BUTTON",
+        "LineName" : "nmi-button",
         "Type" : "GPIO",
         "Polarity" : "ActiveLow"
     },
     {
         "Name" : "NMIOut",
-        "LineName" : "NMI_OUT",
+        "LineName" : "host-nmi-control",
         "Type" : "GPIO",
         "Polarity" : "ActiveHigh"
     },
     {
         "Name" : "PostComplete",
-        "LineName" : "POST_COMPLETE",
+        "LineName" : "host-ready",
         "Type" : "GPIO",
         "Polarity" : "ActiveLow"
     },
     {
         "Name" : "PowerButton",
-        "LineName" : "POWER_BUTTON",
+        "LineName" : "power-button",
         "Type" : "GPIO",
         "Polarity" : "ActiveLow"
     },
     {
         "Name" : "PowerOk",
-        "LineName" : "PS_PWROK",
+        "LineName" : "power-chassis-good",
         "Type" : "GPIO",
         "Polarity" : "ActiveHigh"
     },
     {
         "Name" : "PowerOut",
-        "LineName" : "POWER_OUT",
+        "LineName" : "power-chassis-control",
         "Type" : "GPIO",
         "Polarity" : "ActiveLow"
     },
     {
         "Name" : "ResetButton",
-        "LineName" : "RESET_BUTTON",
+        "LineName" : "reset-button",
         "Type" : "GPIO",
         "Polarity" : "ActiveLow"
     },
     {
         "Name" : "ResetOut",
-        "LineName" : "RESET_OUT",
+        "LineName" : "host-reset-control",
         "Type" : "GPIO",
         "Polarity" : "ActiveLow"
     },
     {
         "Name" : "SioOnControl",
-        "LineName" : "SIO_ONCONTROL",
+        "LineName" : "host-sio-on-control",
         "Type" : "GPIO",
         "Polarity" : "ActiveLow"
     },
     {
         "Name" : "SioPowerGood",
-        "LineName" : "SIO_POWER_GOOD",
+        "LineName" : "host-sio-pwr-good",
         "Type" : "GPIO",
         "Polarity" : "ActiveHigh"
     },
     {
         "Name" : "SIOS5",
-        "LineName" : "SIO_S5",
+        "LineName" : "host-sio-s5",
         "Type" : "GPIO",
         "Polarity" : "ActiveLow"
     }
