@@ -205,6 +205,36 @@ static void beep(const uint8_t& beepPriority)
         "xyz.openbmc_project.BeepCode", "Beep", uint8_t(beepPriority));
 }
 
+enum class OperatingSystemStateStage
+{
+    Inactive,
+    Standby,
+};
+static constexpr std::string_view
+    getOperatingSystemStateStage(const OperatingSystemStateStage stage)
+{
+    switch (stage)
+    {
+        case OperatingSystemStateStage::Inactive:
+            return "xyz.openbmc_project.State.OperatingSystem.Status.OSStatus.Inactive";
+            break;
+        case OperatingSystemStateStage::Standby:
+            return "xyz.openbmc_project.State.OperatingSystem.Status.OSStatus.Standby";
+            break;
+        default:
+            return "xyz.openbmc_project.State.OperatingSystem.Status.OSStatus.Inactive";
+            break;
+    }
+};
+static void setOperatingSystemState(const OperatingSystemStateStage stage)
+{
+    osIface->set_property("OperatingSystemState",
+                          std::string(getOperatingSystemStateStage(stage)));
+
+    lg2::info("Moving os state to {STATE} stage",
+              "STATE", std::string(getOperatingSystemStateStage(stage)));
+}
+
 enum class PowerState
 {
     on,
@@ -1480,6 +1510,9 @@ static void currentHostStateMonitor()
     else
     {
         pohCounterTimer.cancel();
+        // If HostState is trurned to OFF, Set 'OperatingSystemState' to
+        // 'Inactive'
+        setOperatingSystemState(OperatingSystemStateStage::Inactive);
         // Set the restart cause set for this restart
         setRestartCause();
     }
@@ -1541,8 +1574,7 @@ static void currentHostStateMonitor()
                 // 'OperatingSystemState' to stay at 'Standby', even though
                 // system is OFF. Set 'OperatingSystemState' to 'Inactive'
                 // if HostState is trurned to OFF.
-                osIface->set_property("OperatingSystemState",
-                                      std::string("Inactive"));
+                setOperatingSystemState(OperatingSystemStateStage::Inactive);
 
                 // Set the restart cause set for this restart
                 setRestartCause();
@@ -2158,12 +2190,12 @@ static void postCompleteHandler(bool state)
     if (!state)
     {
         sendPowerControlEvent(Event::postCompleteAssert);
-        osIface->set_property("OperatingSystemState", std::string("Standby"));
+        setOperatingSystemState(OperatingSystemStateStage::Standby);
     }
     else
     {
         sendPowerControlEvent(Event::postCompleteDeAssert);
-        osIface->set_property("OperatingSystemState", std::string("Inactive"));
+        setOperatingSystemState(OperatingSystemStateStage::Inactive);
     }
 }
 
@@ -3191,17 +3223,23 @@ int main(int argc, char* argv[])
     // Get the initial OS state based on POST complete
     //      0: Asserted, OS state is "Standby" (ready to boot)
     //      1: De-Asserted, OS state is "Inactive"
-    std::string osState;
+    static OperatingSystemStateStage osState;
     if (postCompleteConfig.type == ConfigType::GPIO)
     {
-        osState = postCompleteLine.get_value() > 0 ? "Inactive" : "Standby";
+        osState = postCompleteLine.get_value() > 0
+                      ? OperatingSystemStateStage::Inactive
+                      : OperatingSystemStateStage::Standby;
     }
     else
     {
-        osState = getProperty(postCompleteConfig) > 0 ? "Inactive" : "Standby";
+        osState = getProperty(postCompleteConfig) > 0
+                      ? OperatingSystemStateStage::Inactive
+                      : OperatingSystemStateStage::Standby;
     }
 
-    osIface->register_property("OperatingSystemState", std::string(osState));
+    osIface->register_property(
+        "OperatingSystemState",
+        std::string(getOperatingSystemStateStage(osState)));
 
     osIface->initialize();
 
