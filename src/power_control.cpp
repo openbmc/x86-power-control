@@ -1540,9 +1540,11 @@ static void currentHostStateMonitor()
                 // when power state is changed to OFF. This resulted in
                 // 'OperatingSystemState' to stay at 'Standby', even though
                 // system is OFF. Set 'OperatingSystemState' to 'Inactive'
-                // if HostState is trurned to OFF.
-                osIface->set_property("OperatingSystemState",
-                                      std::string("Inactive"));
+                // if HostState is turned to OFF.
+                osIface->set_property(
+                    "OperatingSystemState",
+                    std::string(
+                        "xyz.openbmc_project.State.OperatingSystem.Status.OSStatus.Inactive"));
 
                 // Set the restart cause set for this restart
                 setRestartCause();
@@ -2079,7 +2081,7 @@ static void setNmiSource()
         "org.freedesktop.DBus.Properties", "Set",
         "xyz.openbmc_project.Chassis.Control.NMISource", "BMCSource",
         std::variant<std::string>{
-            "xyz.openbmc_project.Chassis.Control.NMISource.BMCSourceSignal.FpBtn"});
+            "xyz.openbmc_project.Chassis.Control.NMISource.BMCSourceSignal.FrontPanelButton"});
     // set Enable Property
     nmiSetEnableProperty(true);
 }
@@ -2158,12 +2160,18 @@ static void postCompleteHandler(bool state)
     if (!state)
     {
         sendPowerControlEvent(Event::postCompleteAssert);
-        osIface->set_property("OperatingSystemState", std::string("Standby"));
+        osIface->set_property(
+            "OperatingSystemState",
+            std::string(
+                "xyz.openbmc_project.State.OperatingSystem.Status.OSStatus.Standby"));
     }
     else
     {
         sendPowerControlEvent(Event::postCompleteDeAssert);
-        osIface->set_property("OperatingSystemState", std::string("Inactive"));
+        osIface->set_property(
+            "OperatingSystemState",
+            std::string(
+                "xyz.openbmc_project.State.OperatingSystem.Status.OSStatus.Inactive"));
     }
 }
 
@@ -3194,11 +3202,17 @@ int main(int argc, char* argv[])
     std::string osState;
     if (postCompleteConfig.type == ConfigType::GPIO)
     {
-        osState = postCompleteLine.get_value() > 0 ? "Inactive" : "Standby";
+        osState =
+            postCompleteLine.get_value() > 0
+                ? "xyz.openbmc_project.State.OperatingSystem.Status.OSStatus.Inactive"
+                : "xyz.openbmc_project.State.OperatingSystem.Status.OSStatus.Standby";
     }
     else
     {
-        osState = getProperty(postCompleteConfig) > 0 ? "Inactive" : "Standby";
+        osState =
+            getProperty(postCompleteConfig) > 0
+                ? "xyz.openbmc_project.State.OperatingSystem.Status.OSStatus.Inactive"
+                : "xyz.openbmc_project.State.OperatingSystem.Status.OSStatus.Standby";
     }
 
     osIface->register_property("OperatingSystemState", std::string(osState));
