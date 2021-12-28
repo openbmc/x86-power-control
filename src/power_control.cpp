@@ -139,7 +139,6 @@ boost::container::flat_map<std::string, int> TimerMap = {
     {"PowerOffSaveMs", 7000},
     {"SlotPowerCycleMs", 200}};
 
-static bool nmiEnabled = true;
 static bool sioEnabled = true;
 
 // Timers
@@ -799,6 +798,8 @@ const std::string PersistentState::getName(const Params parameter)
     {
         case Params::PowerState:
             return "PowerState";
+        case Params::LastNMISource:
+            return "LastNMISource";
     }
     return "";
 }
@@ -808,6 +809,8 @@ const std::string PersistentState::getDefault(const Params parameter)
     {
         case Params::PowerState:
             return "xyz.openbmc_project.State.Chassis.PowerState.Off";
+        case Params::LastNMISource:
+            return "xyz.openbmc_project.Control.Host.NMI.NMISource.None";
     }
     return "";
 }
@@ -2035,27 +2038,19 @@ void systemReset()
 }
 #endif
 
-static void nmiSetEnableProperty(bool value)
-{
-    conn->async_method_call(
-        [](boost::system::error_code ec) {
-            if (ec)
-            {
-                lg2::error("failed to set NMI source");
-            }
-        },
-        "xyz.openbmc_project.Settings",
-        "/xyz/openbmc_project/Chassis/Control/NMISource",
-        "org.freedesktop.DBus.Properties", "Set",
-        "xyz.openbmc_project.Chassis.Control.NMISource", "Enabled",
-        std::variant<bool>{value});
-}
-
-static void nmiReset(void)
+static void
+    nmiResetWithSource(const std::string& source =
+                           "xyz.openbmc_project.Control.Host.NMI.NMISource.BMC")
 {
     static constexpr const uint8_t value = 1;
     const static constexpr int nmiOutPulseTimeMs = 200;
 
+    if (!source.starts_with("xyz.openbmc_project.Control.Host.NMI.NMISource."))
+    {
+        throw std::invalid_argument("Wrong value of NMISource");
+    }
+    appState.set(PersistentState::Params::LastNMISource, source);
+    nmiOutIface->set_property("LastNMISource", source);
     lg2::info("NMI out action");
     nmiOutLine.set_value(value);
     lg2::info("{GPIO_NAME} set to {GPIO_VALUE}", "GPIO_NAME",
@@ -2080,70 +2075,11 @@ static void nmiReset(void)
     // log to redfish
     nmiDiagIntLog();
     lg2::info("NMI out action completed");
-    // reset Enable Property
-    nmiSetEnableProperty(false);
 }
 
-static void nmiSourcePropertyMonitor(void)
+static void nmiReset()
 {
-    lg2::info("NMI Source Property Monitor");
-
-    static std::unique_ptr<sdbusplus::bus::match::match> nmiSourceMatch =
-        std::make_unique<sdbusplus::bus::match::match>(
-            *conn,
-            "type='signal',interface='org.freedesktop.DBus.Properties',"
-            "member='PropertiesChanged',"
-            "arg0namespace='xyz.openbmc_project.Chassis.Control.NMISource'",
-            [](sdbusplus::message::message& msg) {
-                std::string interfaceName;
-                boost::container::flat_map<std::string,
-                                           std::variant<bool, std::string>>
-                    propertiesChanged;
-                std::string state;
-                bool value = true;
-                try
-                {
-                    msg.read(interfaceName, propertiesChanged);
-                    if (propertiesChanged.begin()->first == "Enabled")
-                    {
-                        value =
-                            std::get<bool>(propertiesChanged.begin()->second);
-                        lg2::info(
-                            "NMI Enabled propertiesChanged value: {VALUE}",
-                            "VALUE", value);
-                        nmiEnabled = value;
-                        if (nmiEnabled)
-                        {
-                            nmiReset();
-                        }
-                    }
-                }
-                catch (const std::exception& e)
-                {
-                    lg2::error("Unable to read NMI source: {ERROR}", "ERROR",
-                               e);
-                    return;
-                }
-            });
-}
-
-static void setNmiSource()
-{
-    conn->async_method_call(
-        [](boost::system::error_code ec) {
-            if (ec)
-            {
-                lg2::error("failed to set NMI source");
-            }
-        },
-        "xyz.openbmc_project.Settings",
-        "/xyz/openbmc_project/Chassis/Control/NMISource",
-        "org.freedesktop.DBus.Properties", "Set",
-        "xyz.openbmc_project.Chassis.Control.NMISource", "BMCSource",
-        std::variant<std::string>{
-            "xyz.openbmc_project.Chassis.Control.NMISource.BMCSourceSignal.FpBtn"});
-    // set Enable Property
-    nmiSetEnableProperty(true);
+    nmiResetWithSource();
 }
 
 static void nmiButtonHandler(bool state)
@@ -2152,13 +2088,14 @@ static void nmiButtonHandler(bool state)
     if (!state)
     {
         nmiButtonPressLog();
-        if (nmiButtonMasked)
+        if (!nmiButtonMasked)
         {
-            lg2::info("NMI button press masked");
+            nmiResetWithSource(
+                "xyz.openbmc_project.Control.Host.NMI.NMISource.FrontPanelButton");
         }
         else
         {
-            setNmiSource();
+            lg2::info("NMI button press masked");
         }
     }
 }
@@ -2758,9 +2695,6 @@ int main(int argc, char* argv[])
     // Check if we need to start the Power Restore policy
     powerRestorePolicyCheck();
 
-    if (nmiOutLine)
-        nmiSourcePropertyMonitor();
-
     lg2::info("Initializing power state.");
     logStateTransition(powerState);
 
@@ -3208,7 +3142,23 @@ int main(int argc, char* argv[])
         nmiOutIface = nmiOutServer.add_interface(
             "/xyz/openbmc_project/control/host" + node + "/nmi",
             "xyz.openbmc_project.Control.Host.NMI");
+
         nmiOutIface->register_method("NMI", nmiReset);
+        nmiOutIface->register_method("NMIWithSource", nmiResetWithSource);
+        nmiOutIface->register_property(
+            "LastNMISource", appState.get(PersistentState::Params::LastNMISource),
+            [](const std::string& requested, std::string& current) {
+                if (!requested.starts_with(
+                        "xyz.openbmc_project.Control.Host.NMI.NMISource."))
+                {
+                    throw std::invalid_argument("Wrong value of LastNMISource");
+                }
+                appState.set(PersistentState::Params::LastNMISource, requested);
+
+                current = requested;
+                return 1;
+            });
+
         nmiOutIface->initialize();
     }
 
