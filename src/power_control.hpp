@@ -98,6 +98,7 @@ class PersistentState
     enum class Params
     {
         PowerState,
+        LastNMISource,
     };
 
     /**
