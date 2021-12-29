@@ -36,6 +36,7 @@ static boost::asio::io_service io;
 std::shared_ptr<sdbusplus::asio::connection> conn;
 
 static std::string node = "0";
+static const std::string appName = "power-control";
 
 enum class DbusConfigType
 {
@@ -1133,8 +1134,7 @@ static bool requestGPIOEvents(
 
     try
     {
-        gpioLine.request(
-            {"power-control", gpiod::line_request::EVENT_BOTH_EDGES, {}});
+        gpioLine.request({appName, gpiod::line_request::EVENT_BOTH_EDGES, {}});
     }
     catch (const std::exception& e)
     {
@@ -1170,8 +1170,8 @@ static bool setGPIOOutput(const std::string& name, const int value,
     // Request GPIO output to specified value
     try
     {
-        gpioLine.request(
-            {__FUNCTION__, gpiod::line_request::DIRECTION_OUTPUT, {}}, value);
+        gpioLine.request({appName, gpiod::line_request::DIRECTION_OUTPUT, {}},
+                         value);
     }
     catch (const std::exception& e)
     {
