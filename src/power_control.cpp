@@ -137,7 +137,6 @@ boost::container::flat_map<std::string, int> TimerMap = {
     {"PowerOffSaveMs", 7000},
     {"SlotPowerCycleMs", 200}};
 const static std::filesystem::path powerControlDir = "/var/lib/power-control";
-const static constexpr std::string_view powerStateFile = "power-state";
 const static constexpr std::string_view stateFile = "state.json";
 
 static bool sioEnabled = true;
@@ -530,6 +529,7 @@ static void setSlotPowerState(const SlotPowerState state)
 }
 #endif
 
+const static std::string powerStateProperty = "PowerState";
 const static std::string lastNMISourceProperty = "LastNMISource";
 const static int indentationSize = 2;
 static nlohmann::json stateData;
@@ -537,12 +537,25 @@ static nlohmann::json stateData;
 static void resetAppState()
 {
     stateData.clear();
+    stateData[powerStateProperty] = powerState;
     stateData[lastNMISourceProperty] =
         "xyz.openbmc_project.Control.Host.NMI.NMISource.None";
 }
 
 static int loadAppState()
 {
+    // create the power control directory if it doesn't exist
+    std::error_code ec;
+    if (!(std::filesystem::create_directories(powerControlDir, ec)))
+    {
+        if (ec.value() != 0)
+        {
+            lg2::error("failed to create {DIR_NAME}: {ERROR_MSG}", "DIR_NAME",
+                       powerControlDir.string(), "ERROR_MSG", ec.message());
+            return -1;
+        }
+    }
+
     std::ifstream appStateStream(powerControlDir / stateFile);
     if (!appStateStream.is_open())
     {
@@ -606,8 +619,7 @@ static void savePowerState(const PowerState state)
             }
             return;
         }
-        std::ofstream powerStateStream(powerControlDir / powerStateFile);
-        powerStateStream << getChassisState(state);
+        setAppState(powerStateProperty, std::string{getChassisState(state)});
     });
 }
 static void setPowerState(const PowerState state)
@@ -793,39 +805,9 @@ static void nmiDiagIntLog()
                     "OpenBMC.0.1.NMIDiagnosticInterrupt", NULL);
 }
 
-static int initializePowerStateStorage()
-{
-    // create the power control directory if it doesn't exist
-    std::error_code ec;
-    if (!(std::filesystem::create_directories(powerControlDir, ec)))
-    {
-        if (ec.value() != 0)
-        {
-            lg2::error("failed to create {DIR_NAME}: {ERROR_MSG}", "DIR_NAME",
-                       powerControlDir.string(), "ERROR_MSG", ec.message());
-            return -1;
-        }
-    }
-    // Create the power state file if it doesn't exist
-    if (!std::filesystem::exists(powerControlDir / powerStateFile))
-    {
-        std::ofstream powerStateStream(powerControlDir / powerStateFile);
-        powerStateStream << getChassisState(powerState);
-    }
-    return 0;
-}
-
 static bool wasPowerDropped()
 {
-    std::ifstream powerStateStream(powerControlDir / powerStateFile);
-    if (!powerStateStream.is_open())
-    {
-        lg2::error("Failed to open power state file");
-        return false;
-    }
-
-    std::string state;
-    std::getline(powerStateStream, state);
+    std::string state = getAppState(powerStateProperty);
     return state == "xyz.openbmc_project.State.Chassis.PowerState.On";
 }
 
@@ -2695,11 +2677,6 @@ int main(int argc, char* argv[])
         {
             powerState = PowerState::on;
         }
-    }
-    // Initialize the power state storage
-    if (initializePowerStateStorage() < 0)
-    {
-        return -1;
     }
     // Restore stored application state
     if (loadAppState() < 0)
