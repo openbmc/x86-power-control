@@ -41,6 +41,7 @@ deps = [
 executable(
   'power-control',
   'src/power_control.cpp',
+  include_directories: include_directories('src'),
   cpp_args: cpp_args,
   dependencies: deps,
   install: true,
