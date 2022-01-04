@@ -16,6 +16,23 @@
       "message": "Hi All,\n\nCould you please help me to review this commit?\nWe need your help to merge it to fix the automation test failed symptom.\nThanks in advance.\n\nBest regards,\nTim",
       "revId": "916c23ed8a183dafcb70eda92366d43d72aedec4",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "65d1b24d_f9dd678c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000879
+      },
+      "writtenOn": "2022-01-04T19:17:55Z",
+      "side": 1,
+      "message": "There are number of other applications, depend on this, but I have couple of patches for this under the topic \"x86-power-contol-fixup\".\n\nNote, that this patches should be merged before:\nhttps://gerrit.openbmc-project.xyz/c/openbmc/intel-ipmi-oem/+/49978\nhttps://gerrit.openbmc-project.xyz/c/openbmc/peci-pcie/+/49979\nhttps://gerrit.openbmc-project.xyz/c/openbmc/openbmc/+/49980",
+      "revId": "916c23ed8a183dafcb70eda92366d43d72aedec4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
