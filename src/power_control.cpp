@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
+#include "power_control.hpp"
+
 #include <sys/sysinfo.h>
 #include <systemd/sd-journal.h>
 
@@ -34,6 +36,7 @@ namespace power_control
 {
 static boost::asio::io_service io;
 std::shared_ptr<sdbusplus::asio::connection> conn;
+PersistentState appState;
 
 static std::string node = "0";
 
@@ -135,8 +138,6 @@ boost::container::flat_map<std::string, int> TimerMap = {
     {"WarmResetCheckMs", 500},
     {"PowerOffSaveMs", 7000},
     {"SlotPowerCycleMs", 200}};
-const static std::filesystem::path powerControlDir = "/var/lib/power-control";
-const static constexpr std::string_view powerStateFile = "power-state";
 
 static bool nmiEnabled = true;
 static bool sioEnabled = true;
@@ -544,8 +545,8 @@ static void savePowerState(const PowerState state)
             }
             return;
         }
-        std::ofstream powerStateStream(powerControlDir / powerStateFile);
-        powerStateStream << getChassisState(state);
+        appState.set(PersistentState::Params::PowerState,
+                     std::string{getChassisState(state)});
     });
 }
 static void setPowerState(const PowerState state)
@@ -731,7 +732,7 @@ static void nmiDiagIntLog()
                     "OpenBMC.0.1.NMIDiagnosticInterrupt", NULL);
 }
 
-static int initializePowerStateStorage()
+PersistentState::PersistentState()
 {
     // create the power control directory if it doesn't exist
     std::error_code ec;
@@ -741,29 +742,90 @@ static int initializePowerStateStorage()
         {
             lg2::error("failed to create {DIR_NAME}: {ERROR_MSG}", "DIR_NAME",
                        powerControlDir.string(), "ERROR_MSG", ec.message());
-            return -1;
+            throw std::runtime_error("Failed to create state directory");
         }
     }
-    // Create the power state file if it doesn't exist
-    if (!std::filesystem::exists(powerControlDir / powerStateFile))
+
+    // read saved state, it's ok, if the file doesn't exists
+    std::ifstream appStateStream(powerControlDir / stateFile);
+    if (!appStateStream.is_open())
     {
-        std::ofstream powerStateStream(powerControlDir / powerStateFile);
-        powerStateStream << getChassisState(powerState);
+        lg2::info("Cannot open state file \'{PATH}\'", "PATH",
+                  std::string(powerControlDir / stateFile));
+        stateData = nlohmann::json({});
+        return;
     }
-    return 0;
+    try
+    {
+        appStateStream >> stateData;
+        if (stateData.is_discarded())
+        {
+            lg2::info("Cannot parse state file \'{PATH}\'", "PATH",
+                      std::string(powerControlDir / stateFile));
+            stateData = nlohmann::json({});
+            return;
+        }
+    }
+    catch (const std::exception& ex)
+    {
+        lg2::info("Cannot read state file \'{PATH}\'", "PATH",
+                  std::string(powerControlDir / stateFile));
+        stateData = nlohmann::json({});
+        return;
+    }
+}
+PersistentState::~PersistentState()
+{
+    saveState();
+}
+const std::string PersistentState::get(Params parameter)
+{
+    auto val = stateData.find(getName(parameter));
+    if (val != stateData.end())
+    {
+        return val->get<std::string>();
+    }
+    return getDefault(parameter);
+}
+void PersistentState::set(Params parameter, const std::string& value)
+{
+    stateData[getName(parameter)] = value;
+    saveState();
+}
+
+const std::string PersistentState::getName(const Params parameter)
+{
+    switch (parameter)
+    {
+        case Params::PowerState:
+            return "PowerState";
+    }
+    return "";
+}
+const std::string PersistentState::getDefault(const Params parameter)
+{
+    switch (parameter)
+    {
+        case Params::PowerState:
+            return "xyz.openbmc_project.State.Chassis.PowerState.Off";
+    }
+    return "";
+}
+void PersistentState::saveState()
+{
+    std::ofstream appStateStream(powerControlDir / stateFile, std::ios::trunc);
+    if (!appStateStream.is_open())
+    {
+        lg2::error("Cannot write state file \'{PATH}\'", "PATH",
+                   std::string(powerControlDir / stateFile));
+        return;
+    }
+    appStateStream << stateData.dump(indentationSize);
 }
 
 static bool wasPowerDropped()
 {
-    std::ifstream powerStateStream(powerControlDir / powerStateFile);
-    if (!powerStateStream.is_open())
-    {
-        lg2::error("Failed to open power state file");
-        return false;
-    }
-
-    std::string state;
-    std::getline(powerStateStream, state);
+    std::string state = appState.get(PersistentState::Params::PowerState);
     return state == "xyz.openbmc_project.State.Chassis.PowerState.On";
 }
 
@@ -2693,12 +2755,6 @@ int main(int argc, char* argv[])
             powerState = PowerState::on;
         }
     }
-    // Initialize the power state storage
-    if (initializePowerStateStorage() < 0)
-    {
-        return -1;
-    }
-
     // Check if we need to start the Power Restore policy
     powerRestorePolicyCheck();
 
