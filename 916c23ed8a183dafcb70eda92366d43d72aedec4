@@ -52,6 +52,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d43d68d5_c308d60f",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1000294
+      },
+      "writtenOn": "2022-01-05T02:18:40Z",
+      "side": 1,
+      "message": "Thanks your review and suggestion.\nI have modified it. Please help to review it again. Thank you.",
+      "parentUuid": "2e429328_0d9f65ef",
+      "revId": "916c23ed8a183dafcb70eda92366d43d72aedec4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f0a7e962_09b16ca3",
@@ -65,6 +83,24 @@
       "writtenOn": "2022-01-04T19:34:28Z",
       "side": 1,
       "message": "Do you have issues with this? I haven\u0027t any problems without this.\nAnd this looks to be a separate patch or at least should be described in commit message.",
+      "revId": "916c23ed8a183dafcb70eda92366d43d72aedec4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d755ced8_f6eae071",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1517,
+      "author": {
+        "id": 1000294
+      },
+      "writtenOn": "2022-01-05T02:18:40Z",
+      "side": 1,
+      "message": "I didn\u0027t meet issue with this. In currentHostStateMonitor() that will set Inactive when PropertiesChanged for xyz.openbmc_project.State.Host.\n\nI just want to give OperatingSystemState have current latest state in begin of currentHostStateMonitor() function. if there is try catch error happen in currentHostStateMonitor(), the OperatingSystemState will keep previous latest state. It I misunderstanding, please correct me. Thanks.",
+      "parentUuid": "f0a7e962_09b16ca3",
       "revId": "916c23ed8a183dafcb70eda92366d43d72aedec4",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }

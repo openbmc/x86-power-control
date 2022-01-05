@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1158bc4b_a9da8ab4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000294
+      },
+      "writtenOn": "2022-01-05T02:18:40Z",
+      "side": 1,
+      "message": "Hi Andrei,\nThanks your review and suggestion, I have modified it.\nPlease help me review it again. Thank you.\nIf there is any misunderstanding, just let me know.\nI will modify it ASAP. Thanks.\n\nBest regards,\nTim",
+      "revId": "534f79806efbd34afd028d151fa86150bef7ee90",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
