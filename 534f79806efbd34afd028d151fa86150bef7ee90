@@ -16,6 +16,29 @@
       "message": "Hi Andrei,\nThanks your review and suggestion, I have modified it.\nPlease help me review it again. Thank you.\nIf there is any misunderstanding, just let me know.\nI will modify it ASAP. Thanks.\n\nBest regards,\nTim",
       "revId": "534f79806efbd34afd028d151fa86150bef7ee90",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6aa22c3f_633aff83",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-01-05T16:34:22Z",
+      "side": 1,
+      "message": "Does string_view not work already?  Please open an issue to phosphor-logging, assign to me, and add a \"// TODO openbmc/phosphor-logging#1234\" here (where 1234 is the issue number you created).\n\nSadly, if this repository were using PDI you wouldn\u0027t even need this function getOperatingSystemStateStage because phosphor-logging can already automatically convert PDI enums into human readable log entries.",
+      "range": {
+        "startLine": 235,
+        "startChar": 14,
+        "endLine": 235,
+        "endChar": 26
+      },
+      "revId": "534f79806efbd34afd028d151fa86150bef7ee90",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
