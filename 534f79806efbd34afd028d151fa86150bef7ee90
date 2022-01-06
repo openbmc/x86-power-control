@@ -18,6 +18,23 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "43ceb15b_4196c775",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000294
+      },
+      "writtenOn": "2022-01-06T06:07:53Z",
+      "side": 1,
+      "message": "Hello Patrick,\n\nThanks your prompt response for this commit.\nPlease help provide your suggestion and let this commit can be merged it smoothly.\n\nBest regards,\nTim",
+      "revId": "534f79806efbd34afd028d151fa86150bef7ee90",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6aa22c3f_633aff83",
@@ -31,6 +48,30 @@
       "writtenOn": "2022-01-05T16:34:22Z",
       "side": 1,
       "message": "Does string_view not work already?  Please open an issue to phosphor-logging, assign to me, and add a \"// TODO openbmc/phosphor-logging#1234\" here (where 1234 is the issue number you created).\n\nSadly, if this repository were using PDI you wouldn\u0027t even need this function getOperatingSystemStateStage because phosphor-logging can already automatically convert PDI enums into human readable log entries.",
+      "range": {
+        "startLine": 235,
+        "startChar": 14,
+        "endLine": 235,
+        "endChar": 26
+      },
+      "revId": "534f79806efbd34afd028d151fa86150bef7ee90",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1a7d54df_b6a79538",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1000294
+      },
+      "writtenOn": "2022-01-06T06:07:53Z",
+      "side": 1,
+      "message": "The std::string_view is work well also. I just used to call string function.\n\nHere, I refer logStateTransition() to print os state as below:\n\nstatic void logStateTransition(const PowerState state)\n{\n    lg2::info(\"Host{HOST}: Moving to \\\"{STATE}\\\" state\", \"HOST\", node, \"STATE\",\n              getPowerStateName(state));\n}\n\nActually, I don\u0027t understand why cannot call this getOperatingSystemStateStage() to get current os state and print it through logging.\nCould you share your experience about logging? Should I remove this lg2:info() line? Thanks your suggestion.",
+      "parentUuid": "6aa22c3f_633aff83",
       "range": {
         "startLine": 235,
         "startChar": 14,
