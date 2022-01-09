@@ -29,6 +29,9 @@ endif
 if get_option('use-plt-rst').enabled()
   cpp_args += '-DUSE_PLT_RST'
 endif
+if get_option('use-acboot').enabled()
+  cpp_args += '-DUSE_ACBOOT'
+endif
 
 deps = [
   dependency('libgpiodcxx', fallback: ['libgpiod', 'gpiodcxx_dep'], default_options: ['bindings=cxx']),
