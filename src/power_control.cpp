@@ -37,6 +37,7 @@ namespace power_control
 static boost::asio::io_service io;
 std::shared_ptr<sdbusplus::asio::connection> conn;
 PersistentState appState;
+PowerRestoreController powerRestore(io);
 
 static std::string node = "0";
 static const std::string appName = "power-control";
@@ -653,6 +654,7 @@ static void setRestartCauseProperty(const std::string& cause)
     restartCauseIface->set_property("RestartCause", cause);
 }
 
+#ifdef USE_ACBOOT
 static void resetACBootProperty()
 {
     if ((causeSet.contains(RestartCause::command)) ||
@@ -672,6 +674,7 @@ static void resetACBootProperty()
             std::variant<std::string>{"False"});
     }
 }
+#endif // USE_ACBOOT
 
 static void setRestartCause()
 {
@@ -854,31 +857,236 @@ void PersistentState::saveState()
     appStateStream << stateData.dump(indentationSize);
 }
 
-static bool wasPowerDropped()
+static constexpr char const* setingsService = "xyz.openbmc_project.Settings";
+static constexpr char const* powerRestorePolicyObject =
+    "/xyz/openbmc_project/control/host0/power_restore_policy";
+static constexpr char const* powerRestorePolicyIface =
+    "xyz.openbmc_project.Control.Power.RestorePolicy";
+#ifdef USE_ACBOOT
+static constexpr char const* powerACBootObject =
+    "/xyz/openbmc_project/control/host0/ac_boot";
+static constexpr char const* powerACBootIface =
+    "xyz.openbmc_project.Common.ACBoot";
+#endif // USE_ACBOOT
+
+namespace match_rules = sdbusplus::bus::match::rules;
+
+static int powerRestoreConfigHandler(sd_bus_message* m, void* context,
+                                     sd_bus_error*)
 {
-    std::string state = appState.get(PersistentState::Params::PowerState);
-    return state == "xyz.openbmc_project.State.Chassis.PowerState.On";
+    if (context == nullptr || m == nullptr)
+    {
+        throw std::runtime_error("Invalid match");
+    }
+    sdbusplus::message::message message(m);
+    PowerRestoreController* powerRestore =
+        static_cast<PowerRestoreController*>(context);
+
+    if (std::string(message.get_member()) == "InterfacesAdded")
+    {
+        sdbusplus::message::object_path path;
+        boost::container::flat_map<std::string, dbusPropertiesList> data;
+
+        message.read(path, data);
+
+        for (auto& [iface, properties] : data)
+        {
+            if ((iface == powerRestorePolicyIface)
+#ifdef USE_ACBOOT
+                || (iface == powerACBootIface)
+#endif // USE_ACBOOT
+            )
+            {
+                powerRestore->setProperties(properties);
+            }
+        }
+    }
+    else if (std::string(message.get_member()) == "PropertiesChanged")
+    {
+        std::string interfaceName;
+        dbusPropertiesList propertiesChanged;
+
+        message.read(interfaceName, propertiesChanged);
+
+        powerRestore->setProperties(propertiesChanged);
+    }
+    return 1;
 }
 
-static void invokePowerRestorePolicy(const std::string& policy)
+void PowerRestoreController::run()
 {
-    // Async events may call this twice, but we only want to run once
-    static bool policyInvoked = false;
+    powerRestorePolicyLog();
+    // this list only needs to be created once
+    if (matches.empty())
+    {
+        matches.emplace_back(
+            *conn,
+            match_rules::interfacesAdded() +
+                match_rules::argNpath(0, powerRestorePolicyObject) +
+                match_rules::sender(setingsService),
+            powerRestoreConfigHandler, this);
+#ifdef USE_ACBOOT
+        matches.emplace_back(*conn,
+                             match_rules::interfacesAdded() +
+                                 match_rules::argNpath(0, powerACBootObject) +
+                                 match_rules::sender(setingsService),
+                             powerRestoreConfigHandler, this);
+        matches.emplace_back(*conn,
+                             match_rules::propertiesChanged(powerACBootObject,
+                                                            powerACBootIface) +
+                                 match_rules::sender(setingsService),
+                             powerRestoreConfigHandler, this);
+#endif // USE_ACBOOT
+    }
+
+    // Check if it's already on DBus
+    conn->async_method_call(
+        [this](boost::system::error_code ec,
+               const dbusPropertiesList properties) {
+            if (ec)
+            {
+                return;
+            }
+            setProperties(properties);
+        },
+        setingsService, powerRestorePolicyObject,
+        "org.freedesktop.DBus.Properties", "GetAll", powerRestorePolicyIface);
+
+#ifdef USE_ACBOOT
+    // Check if it's already on DBus
+    conn->async_method_call(
+        [this](boost::system::error_code ec,
+               const dbusPropertiesList properties) {
+            if (ec)
+            {
+                return;
+            }
+            setProperties(properties);
+        },
+        setingsService, powerACBootObject, "org.freedesktop.DBus.Properties",
+        "GetAll", powerACBootIface);
+#endif
+}
+
+void PowerRestoreController::setProperties(const dbusPropertiesList& props)
+{
+    for (auto& [property, propValue] : props)
+    {
+        if (property == "PowerRestorePolicy")
+        {
+            const std::string* value = std::get_if<std::string>(&propValue);
+            if (value == nullptr)
+            {
+                lg2::error("Unable to read Power Restore Policy");
+                continue;
+            }
+            powerRestorePolicy = *value;
+        }
+        else if (property == "PowerRestoreDelay")
+        {
+            const uint64_t* value = std::get_if<uint64_t>(&propValue);
+            if (value == nullptr)
+            {
+                lg2::error("Unable to read Power Restore Delay");
+                continue;
+            }
+            powerRestoreDelay = *value / 1000000; // usec to sec
+        }
+#ifdef USE_ACBOOT
+        else if (property == "ACBoot")
+        {
+            const std::string* value = std::get_if<std::string>(&propValue);
+            if (value == nullptr)
+            {
+                lg2::error("Unable to read AC Boot status");
+                continue;
+            }
+            acBoot = *value;
+        }
+#endif // USE_ACBOOT
+    }
+    invokeIfReady();
+}
+
+void PowerRestoreController::invokeIfReady()
+{
+    if ((powerRestorePolicy.empty()) || (powerRestoreDelay < 0))
+    {
+        return;
+    }
+#ifdef USE_ACBOOT
+    if (acBoot.empty() || acBoot == "Unknown")
+    {
+        return;
+    }
+#endif
+
+    matches.clear();
+    if (!timerFired)
+    {
+        // Calculate the delay from now to meet the requested delay
+        // Subtract the approximate uboot time
+        static constexpr const int ubootSeconds = 20;
+        int delay = powerRestoreDelay - ubootSeconds;
+        // Subtract the time since boot
+        struct sysinfo info = {};
+        if (sysinfo(&info) == 0)
+        {
+            delay -= info.uptime;
+        }
+
+        if (delay > 0)
+        {
+            powerRestoreTimer.expires_after(std::chrono::seconds(delay));
+            lg2::info("Power Restore delay of {DELAY} seconds started", "DELAY",
+                      delay);
+            powerRestoreTimer.async_wait([this](const boost::system::error_code
+                                                    ec) {
+                if (ec)
+                {
+                    // operation_aborted is expected if timer is canceled before
+                    // completion.
+                    if (ec == boost::asio::error::operation_aborted)
+                    {
+                        return;
+                    }
+                    lg2::error(
+                        "power restore policy async_wait failed: {ERROR_MSG}",
+                        "ERROR_MSG", ec.message());
+                }
+                else
+                {
+                    lg2::info("Power Restore delay timer expired");
+                }
+                invoke();
+            });
+            timerFired = true;
+        }
+        else
+        {
+            invoke();
+        }
+    }
+}
+
+void PowerRestoreController::invoke()
+{
+    // we want to run Power Restore only once
     if (policyInvoked)
     {
         return;
     }
     policyInvoked = true;
 
-    lg2::info("Power restore delay expired, invoking {POLICY}", "POLICY",
-              policy);
-    if (policy ==
+    lg2::info("Invoking Power Restore Policy {POLICY}", "POLICY",
+              powerRestorePolicy);
+    if (powerRestorePolicy ==
         "xyz.openbmc_project.Control.Power.RestorePolicy.Policy.AlwaysOn")
     {
         sendPowerControlEvent(Event::powerOnRequest);
         setRestartCauseProperty(getRestartCause(RestartCause::powerPolicyOn));
     }
-    else if (policy ==
+    else if (powerRestorePolicy ==
              "xyz.openbmc_project.Control.Power.RestorePolicy.Policy.Restore")
     {
         if (wasPowerDropped())
@@ -898,232 +1106,10 @@ static void invokePowerRestorePolicy(const std::string& policy)
     savePowerState(powerState);
 }
 
-static void powerRestorePolicyDelay(int delay)
+bool PowerRestoreController::wasPowerDropped()
 {
-    // Async events may call this twice, but we only want to run once
-    static bool delayStarted = false;
-    if (delayStarted)
-    {
-        return;
-    }
-    delayStarted = true;
-    // Calculate the delay from now to meet the requested delay
-    // Subtract the approximate uboot time
-    static constexpr const int ubootSeconds = 20;
-    delay -= ubootSeconds;
-    // Subtract the time since boot
-    struct sysinfo info = {};
-    if (sysinfo(&info) == 0)
-    {
-        delay -= info.uptime;
-    }
-    // 0 is the minimum delay
-    delay = std::max(delay, 0);
-
-    static boost::asio::steady_timer powerRestorePolicyTimer(io);
-    powerRestorePolicyTimer.expires_after(std::chrono::seconds(delay));
-    lg2::info("Power restore delay of {DELAY} seconds started", "DELAY", delay);
-    powerRestorePolicyTimer.async_wait([](const boost::system::error_code ec) {
-        if (ec)
-        {
-            // operation_aborted is expected if timer is canceled before
-            // completion.
-            if (ec != boost::asio::error::operation_aborted)
-            {
-                lg2::error(
-                    "power restore policy async_wait failed: {ERROR_MSG}",
-                    "ERROR_MSG", ec.message());
-            }
-            return;
-        }
-        // Get Power Restore Policy
-        // In case PowerRestorePolicy is not available, set a match for it
-        static std::unique_ptr<sdbusplus::bus::match::match>
-            powerRestorePolicyMatch =
-                std::make_unique<sdbusplus::bus::match::match>(
-                    *conn,
-                    "type='signal',interface='org.freedesktop.DBus.Properties',"
-                    "member='PropertiesChanged',arg0namespace='xyz.openbmc_"
-                    "project.Control.Power.RestorePolicy'",
-                    [](sdbusplus::message::message& msg) {
-                        std::string interfaceName;
-                        boost::container::flat_map<std::string,
-                                                   std::variant<std::string>>
-                            propertiesChanged;
-                        std::string policy;
-                        try
-                        {
-                            msg.read(interfaceName, propertiesChanged);
-                            policy = std::get<std::string>(
-                                propertiesChanged.begin()->second);
-                        }
-                        catch (const std::exception& e)
-                        {
-                            lg2::error(
-                                "Unable to read restore policy value: {ERROR}",
-                                "ERROR", e);
-                            powerRestorePolicyMatch.reset();
-                            return;
-                        }
-                        invokePowerRestorePolicy(policy);
-                        powerRestorePolicyMatch.reset();
-                    });
-
-        // Check if it's already on DBus
-        conn->async_method_call(
-            [](boost::system::error_code ec,
-               const std::variant<std::string>& policyProperty) {
-                if (ec)
-                {
-                    return;
-                }
-                powerRestorePolicyMatch.reset();
-                const std::string* policy =
-                    std::get_if<std::string>(&policyProperty);
-                if (policy == nullptr)
-                {
-                    lg2::error("Unable to read power restore policy value");
-                    return;
-                }
-                invokePowerRestorePolicy(*policy);
-            },
-            "xyz.openbmc_project.Settings",
-            "/xyz/openbmc_project/control/host0/power_restore_policy",
-            "org.freedesktop.DBus.Properties", "Get",
-            "xyz.openbmc_project.Control.Power.RestorePolicy",
-            "PowerRestorePolicy");
-    });
-}
-
-static void powerRestorePolicyStart()
-{
-    lg2::info("Power restore policy started");
-    powerRestorePolicyLog();
-
-    // Get the desired delay time
-    // In case PowerRestoreDelay is not available, set a match for it
-    static std::unique_ptr<sdbusplus::bus::match::match>
-        powerRestoreDelayMatch = std::make_unique<sdbusplus::bus::match::match>(
-            *conn,
-            "type='signal',interface='org.freedesktop.DBus.Properties',member='"
-            "PropertiesChanged',arg0namespace='xyz.openbmc_project.Control."
-            "Power.RestoreDelay'",
-            [](sdbusplus::message::message& msg) {
-                std::string interfaceName;
-                boost::container::flat_map<std::string, std::variant<uint16_t>>
-                    propertiesChanged;
-                int delay = 0;
-                try
-                {
-                    msg.read(interfaceName, propertiesChanged);
-                    delay =
-                        std::get<uint16_t>(propertiesChanged.begin()->second);
-                }
-                catch (const std::exception& e)
-                {
-                    lg2::error(
-                        "Unable to read power restore delay value: {ERROR}",
-                        "ERROR", e);
-                    powerRestoreDelayMatch.reset();
-                    return;
-                }
-                powerRestorePolicyDelay(delay);
-                powerRestoreDelayMatch.reset();
-            });
-
-    // Check if it's already on DBus
-    conn->async_method_call(
-        [](boost::system::error_code ec,
-           const std::variant<uint16_t>& delayProperty) {
-            if (ec)
-            {
-                return;
-            }
-            powerRestoreDelayMatch.reset();
-            const uint16_t* delay = std::get_if<uint16_t>(&delayProperty);
-            if (delay == nullptr)
-            {
-                lg2::error("Unable to read power restore delay value");
-                return;
-            }
-            powerRestorePolicyDelay(*delay);
-        },
-        "xyz.openbmc_project.Settings",
-        "/xyz/openbmc_project/control/power_restore_delay",
-        "org.freedesktop.DBus.Properties", "Get",
-        "xyz.openbmc_project.Control.Power.RestoreDelay", "PowerRestoreDelay");
-}
-
-static void powerRestorePolicyCheck()
-{
-    // In case ACBoot is not available, set a match for it
-    static std::unique_ptr<sdbusplus::bus::match::match> acBootMatch =
-        std::make_unique<sdbusplus::bus::match::match>(
-            *conn,
-            "type='signal',interface='org.freedesktop.DBus.Properties',member='"
-            "PropertiesChanged',arg0namespace='xyz.openbmc_project.Common."
-            "ACBoot'",
-            [](sdbusplus::message::message& msg) {
-                std::string interfaceName;
-                boost::container::flat_map<std::string,
-                                           std::variant<std::string>>
-                    propertiesChanged;
-                std::string acBoot;
-                try
-                {
-                    msg.read(interfaceName, propertiesChanged);
-                    acBoot = std::get<std::string>(
-                        propertiesChanged.begin()->second);
-                }
-                catch (const std::exception& e)
-                {
-                    lg2::error("Unable to read AC Boot status: {ERROR}",
-                               "ERROR", e);
-                    acBootMatch.reset();
-                    return;
-                }
-                if (acBoot == "Unknown")
-                {
-                    return;
-                }
-                if (acBoot == "True")
-                {
-                    // Start the Power Restore policy
-                    powerRestorePolicyStart();
-                }
-                acBootMatch.reset();
-            });
-
-    // Check if it's already on DBus
-    conn->async_method_call(
-        [](boost::system::error_code ec,
-           const std::variant<std::string>& acBootProperty) {
-            if (ec)
-            {
-                return;
-            }
-            const std::string* acBoot =
-                std::get_if<std::string>(&acBootProperty);
-            if (acBoot == nullptr)
-            {
-                lg2::error("Unable to read AC Boot status");
-                return;
-            }
-            if (*acBoot == "Unknown")
-            {
-                return;
-            }
-            if (*acBoot == "True")
-            {
-                // Start the Power Restore policy
-                powerRestorePolicyStart();
-            }
-            acBootMatch.reset();
-        },
-        "xyz.openbmc_project.Settings",
-        "/xyz/openbmc_project/control/host0/ac_boot",
-        "org.freedesktop.DBus.Properties", "Get",
-        "xyz.openbmc_project.Common.ACBoot", "ACBoot");
+    std::string state = appState.get(PersistentState::Params::PowerState);
+    return state == "xyz.openbmc_project.State.Chassis.PowerState.On";
 }
 
 static void waitForGPIOEvent(const std::string& name,
@@ -1637,7 +1623,9 @@ static void currentHostStateMonitor()
 
                 // Set the restart cause set for this restart
                 setRestartCause();
+#ifdef USE_ACBOOT
                 resetACBootProperty();
+#endif // USE_ACBOOT
                 sd_journal_send("MESSAGE=Host system DC power is off",
                                 "PRIORITY=%i", LOG_INFO,
                                 "REDFISH_MESSAGE_ID=%s",
@@ -2785,7 +2773,10 @@ int main(int argc, char* argv[])
         }
     }
     // Check if we need to start the Power Restore policy
-    powerRestorePolicyCheck();
+    if (powerState != PowerState::on)
+    {
+        powerRestore.run();
+    }
 
     if (nmiOutLine)
         nmiSourcePropertyMonitor();
