@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "06a955a5_ffe7d0e5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2022-01-10T20:25:01Z",
+      "side": 1,
+      "message": "Looks good.  Just a couple minor typos and I will pull it down and test on my system.  Thanks!",
+      "revId": "b88b0374d2e424993cd656dc5b19121c033c060b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c18ac20_14836127",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 763,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2022-01-10T20:25:01Z",
+      "side": 1,
+      "message": "typo: parse",
+      "range": {
+        "startLine": 763,
+        "startChar": 30,
+        "endLine": 763,
+        "endChar": 36
+      },
+      "revId": "b88b0374d2e424993cd656dc5b19121c033c060b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
