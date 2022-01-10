@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "30f7e177_b1a4f3b3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000294
+      },
+      "writtenOn": "2022-01-10T07:49:59Z",
+      "side": 1,
+      "message": "Hi Andrei,\nThanks your review and suggestion. I have modified it.\nPlease help me to review it again. Thanks a lot.\n\nBest regards,\nTim",
+      "revId": "d7fdc7d053ab9daefaf2d474146221e9a92edaa6",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}

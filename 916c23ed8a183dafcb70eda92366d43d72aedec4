@@ -123,6 +123,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "480530d7_2c1abc7b",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1517,
+      "author": {
+        "id": 1000294
+      },
+      "writtenOn": "2022-01-10T07:49:59Z",
+      "side": 1,
+      "message": "Yes. You are right. Thanks your review. I have removed it.",
+      "parentUuid": "ca135936_1f92d0a6",
+      "revId": "916c23ed8a183dafcb70eda92366d43d72aedec4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e4cc5eab_3e942aef",
@@ -136,6 +154,30 @@
       "writtenOn": "2022-01-10T07:10:07Z",
       "side": 1,
       "message": "I wonder why you decide to make it static - it looks pointless here.",
+      "range": {
+        "startLine": 3228,
+        "startChar": 4,
+        "endLine": 3228,
+        "endChar": 10
+      },
+      "revId": "916c23ed8a183dafcb70eda92366d43d72aedec4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a3cf2f7_36450884",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3228,
+      "author": {
+        "id": 1000294
+      },
+      "writtenOn": "2022-01-10T07:49:59Z",
+      "side": 1,
+      "message": "Yes. You are right, it is pointless here. Thanks your review. I have removed it.",
+      "parentUuid": "e4cc5eab_3e942aef",
       "range": {
         "startLine": 3228,
         "startChar": 4,
