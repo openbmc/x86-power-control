@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "feeeb816_70ee3620",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2022-01-10T20:51:22Z",
+      "side": 1,
+      "message": "typo: of",
+      "range": {
+        "startLine": 31,
+        "startChar": 8,
+        "endLine": 31,
+        "endChar": 11
+      },
+      "revId": "9677e28870d39cf7a64f12ef08bb277ca29287e1",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "56bb2b6f_13024e56",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2022-01-10T20:51:22Z",
+      "side": 1,
+      "message": "Looks okay.  I don\u0027t love the idea of x86-power-control owning the persistence of settings instead of the settings daemon, but I guess that would require more complexity on the PDI side?",
+      "revId": "9677e28870d39cf7a64f12ef08bb277ca29287e1",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
