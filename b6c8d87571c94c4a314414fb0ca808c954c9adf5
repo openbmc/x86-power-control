@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd58a7c5_6d514076",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2022-01-10T20:58:10Z",
+      "side": 1,
+      "message": "typo: supposed",
+      "range": {
+        "startLine": 9,
+        "startChar": 37,
+        "endLine": 9,
+        "endChar": 46
+      },
+      "revId": "b6c8d87571c94c4a314414fb0ca808c954c9adf5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c2151892_f8c98ac7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2022-01-10T20:58:10Z",
+      "side": 1,
+      "message": "typo: function",
+      "range": {
+        "startLine": 11,
+        "startChar": 49,
+        "endLine": 11,
+        "endChar": 57
+      },
+      "revId": "b6c8d87571c94c4a314414fb0ca808c954c9adf5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cbb741e2_f5608745",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2022-01-10T20:58:10Z",
+      "side": 1,
+      "message": "Looks good.  There are a couple minor typos to fix, and I will pull this down and test it on my system.",
+      "revId": "b6c8d87571c94c4a314414fb0ca808c954c9adf5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
