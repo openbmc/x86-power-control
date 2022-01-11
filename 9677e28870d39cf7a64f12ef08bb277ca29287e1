@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "3e6df062_3e9de1d8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000879
+      },
+      "writtenOn": "2022-01-11T08:10:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "feeeb816_70ee3620",
+      "range": {
+        "startLine": 31,
+        "startChar": 8,
+        "endLine": 31,
+        "endChar": 11
+      },
+      "revId": "9677e28870d39cf7a64f12ef08bb277ca29287e1",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "56bb2b6f_13024e56",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 5
@@ -37,6 +61,24 @@
       "writtenOn": "2022-01-10T20:51:22Z",
       "side": 1,
       "message": "Looks okay.  I don\u0027t love the idea of x86-power-control owning the persistence of settings instead of the settings daemon, but I guess that would require more complexity on the PDI side?",
+      "revId": "9677e28870d39cf7a64f12ef08bb277ca29287e1",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "64288d82_a42fe5e5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000879
+      },
+      "writtenOn": "2022-01-11T08:10:21Z",
+      "side": 1,
+      "message": "Actually no, if we keep separate interface and remove this unused `nmiEnable` property technically it would be fine for phosphor-settings-manager. But my key point here is that NMISource is not \"settings\" - it doesn\u0027t control anything and it doesn\u0027t set by user or something like this: it only represent how the NMI was triggered last time to user can read this information for his purpose. So I say here that NMISource doesn\u0027t fit to phosphor-settings-manager logically because it is state, not settings.",
+      "parentUuid": "56bb2b6f_13024e56",
       "revId": "9677e28870d39cf7a64f12ef08bb277ca29287e1",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
