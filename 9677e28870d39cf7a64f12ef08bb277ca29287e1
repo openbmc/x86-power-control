@@ -81,6 +81,24 @@
       "parentUuid": "56bb2b6f_13024e56",
       "revId": "9677e28870d39cf7a64f12ef08bb277ca29287e1",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "79e41c08_9d8d36e4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-01-14T21:39:19Z",
+      "side": 1,
+      "message": "\u003e I say here that NMISource doesn\u0027t fit to phosphor-settings-manager logically because it is state, not settings.\n\nI agree with this.  settings-manager is to hold settings and not arbitrary state of any application.  This is state that should be scoped to x86-power-control persisted by it directly.",
+      "parentUuid": "64288d82_a42fe5e5",
+      "revId": "9677e28870d39cf7a64f12ef08bb277ca29287e1",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
