@@ -115,6 +115,24 @@
       "parentUuid": "49f4cafd_683019f8",
       "revId": "4370b2a2d9436014a40a5e02a3b46dee2ffaa591",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f0400fb0_cb4b130e",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1049,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2022-01-14T23:44:09Z",
+      "side": 1,
+      "message": "I\u0027m fine either way.  In my testing the timer of delay 0 worked and allowed the same logic to always run, so the code was simpler.  However, I\u0027m okay if you want to check if no delay is set since that is the majority case and could be handled separately.\n\nAnother option would be to check for a delay of 0 just before starting the timer after all the calculations are done.  Then it will skip the timer any time it is not needed.",
+      "parentUuid": "58e14a18_790593e0",
+      "revId": "4370b2a2d9436014a40a5e02a3b46dee2ffaa591",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
