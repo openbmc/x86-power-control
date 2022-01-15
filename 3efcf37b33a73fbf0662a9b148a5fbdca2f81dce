@@ -1,0 +1,7 @@
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+2: Jason Bills <jason.m.bills@linux.intel.com>
+Submitted-by: Andrei Kartashev <a.kartashev@yadro.com>
+Submitted-at: Sat, 15 Jan 2022 07:59:46 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/x86-power-control/+/50046
+Project: openbmc/x86-power-control
+Branch: refs/heads/master
