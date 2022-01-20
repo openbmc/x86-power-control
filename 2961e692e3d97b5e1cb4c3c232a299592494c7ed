@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6886b7b8_499fe218",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-01-20T22:39:48Z",
+      "side": 1,
+      "message": "As long as we\u0027re editing this, seems like we might as well broaden this bit?  Perhaps something like:\n\n\"This daemon has been successfully used on a variety of x86 server platforms; it should be able to support platforms with power control GPIOs similar to those in its config file.\"",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 13
+      },
+      "revId": "2961e692e3d97b5e1cb4c3c232a299592494c7ed",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bd8f2214_fc2319bf",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-01-20T22:39:48Z",
+      "side": 1,
+      "message": "Given the GPIO-line name remapping now available via the config file, this is part is a bit out of date (perhaps it should just be removed).",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 6
+      },
+      "revId": "2961e692e3d97b5e1cb4c3c232a299592494c7ed",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
