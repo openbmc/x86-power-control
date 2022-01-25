@@ -69,6 +69,24 @@
       "parentUuid": "06f58998_def5fc4f",
       "revId": "d7fdc7d053ab9daefaf2d474146221e9a92edaa6",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc23a653_1a811eb1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000294
+      },
+      "writtenOn": "2022-01-25T07:50:31Z",
+      "side": 1,
+      "message": "We have run all openbmc-automation test and host power control functionality seems work well. Just update this information for you all refer it. Thanks.",
+      "parentUuid": "2152b105_69c71b7b",
+      "revId": "d7fdc7d053ab9daefaf2d474146221e9a92edaa6",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
