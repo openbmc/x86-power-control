@@ -104,6 +104,24 @@
       "message": "We now ready to submit this: all depended changes merged. @Jason, could you please give +2?",
       "revId": "d7fdc7d053ab9daefaf2d474146221e9a92edaa6",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c7ca3940_f048dd52",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2022-02-04T22:25:37Z",
+      "side": 1,
+      "message": "\u003e We now ready to submit this: all depended changes merged. @Jason, could you please give +2?\n\nAlmost.  There is one more pending change: https://gerrit.openbmc-project.xyz/c/openbmc/pfr-manager/+/50515.  I have pinged the maintainers to get it reviewed.  Thanks for keeping track of this!",
+      "parentUuid": "ba9b045d_cbc6efd0",
+      "revId": "d7fdc7d053ab9daefaf2d474146221e9a92edaa6",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
