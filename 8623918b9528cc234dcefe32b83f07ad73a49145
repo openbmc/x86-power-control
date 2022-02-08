@@ -1,0 +1,9 @@
+Code-Review+1: Patrick Williams <patrick@stwcx.xyz>
+Code-Review+2: Jason Bills <jason.m.bills@linux.intel.com>
+Code-Review+1: Andrei Kartashev <a.kartashev@yadro.com>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Submitted-by: Tim Lee <timlee660101@gmail.com>
+Submitted-at: Tue, 08 Feb 2022 01:41:25 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/x86-power-control/+/49953
+Project: openbmc/x86-power-control
+Branch: refs/heads/master
