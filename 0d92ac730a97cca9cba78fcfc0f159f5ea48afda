@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "35b5a07e_d8158d28",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2022-02-24T21:51:59Z",
+      "side": 1,
+      "message": "This is looking good.  However, I tested it, and it did not work correctly with ACBoot support.\n\nI was wrong about removing the PropertiesChanged match for ACBoot.  ACBoot starts as \"Unknown\" and is set to \"True\" or \"False\" by another script, so if power-control starts before the script runs, it will start with \"Unknown\" and needs to monitor PropertiesChanged to know if it changes to \"True\".\n\nHere is the diff of the changes I made to get it working with ACBoot.  Please let me know if it\u0027s easier, and I can directly update this review with the changes.\ndiff --git a/src/power_control.cpp b/src/power_control.cpp\nindex 26a32c2..ce98150 100644\n--- a/src/power_control.cpp\n+++ b/src/power_control.cpp\n@@ -931,6 +931,11 @@ void PowerRestoreController::run()\n                                  match_rules::argNpath(0, powerACBootObject) +\n                                  match_rules::sender(setingsService),\n                              powerRestoreConfigHandler, this);\n+        matches.emplace_back(*conn,\n+                             match_rules::propertiesChanged(powerACBootObject,\n+                                                            powerACBootIface) +\n+                                 match_rules::sender(setingsService),\n+                             powerRestoreConfigHandler, this);\n #endif // USE_ACBOOT\n     }\n\n@@ -1010,7 +1015,7 @@ void PowerRestoreController::invokeIfReady()\n         return;\n     }\n #ifdef USE_ACBOOT\n-    if (acBoot.empty())\n+    if (acBoot.empty() || acBoot \u003d\u003d \"Unknown\")\n     {\n         return;\n     }\n@@ -1072,14 +1077,6 @@ void PowerRestoreController::invoke()\n         return;\n     }\n     policyInvoked \u003d true;\n-#ifdef USE_ACBOOT\n-    if (acBoot !\u003d \"True\")\n-    {\n-        lg2::info(\"AC Boot set to {ACBOOT}, skipping Power Restore Policy\",\n-                  \"ACBOOT\", acBoot);\n-        return;\n-    }\n-#endif\n     lg2::info(\"Invoking Power Restore Policy {POLICY}\", \"POLICY\",\n               powerRestorePolicy);\n     if (powerRestorePolicy \u003d\u003d\n",
+      "revId": "0d92ac730a97cca9cba78fcfc0f159f5ea48afda",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "acf3434e_0ca8c351",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 903,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2022-02-24T21:51:59Z",
+      "side": 1,
+      "message": "I was wrong.  ACBoot still requires the match on PropertiesChanged as it doesn\u0027t start up in the correct state.  Please add it back (sorry for the thrash).",
+      "revId": "0d92ac730a97cca9cba78fcfc0f159f5ea48afda",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2312af8b_2b7f24bf",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 983,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2022-02-24T21:51:59Z",
+      "side": 1,
+      "message": "We don\u0027t want to invoke the power restore policy if ACBoot is still \"Unknown\".  Please change this to\nif (acBoot.empty() || acBoot \u003d\u003d \"Unknown\")",
+      "revId": "0d92ac730a97cca9cba78fcfc0f159f5ea48afda",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "315110f0_a3ccb4b8",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1052,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2022-02-24T21:51:59Z",
+      "side": 1,
+      "message": "We need to wait for ACBoot to become \"True\" before invoking the power restore policy, so this check can be removed.",
+      "range": {
+        "startLine": 1045,
+        "startChar": 0,
+        "endLine": 1052,
+        "endChar": 6
+      },
+      "revId": "0d92ac730a97cca9cba78fcfc0f159f5ea48afda",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
