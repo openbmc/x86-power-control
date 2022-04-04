@@ -16,6 +16,24 @@
       "message": "Jason, did you also test https://gerrit.openbmc-project.xyz/c/openbmc/intel-ipmi-oem/+/50240 ? We likely should merge them together.",
       "revId": "c4762423c77cfe65600e1bc7d2171d98120dff0d",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ceb8f9ec_97ee01d8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2022-04-04T15:25:43Z",
+      "side": 1,
+      "message": "I tested that change and confirmed that it works correctly on my system.  I updated the message with the test results and gave +1.  Thanks!",
+      "parentUuid": "21b5ed28_2fcaa066",
+      "revId": "c4762423c77cfe65600e1bc7d2171d98120dff0d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
