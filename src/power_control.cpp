@@ -2070,17 +2070,16 @@ static void nmiSetEnableProperty(bool value)
 
 static void nmiReset(void)
 {
-    static constexpr const uint8_t value = 1;
     const static constexpr int nmiOutPulseTimeMs = 200;
 
     lg2::info("NMI out action");
-    nmiOutLine.set_value(value);
+    nmiOutLine.set_value(!nmiOutConfig.polarity);
     lg2::info("{GPIO_NAME} set to {GPIO_VALUE}", "GPIO_NAME",
-              nmiOutConfig.lineName, "GPIO_VALUE", value);
+              nmiOutConfig.lineName, "GPIO_VALUE", !nmiOutConfig.polarity);
     gpioAssertTimer.expires_after(std::chrono::milliseconds(nmiOutPulseTimeMs));
     gpioAssertTimer.async_wait([](const boost::system::error_code ec) {
         // restore the NMI_OUT GPIO line back to the opposite value
-        nmiOutLine.set_value(!value);
+        nmiOutLine.set_value(nmiOutConfig.polarity);
         lg2::info("{GPIO_NAME} released", "GPIO_NAME", nmiOutConfig.lineName);
         if (ec)
         {
@@ -2717,7 +2716,7 @@ int main(int argc, char* argv[])
     // initialize NMI_OUT GPIO.
     if (!nmiOutConfig.lineName.empty())
     {
-        setGPIOOutput(nmiOutConfig.lineName, 0, nmiOutLine);
+        setGPIOOutput(nmiOutConfig.lineName, nmiOutConfig.polarity, nmiOutLine);
     }
 
     // Initialize POWER_OUT and RESET_OUT GPIO.
