@@ -858,8 +858,6 @@ void PersistentState::saveState()
 }
 
 static constexpr char const* setingsService = "xyz.openbmc_project.Settings";
-static constexpr char const* powerRestorePolicyObject =
-    "/xyz/openbmc_project/control/host0/power_restore_policy";
 static constexpr char const* powerRestorePolicyIface =
     "xyz.openbmc_project.Control.Power.RestorePolicy";
 #ifdef USE_ACBOOT
@@ -915,6 +913,8 @@ static int powerRestoreConfigHandler(sd_bus_message* m, void* context,
 
 void PowerRestoreController::run()
 {
+    std::string powerRestorePolicyObject =
+        "/xyz/openbmc_project/control/host" + node + "/power_restore_policy";
     powerRestorePolicyLog();
     // this list only needs to be created once
     if (matches.empty())
@@ -2772,11 +2772,9 @@ int main(int argc, char* argv[])
             powerState = PowerState::on;
         }
     }
-    // Check if we need to start the Power Restore policy
-    if (powerState != PowerState::on)
-    {
-        powerRestore.run();
-    }
+
+    // Start the Power Restore policy
+    powerRestore.run();
 
     if (nmiOutLine)
         nmiSourcePropertyMonitor();
