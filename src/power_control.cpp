@@ -858,10 +858,10 @@ void PersistentState::saveState()
 }
 
 static constexpr char const* setingsService = "xyz.openbmc_project.Settings";
-static constexpr char const* powerRestorePolicyObject =
-    "/xyz/openbmc_project/control/host0/power_restore_policy";
 static constexpr char const* powerRestorePolicyIface =
     "xyz.openbmc_project.Control.Power.RestorePolicy";
+std::string powerRestorePolicyObject =
+    "/xyz/openbmc_project/control/host" + node + "/power_restore_policy";
 #ifdef USE_ACBOOT
 static constexpr char const* powerACBootObject =
     "/xyz/openbmc_project/control/host0/ac_boot";
