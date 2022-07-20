@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "8c8b1e6f_f617758c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-07-20T07:41:16Z",
+      "side": 1,
+      "message": "Given that this is the x86-power-control repo and independent of the meta-facebook layer in the openbmc repo, I don\u0027t think having it as the the subject-line tag serves much purpose here.",
+      "revId": "525cbabab0cfd01a88c27f69097db66640eec92a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "3bd1d2e9_4012b66a",
