@@ -60,7 +60,7 @@ class PowerRestoreController
     bool policyInvoked;
     std::string powerRestorePolicy;
     int powerRestoreDelay;
-    std::list<sdbusplus::bus::match::match> matches;
+    std::list<sdbusplus::bus::match_t> matches;
     boost::asio::steady_timer powerRestoreTimer;
     bool timerFired;
 #ifdef USE_ACBOOT

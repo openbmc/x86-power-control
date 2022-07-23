@@ -878,7 +878,7 @@ static int powerRestoreConfigHandler(sd_bus_message* m, void* context,
     {
         throw std::runtime_error("Invalid match");
     }
-    sdbusplus::message::message message(m);
+    sdbusplus::message_t message(m);
     PowerRestoreController* powerRestore =
         static_cast<PowerRestoreController*>(context);
 
@@ -1562,12 +1562,12 @@ static void currentHostStateMonitor()
         setRestartCause();
     }
 
-    static auto match = sdbusplus::bus::match::match(
+    static auto match = sdbusplus::bus::match_t(
         *conn,
         "type='signal',member='PropertiesChanged', "
         "interface='org.freedesktop.DBus.Properties', "
         "arg0='xyz.openbmc_project.State.Host'",
-        [](sdbusplus::message::message& message) {
+        [](sdbusplus::message_t& message) {
             std::string intfName;
             std::map<std::string, std::variant<std::string>> properties;
 
@@ -2105,13 +2105,13 @@ static void nmiSourcePropertyMonitor(void)
 {
     lg2::info("NMI Source Property Monitor");
 
-    static std::unique_ptr<sdbusplus::bus::match::match> nmiSourceMatch =
-        std::make_unique<sdbusplus::bus::match::match>(
+    static std::unique_ptr<sdbusplus::bus::match_t> nmiSourceMatch =
+        std::make_unique<sdbusplus::bus::match_t>(
             *conn,
             "type='signal',interface='org.freedesktop.DBus.Properties',"
             "member='PropertiesChanged',"
             "arg0namespace='xyz.openbmc_project.Chassis.Control.NMISource'",
-            [](sdbusplus::message::message& msg) {
+            [](sdbusplus::message_t& msg) {
                 std::string interfaceName;
                 boost::container::flat_map<std::string,
                                            std::variant<bool, std::string>>
@@ -2197,7 +2197,7 @@ static void pltRstHandler(bool pltRst)
     }
 }
 
-[[maybe_unused]] static void hostMiscHandler(sdbusplus::message::message& msg)
+[[maybe_unused]] static void hostMiscHandler(sdbusplus::message_t& msg)
 {
     std::string interfaceName;
     boost::container::flat_map<std::string, std::variant<bool>>
@@ -2392,7 +2392,7 @@ static int loadConfigValues()
     return 0;
 }
 
-static bool getDbusMsgGPIOState(sdbusplus::message::message& msg,
+static bool getDbusMsgGPIOState(sdbusplus::message_t& msg,
                                 const std::string& lineName, bool& value)
 {
     std::string thresholdInterface;
@@ -2425,21 +2425,21 @@ static bool getDbusMsgGPIOState(sdbusplus::message::message& msg,
     }
 }
 
-static sdbusplus::bus::match::match
+static sdbusplus::bus::match_t
     dbusGPIOMatcher(const ConfigData& cfg, std::function<void(bool)> onMatch)
 {
-    auto pulseEventMatcherCallback =
-        [&cfg, onMatch](sdbusplus::message::message& msg) {
-            bool value = false;
-            if (!getDbusMsgGPIOState(msg, cfg.lineName, value))
-            {
-                return;
-            }
-            onMatch(value);
-        };
+    auto pulseEventMatcherCallback = [&cfg,
+                                      onMatch](sdbusplus::message_t& msg) {
+        bool value = false;
+        if (!getDbusMsgGPIOState(msg, cfg.lineName, value))
+        {
+            return;
+        }
+        onMatch(value);
+    };
 
-    return sdbusplus::bus::match::match(
-        static_cast<sdbusplus::bus::bus&>(*conn),
+    return sdbusplus::bus::match_t(
+        static_cast<sdbusplus::bus_t&>(*conn),
         "type='signal',interface='org.freedesktop.DBus.Properties',member='"
         "PropertiesChanged',arg0='" +
             cfg.interface + "'",
@@ -2544,7 +2544,7 @@ int main(int argc, char* argv[])
     else if (powerOkConfig.type == ConfigType::DBUS)
     {
 
-        static sdbusplus::bus::match::match powerOkEventMonitor =
+        static sdbusplus::bus::match_t powerOkEventMonitor =
             power_control::dbusGPIOMatcher(powerOkConfig, psPowerOKHandler);
     }
     else
@@ -2567,7 +2567,7 @@ int main(int argc, char* argv[])
         }
         else if (sioPwrGoodConfig.type == ConfigType::DBUS)
         {
-            static sdbusplus::bus::match::match sioPwrGoodEventMonitor =
+            static sdbusplus::bus::match_t sioPwrGoodEventMonitor =
                 power_control::dbusGPIOMatcher(sioPwrGoodConfig,
                                                sioPowerGoodHandler);
         }
@@ -2590,7 +2590,7 @@ int main(int argc, char* argv[])
         }
         else if (sioOnControlConfig.type == ConfigType::DBUS)
         {
-            static sdbusplus::bus::match::match sioOnControlEventMonitor =
+            static sdbusplus::bus::match_t sioOnControlEventMonitor =
                 power_control::dbusGPIOMatcher(sioOnControlConfig,
                                                sioOnControlHandler);
         }
@@ -2612,7 +2612,7 @@ int main(int argc, char* argv[])
         }
         else if (sioS5Config.type == ConfigType::DBUS)
         {
-            static sdbusplus::bus::match::match sioS5EventMonitor =
+            static sdbusplus::bus::match_t sioS5EventMonitor =
                 power_control::dbusGPIOMatcher(sioS5Config, sioS5Handler);
         }
         else
@@ -2633,7 +2633,7 @@ int main(int argc, char* argv[])
     }
     else if (powerButtonConfig.type == ConfigType::DBUS)
     {
-        static sdbusplus::bus::match::match powerButtonEventMonitor =
+        static sdbusplus::bus::match_t powerButtonEventMonitor =
             power_control::dbusGPIOMatcher(powerButtonConfig,
                                            powerButtonHandler);
     }
@@ -2649,7 +2649,7 @@ int main(int argc, char* argv[])
     }
     else if (resetButtonConfig.type == ConfigType::DBUS)
     {
-        static sdbusplus::bus::match::match resetButtonEventMonitor =
+        static sdbusplus::bus::match_t resetButtonEventMonitor =
             power_control::dbusGPIOMatcher(resetButtonConfig,
                                            resetButtonHandler);
     }
@@ -2665,7 +2665,7 @@ int main(int argc, char* argv[])
     }
     else if (nmiButtonConfig.type == ConfigType::DBUS)
     {
-        static sdbusplus::bus::match::match nmiButtonEventMonitor =
+        static sdbusplus::bus::match_t nmiButtonEventMonitor =
             power_control::dbusGPIOMatcher(nmiButtonConfig, nmiButtonHandler);
     }
 
@@ -2680,12 +2680,12 @@ int main(int argc, char* argv[])
     }
     else if (idButtonConfig.type == ConfigType::DBUS)
     {
-        static sdbusplus::bus::match::match idButtonEventMonitor =
+        static sdbusplus::bus::match_t idButtonEventMonitor =
             power_control::dbusGPIOMatcher(idButtonConfig, idButtonHandler);
     }
 
 #ifdef USE_PLT_RST
-    sdbusplus::bus::match::match pltRstMatch(
+    sdbusplus::bus::match_t pltRstMatch(
         *conn,
         "type='signal',interface='org.freedesktop.DBus.Properties',member='"
         "PropertiesChanged',arg0='xyz.openbmc_project.State.Host.Misc'",
@@ -2703,7 +2703,7 @@ int main(int argc, char* argv[])
     }
     else if (postCompleteConfig.type == ConfigType::DBUS)
     {
-        static sdbusplus::bus::match::match postCompleteEventMonitor =
+        static sdbusplus::bus::match_t postCompleteEventMonitor =
             power_control::dbusGPIOMatcher(postCompleteConfig,
                                            postCompleteHandler);
     }
