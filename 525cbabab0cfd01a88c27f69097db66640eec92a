@@ -86,6 +86,23 @@
       "parentUuid": "4c077930_718baf1e",
       "revId": "525cbabab0cfd01a88c27f69097db66640eec92a",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c15bff7_06c3e3ca",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2776,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2022-07-27T17:52:23Z",
+      "side": 1,
+      "message": "I think this is also incorrect behavior.  Power restore is not needed if the system is already on.",
+      "revId": "525cbabab0cfd01a88c27f69097db66640eec92a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
