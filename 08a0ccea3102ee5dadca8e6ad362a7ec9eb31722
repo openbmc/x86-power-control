@@ -24,6 +24,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8250ed86_fb6f59df",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 633,
+      "author": {
+        "id": 1001412
+      },
+      "writtenOn": "2022-07-28T11:13:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1e02e048_024b680c",
+      "range": {
+        "startLine": 631,
+        "startChar": 0,
+        "endLine": 633,
+        "endChar": 18
+      },
+      "revId": "08a0ccea3102ee5dadca8e6ad362a7ec9eb31722",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0bab8323_c95c07ab",
@@ -37,6 +61,24 @@
       "writtenOn": "2022-07-27T17:52:23Z",
       "side": 1,
       "message": "This is not correct behavior.  There are cases where a system may turn itself on or a user may power a system earlier than BMC.  In those cases, we don\u0027t want to turn the system off based on the power restore policy.\n\nFor power restore policy, \"AlwaysOff\" should be equivalent to \"do nothing\".",
+      "revId": "08a0ccea3102ee5dadca8e6ad362a7ec9eb31722",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "45df3d99_1e1bf41b",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1096,
+      "author": {
+        "id": 1001412
+      },
+      "writtenOn": "2022-07-28T11:13:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0bab8323_c95c07ab",
       "revId": "08a0ccea3102ee5dadca8e6ad362a7ec9eb31722",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
