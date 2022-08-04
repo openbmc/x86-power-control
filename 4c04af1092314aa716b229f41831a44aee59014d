@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "72f514b4_29a6af3f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-08-04T18:46:58Z",
+      "side": 1,
+      "message": "Is Kuiying currently at Intel as shown in OWNERS, or Alibaba as shown in gerrit?",
+      "revId": "4c04af1092314aa716b229f41831a44aee59014d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
