@@ -1786,6 +1786,7 @@ static void powerStateOff(const Event event)
             break;
         }
         case Event::sioS5DeAssert:
+            psPowerOKWatchdogTimerStart();
             setPowerState(PowerState::waitForPSPowerOK);
             break;
         case Event::sioPowerGoodAssert:
@@ -1876,6 +1877,7 @@ static void powerStateCycleOff(const Event event)
         }
         case Event::sioS5DeAssert:
             powerCycleTimer.cancel();
+            psPowerOKWatchdogTimerStart();
             setPowerState(PowerState::waitForPSPowerOK);
             break;
         case Event::powerButtonPressed:
