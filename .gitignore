@@ -1,0 +1,4 @@
+build*/
+subprojects/*
+!subprojects/*.wrap
+subprojects/phosphor-dbus-interfaces.wrap
