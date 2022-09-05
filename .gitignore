@@ -1,0 +1,63 @@
+# Created by https://www.toptal.com/developers/gitignore/api/meson,c++
+# Edit at https://www.toptal.com/developers/gitignore?templates=meson,c++
+
+### C++ ###
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+### Meson ###
+# subproject directories
+/subprojects/*
+!/subprojects/*.wrap
+# not a direct dependency
+/subprojects/phosphor-dbus-interfaces.wrap
+
+# Meson Directories
+meson-logs
+meson-private
+
+# Meson Files
+meson_benchmark_setup.dat
+meson_test_setup.dat
+sanitycheckcpp.cc     # C++ specific
+sanitycheckcpp.exe    # C++ specific
+
+# Ninja
+build.ninja
+.ninja_deps
+.ninja_logs
+
+# Misc
+compile_commands.json
+
+# End of https://www.toptal.com/developers/gitignore/api/meson,c++
