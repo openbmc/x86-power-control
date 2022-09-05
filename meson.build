@@ -38,6 +38,7 @@ deps = [
   dependency('systemd'),
   dependency('sdbusplus'),
   dependency('phosphor-logging'),
+  dependency('nlohmann_json'),
 ]
 
 executable(
