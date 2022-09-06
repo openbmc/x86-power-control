@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5391c995_f613cabd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-09-06T12:39:02Z",
+      "side": 1,
+      "message": "This isn\u0027t generally how we create our .gitignores.\n\n1. The C++ ones are useless because we\u0027re always building out of tree.\n\n2. Most of the meson ones are excessive.\n\n3. You\u0027re missing the \u0027build\u0027 directories for meson.\n\nThis is our standard one for a meson-based project.\n```\nbuild*/\nsubprojects/*\n!subprojects/*.wrap\n```",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 61
+      },
+      "revId": "ee2d896908142bf34416a182944ab952de1de7fa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
