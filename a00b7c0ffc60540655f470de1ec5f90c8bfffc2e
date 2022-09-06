@@ -16,6 +16,24 @@
       "message": "Suggest using revision\u003dHEAD.  phosphor-networkd and entity-manager do this already.  There is little value in pinning the json to a specific version.\n\nPrefer if you can mostly copy one of those two wrap files.  If there are improvements you can make those those, great.",
       "revId": "a00b7c0ffc60540655f470de1ec5f90c8bfffc2e",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6295a3a6_e00b55d7",
+        "filename": "subprojects/nlohmann_json.wrap",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000682
+      },
+      "writtenOn": "2022-09-06T19:11:47Z",
+      "side": 1,
+      "message": "Changed to HEAD.",
+      "parentUuid": "e338f489_e48b5341",
+      "revId": "a00b7c0ffc60540655f470de1ec5f90c8bfffc2e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
