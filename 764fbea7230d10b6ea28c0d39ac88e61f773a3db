@@ -24,6 +24,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c368fceb_23eba9b3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000682
+      },
+      "writtenOn": "2022-09-07T01:33:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "54060331_b92fcc32",
+      "range": {
+        "startLine": 7,
+        "startChar": 7,
+        "endLine": 7,
+        "endChar": 12
+      },
+      "revId": "764fbea7230d10b6ea28c0d39ac88e61f773a3db",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "64e17a36_8c577a18",
@@ -37,6 +61,24 @@
       "writtenOn": "2022-09-06T19:31:41Z",
       "side": 1,
       "message": "Not sure this is the case anymore. ;)",
+      "revId": "764fbea7230d10b6ea28c0d39ac88e61f773a3db",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b321ba47_8ed59892",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000682
+      },
+      "writtenOn": "2022-09-07T01:33:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "64e17a36_8c577a18",
       "revId": "764fbea7230d10b6ea28c0d39ac88e61f773a3db",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
