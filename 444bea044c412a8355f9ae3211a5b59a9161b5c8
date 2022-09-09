@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2ab8478e_6748f7e4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-09-09T02:52:37Z",
+      "side": 1,
+      "message": "Please format it",
+      "range": {
+        "startLine": 14,
+        "startChar": 72,
+        "endLine": 15,
+        "endChar": 5
+      },
+      "revId": "444bea044c412a8355f9ae3211a5b59a9161b5c8",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
