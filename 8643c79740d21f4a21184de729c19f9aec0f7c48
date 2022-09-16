@@ -1,0 +1,9 @@
+Code-Review+2: Jason Bills <jason.m.bills@linux.intel.com>
+Code-Review+1: George Liu <liuxiwei@inspur.com>
+Code-Review+1: Zev Weiss <zev@bewilderbeest.net>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Submitted-by: John Wang <wangzhiqiang02@inspur.com>
+Submitted-at: Fri, 16 Sep 2022 00:29:59 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/x86-power-control/+/57037
+Project: openbmc/x86-power-control
+Branch: refs/heads/master
