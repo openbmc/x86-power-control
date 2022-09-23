@@ -127,6 +127,9 @@ static std::shared_ptr<sdbusplus::asio::dbus_interface> restartCauseIface;
 static gpiod::line powerButtonMask;
 static gpiod::line resetButtonMask;
 static bool nmiButtonMasked = false;
+#if IGNORE_SOFT_RESETS
+static bool ignoreSoftReset = false;
+#endif
 
 // This map contains all timer values that are to be read from json config
 boost::container::flat_map<std::string, int> TimerMap = {
@@ -213,6 +216,7 @@ enum class OperatingSystemStateStage
     Inactive,
     Standby,
 };
+static OperatingSystemStateStage operatingSystemState;
 static constexpr std::string_view
     getOperatingSystemStateStage(const OperatingSystemStateStage stage)
 {
@@ -231,6 +235,7 @@ static constexpr std::string_view
 };
 static void setOperatingSystemState(const OperatingSystemStateStage stage)
 {
+    operatingSystemState = stage;
     osIface->set_property("OperatingSystemState",
                           std::string(getOperatingSystemStateStage(stage)));
 
@@ -707,6 +712,13 @@ static void setRestartCause()
     }
     else if (causeSet.contains(RestartCause::softReset))
     {
+#if IGNORE_SOFT_RESETS
+        if (ignoreSoftReset)
+        {
+            ignoreSoftReset = false;
+            return;
+        }
+#endif
         restartCause = getRestartCause(RestartCause::softReset);
     }
 
@@ -1671,6 +1683,13 @@ static void powerStateOn(const Event event)
             break;
         case Event::sioS5Assert:
             setPowerState(PowerState::transitionToOff);
+#if IGNORE_SOFT_RESETS
+            // Only recognize soft resets once host gets past POST COMPLETE
+            if (operatingSystemState != OperatingSystemStateStage::Standby)
+            {
+                ignoreSoftReset = true;
+            }
+#endif
             addRestartCause(RestartCause::softReset);
             break;
 #if USE_PLT_RST
@@ -1679,6 +1698,13 @@ static void powerStateOn(const Event event)
         case Event::postCompleteDeAssert:
 #endif
             setPowerState(PowerState::checkForWarmReset);
+#if IGNORE_SOFT_RESETS
+            // Only recognize soft resets once host gets past POST COMPLETE
+            if (operatingSystemState != OperatingSystemStateStage::Standby)
+            {
+                ignoreSoftReset = true;
+            }
+#endif
             addRestartCause(RestartCause::softReset);
             warmResetCheckTimerStart();
             break;
@@ -2754,8 +2780,9 @@ int main(int argc, char* argv[])
     // Release line
     line.reset();
 
-    // Initialize the power state
+    // Initialize the power state and operating system state
     powerState = PowerState::off;
+    operatingSystemState = OperatingSystemStateStage::Inactive;
     // Check power good
 
     if (powerOkConfig.type == ConfigType::GPIO)
