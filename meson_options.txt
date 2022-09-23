@@ -4,3 +4,5 @@ option('use-plt-rst', type: 'feature', value : 'disabled',
        description: 'Use the PLT_RST eSPI signal to detect warm reset instead of POST Complete')
 option('use-acboot', type: 'feature', value : 'disabled',
        description: 'Use hardware Reset Reason to control Power Restore. Note: this only works with Intel-BMC')
+option('ignore-soft-resets', type: 'feature', value : 'disabled',
+       description: 'Ignore soft resets from HOST before POST')

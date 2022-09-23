@@ -32,6 +32,9 @@ endif
 if get_option('use-acboot').enabled()
   cpp_args += '-DUSE_ACBOOT'
 endif
+if get_option('ignore-soft-resets').enabled()
+  cpp_args += '-DIGNORE_SOFT_RESETS'
+endif
 
 deps = [
   dependency('libgpiodcxx', default_options: ['bindings=cxx']),
