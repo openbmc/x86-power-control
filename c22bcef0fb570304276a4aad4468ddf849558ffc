@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b80d619_4107fba6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-09-24T04:09:44Z",
+      "side": 1,
+      "message": "I *think* I basically understand the broad gist of this, but a more detailed explanation would be good.  For example, to what extent are we ignoring things?  From a quick skim of the patch, it looks like maybe it\u0027s just that we keep silent on the State.OperatingSystem dbus interface, but otherwise continue as we were?  (i.e. with the internal state machine continuing to transition as it would anyway, and the power-state dbus interface still reflecting the activity?)\n\n(The commit message formatting is also a bit off, see https://github.com/openbmc/docs/blob/master/CONTRIBUTING.md#formatting-commit-messages.)",
+      "revId": "c22bcef0fb570304276a4aad4468ddf849558ffc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a413a048_02b926f7",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 611,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-09-24T04:09:44Z",
+      "side": 1,
+      "message": "This new member seems a bit out of place -- all the other existing values are things I can pretty easily understand as \"something that could cause a restart\", but `ignoreSoftReset` reads like the name of a config flag.  What is it intended to mean in this context?",
+      "revId": "c22bcef0fb570304276a4aad4468ddf849558ffc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
