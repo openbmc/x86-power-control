@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "75861a40_554cafa5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1001023
+      },
+      "writtenOn": "2022-09-27T21:47:09Z",
+      "side": 1,
+      "message": "The goal of this patch is to ignore soft resets that the host may send before POSTing.  These soft resets will overwrite the previous restart cause which can have more meaningful info like the power restore policy.\n\nSince these soft resets are expected in some cases I\u0027m adding this option for the BMC to ignore them.",
+      "parentUuid": "6b80d619_4107fba6",
+      "revId": "c22bcef0fb570304276a4aad4468ddf849558ffc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a413a048_02b926f7",
         "filename": "src/power_control.cpp",
         "patchSetId": 1
