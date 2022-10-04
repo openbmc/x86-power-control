@@ -50,6 +50,23 @@
       "message": "It seems like there be something to reset this back to false on a postCompleteAssert event?  (i.e. in case we get through POST without any soft resets, so that we don\u0027t ignore the next one that\u0027s not during POST.)",
       "revId": "96b41d28d78727ea48f29b8945f799d143c5963a",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "77eea168_aaec7fdb",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-10-04T19:28:06Z",
+      "side": 1,
+      "message": "Also, as a slight clarity thing I might suggest renaming this to `ignoreNextSoftReset` (especially if it ends up being a runtime config option instead of compile-time, it\u0027ll help clarify what\u0027s the mutable state-machine flag and what\u0027s the is-this-feature-enabled flag).",
+      "revId": "96b41d28d78727ea48f29b8945f799d143c5963a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
