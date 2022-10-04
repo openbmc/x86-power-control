@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d178a7cb_be1bc7b5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-10-04T19:22:09Z",
+      "side": 1,
+      "message": "Alright, this approach (PS5) looks a lot cleaner (much easier to follow the logic IMO).",
+      "revId": "96b41d28d78727ea48f29b8945f799d143c5963a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cfc59b6b_082c3a6f",
+        "filename": "meson_options.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-10-04T19:22:09Z",
+      "side": 1,
+      "message": "Is there a particular reason we want this as a compile-time option instead of a key in the runtime config file?  It doesn\u0027t look like it would incur much extra weight (just a bool and a few lines of code), and it would reduce the amount of `#ifdef`-ing a bit.",
+      "revId": "96b41d28d78727ea48f29b8945f799d143c5963a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2c3dd891_afcb0448",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-10-04T19:22:09Z",
+      "side": 1,
+      "message": "It seems like there be something to reset this back to false on a postCompleteAssert event?  (i.e. in case we get through POST without any soft resets, so that we don\u0027t ignore the next one that\u0027s not during POST.)",
+      "revId": "96b41d28d78727ea48f29b8945f799d143c5963a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
