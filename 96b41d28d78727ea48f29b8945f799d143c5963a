@@ -55,6 +55,58 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a9e3f2bb_7c0d308a",
+        "filename": "meson_options.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-10-04T21:28:00Z",
+      "side": 1,
+      "message": "\u003e Would we add a new section to the config file?  It only covers GPIOs and timing parameters right now which don\u0027t fit this.\n\nI dunno if it\u0027d need an entirely new section (sub-dictionary); I was thinking it could just be another top-level key, so the overall config would end up looking something like:\n\n```\n{\n  \"gpio_configs\": [\n    ...\n  ],\n  \"timing_configs\": {\n    ...\n  },\n  \"ignore_post_soft_resets\": true\n}\n```\n\n\u003e Perhaps that could be done separately to investigate converting all the build flags into config options?\n\nYeah, I suppose the same argument could reasonably be made regarding most of the existing build options...I do think it\u0027d be slightly preferable to avoid much more #ifdef proliferation, but it\u0027s not the end of the world as is -- up to you guys.",
+      "parentUuid": "76b0f808_d0cb10ef",
+      "revId": "96b41d28d78727ea48f29b8945f799d143c5963a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "215d2c4a_a7bfd3b0",
+        "filename": "meson_options.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-10-04T21:28:00Z",
+      "side": 1,
+      "message": "While the description makes it reasonably clear, it might be nice to squeeze some mention of POST into the name of the flag, e.g. `ignore-post-soft-resets` or `ignore-soft-resets-during-post` -- as it is someone who didn\u0027t read the description carefully might think it ignores _all_ soft resets.",
+      "revId": "96b41d28d78727ea48f29b8945f799d143c5963a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c80be50e_3cfea1ed",
+        "filename": "meson_options.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-10-04T21:28:00Z",
+      "side": 1,
+      "message": "Nitpick: I think it\u0027d be slightly more accurate to say \"during POST\" than \"before POST\" (or maybe \"before POST completes\").  Also, unless there\u0027s a particular reason for capitalization that I\u0027ve missed, could we downcase `HOST`?",
+      "revId": "96b41d28d78727ea48f29b8945f799d143c5963a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2c3dd891_afcb0448",
         "filename": "src/power_control.cpp",
         "patchSetId": 5
