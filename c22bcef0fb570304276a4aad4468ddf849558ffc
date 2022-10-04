@@ -36,6 +36,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "22ae90b2_7ec25670",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1001023
+      },
+      "writtenOn": "2022-10-04T17:15:55Z",
+      "side": 1,
+      "message": "Updated commit message to better reflect what the change is.",
+      "parentUuid": "75861a40_554cafa5",
+      "revId": "c22bcef0fb570304276a4aad4468ddf849558ffc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a413a048_02b926f7",
@@ -67,6 +85,24 @@
       "side": 1,
       "message": "This was my suggestion.  I agree it feels out of place, but I couldn\u0027t think of a cleaner way to handle this condition.  I\u0027m open to suggestions.",
       "parentUuid": "a413a048_02b926f7",
+      "revId": "c22bcef0fb570304276a4aad4468ddf849558ffc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b05c1309_ac65f6e1",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 611,
+      "author": {
+        "id": 1001023
+      },
+      "writtenOn": "2022-10-04T17:15:55Z",
+      "side": 1,
+      "message": "Updated commit to use static variable instead of a RestartCause enum.",
+      "parentUuid": "1783ae1d_cbcd7018",
       "revId": "c22bcef0fb570304276a4aad4468ddf849558ffc",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
