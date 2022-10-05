@@ -88,6 +88,42 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "337feb7f_384761ec",
+        "filename": "meson_options.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1001023
+      },
+      "writtenOn": "2022-10-05T17:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "215d2c4a_a7bfd3b0",
+      "revId": "96b41d28d78727ea48f29b8945f799d143c5963a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bdf856f8_bc528201",
+        "filename": "meson_options.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1001023
+      },
+      "writtenOn": "2022-10-05T17:46:28Z",
+      "side": 1,
+      "message": "I\u0027ll leave this for a future change",
+      "parentUuid": "a9e3f2bb_7c0d308a",
+      "revId": "96b41d28d78727ea48f29b8945f799d143c5963a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c80be50e_3cfea1ed",
@@ -101,6 +137,24 @@
       "writtenOn": "2022-10-04T21:28:00Z",
       "side": 1,
       "message": "Nitpick: I think it\u0027d be slightly more accurate to say \"during POST\" than \"before POST\" (or maybe \"before POST completes\").  Also, unless there\u0027s a particular reason for capitalization that I\u0027ve missed, could we downcase `HOST`?",
+      "revId": "96b41d28d78727ea48f29b8945f799d143c5963a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0c87f6fe_d31f3e35",
+        "filename": "meson_options.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1001023
+      },
+      "writtenOn": "2022-10-05T17:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c80be50e_3cfea1ed",
       "revId": "96b41d28d78727ea48f29b8945f799d143c5963a",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -135,6 +189,42 @@
       "writtenOn": "2022-10-04T19:28:06Z",
       "side": 1,
       "message": "Also, as a slight clarity thing I might suggest renaming this to `ignoreNextSoftReset` (especially if it ends up being a runtime config option instead of compile-time, it\u0027ll help clarify what\u0027s the mutable state-machine flag and what\u0027s the is-this-feature-enabled flag).",
+      "revId": "96b41d28d78727ea48f29b8945f799d143c5963a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d74b3d77_71dfc4b3",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1001023
+      },
+      "writtenOn": "2022-10-05T17:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "77eea168_aaec7fdb",
+      "revId": "96b41d28d78727ea48f29b8945f799d143c5963a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a73cc15a_64a11149",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1001023
+      },
+      "writtenOn": "2022-10-05T17:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2c3dd891_afcb0448",
       "revId": "96b41d28d78727ea48f29b8945f799d143c5963a",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
