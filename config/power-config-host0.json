@@ -82,6 +82,7 @@
       "PsPowerOKWatchdogMs": 8000,
       "GracefulPowerOffS": 300,
       "WarmResetCheckMs": 500,
-      "PowerOffSaveMs": 7000
+      "PowerOffSaveMs": 7000,
+      "DbusGetPropertyRetry": 1000
     }
 }
