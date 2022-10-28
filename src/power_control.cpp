@@ -142,7 +142,8 @@ boost::container::flat_map<std::string, int> TimerMap = {
     {"GracefulPowerOffS", (5 * 60)},
     {"WarmResetCheckMs", 500},
     {"PowerOffSaveMs", 7000},
-    {"SlotPowerCycleMs", 200}};
+    {"SlotPowerCycleMs", 200},
+    {"DbusGetPropertyRetry", 1000}};
 
 static bool nmiEnabled = true;
 static bool nmiWhenPoweredOff = true;
@@ -168,6 +169,10 @@ static boost::asio::steady_timer pohCounterTimer(io);
 // Time when to allow restart cause updates
 static boost::asio::steady_timer restartCauseTimer(io);
 static boost::asio::steady_timer slotPowerCycleTimer(io);
+
+// Map containing timers used for D-Bus get-property retries
+static boost::container::flat_map<std::string, boost::asio::steady_timer>
+    dBusRetryTimers;
 
 // GPIO Lines and Event Descriptors
 static gpiod::line psPowerOKLine;
@@ -2488,24 +2493,41 @@ static sdbusplus::bus::match_t
         std::move(pulseEventMatcherCallback));
 }
 
-int getProperty(ConfigData& configData)
-{
-    auto method = conn->new_method_call(
-        configData.dbusName.c_str(), configData.path.c_str(),
-        "org.freedesktop.DBus.Properties", "Get");
-    method.append(configData.interface.c_str(), configData.lineName.c_str());
+// D-Bus property read functions
+void reschedulePropertyRead(const ConfigData& configData);
 
-    auto reply = conn->call(method);
-    if (reply.is_method_error())
+int getProperty(const ConfigData& configData)
+{
+    std::variant<bool> resp;
+
+    try
     {
-        lg2::error(
-            "Error reading {PROPERTY} D-Bus property on interface {INTERFACE} and path {PATH}",
-            "PROPERTY", configData.lineName, "INTERFACE", configData.interface,
-            "PATH", configData.path);
+        auto method = conn->new_method_call(
+            configData.dbusName.c_str(), configData.path.c_str(),
+            "org.freedesktop.DBus.Properties", "Get");
+        method.append(configData.interface.c_str(),
+                      configData.lineName.c_str());
+
+        auto reply = conn->call(method);
+        if (reply.is_method_error())
+        {
+            lg2::error(
+                "Error reading {PROPERTY} D-Bus property on interface {INTERFACE} and path {PATH}",
+                "PROPERTY", configData.lineName, "INTERFACE",
+                configData.interface, "PATH", configData.path);
+            return -1;
+        }
+
+        reply.read(resp);
+    }
+    catch (const sdbusplus::exception_t& e)
+    {
+        lg2::error("Exception while reading {PROPERTY}: {WHAT}", "PROPERTY",
+                   configData.lineName, "WHAT", e.what());
+        reschedulePropertyRead(configData);
         return -1;
     }
-    std::variant<bool> resp;
-    reply.read(resp);
+
     auto respValue = std::get_if<bool>(&resp);
     if (!respValue)
     {
@@ -2514,6 +2536,84 @@ int getProperty(ConfigData& configData)
         return -1;
     }
     return (*respValue);
+}
+
+void setInitialValue(const ConfigData& configData, bool initialValue)
+{
+    if (configData.name == "PowerOk")
+    {
+        powerState = (initialValue ? PowerState::on : PowerState::off);
+        hostIface->set_property("CurrentHostState",
+                                std::string(getHostState(powerState)));
+    }
+    else if (configData.name == "PowerButton")
+    {
+        powerButtonIface->set_property("ButtonPressed", !initialValue);
+    }
+    else if (configData.name == "ResetButton")
+    {
+        resetButtonIface->set_property("ButtonPressed", !initialValue);
+    }
+    else if (configData.name == "NMIButton")
+    {
+        nmiButtonIface->set_property("ButtonPressed", !initialValue);
+    }
+    else if (configData.name == "IdButton")
+    {
+        idButtonIface->set_property("ButtonPressed", !initialValue);
+    }
+    else if (configData.name == "PostComplete")
+    {
+        OperatingSystemStateStage osState =
+            (initialValue ? OperatingSystemStateStage::Inactive
+                          : OperatingSystemStateStage::Standby);
+        setOperatingSystemState(osState);
+    }
+    else
+    {
+        lg2::error("Unknown name {NAME}", "NAME", configData.name);
+    }
+}
+
+void reschedulePropertyRead(const ConfigData& configData)
+{
+    auto item = dBusRetryTimers.find(configData.name);
+
+    if (item == dBusRetryTimers.end())
+    {
+        auto newItem = dBusRetryTimers.insert(
+            {configData.name, boost::asio::steady_timer(io)});
+
+        if (!newItem.second)
+        {
+            lg2::error("Failed to add new timer for {NAME}", "NAME",
+                       configData.name);
+            return;
+        }
+
+        item = newItem.first;
+    }
+
+    auto& timer = item->second;
+    timer.expires_after(
+        std::chrono::milliseconds(TimerMap["DbusGetPropertyRetry"]));
+    timer.async_wait([&configData](const boost::system::error_code ec) {
+        if (ec)
+        {
+            lg2::error("Retry timer for {NAME} failed: {MSG}", "NAME",
+                       configData.name, "MSG", ec.message());
+            dBusRetryTimers.erase(configData.name);
+            return;
+        }
+
+        int property = getProperty(configData);
+
+        if (property >= 0)
+        {
+            setInitialValue(configData, (property > 0));
+            dBusRetryTimers.erase(configData.name);
+        }
+    });
 }
 } // namespace power_control
 
