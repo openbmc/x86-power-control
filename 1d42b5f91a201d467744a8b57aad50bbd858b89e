@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "121321fe_30c2e1d1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-10-31T01:57:10Z",
+      "side": 1,
+      "message": "I\u0027m not necessarily opposed to this feature, but this example sounds like a problem with under-specified service dependencies -- i.e. x86-power-control starting before another service that provides the dbus object it\u0027s going to be looking for.  Are there cases of this sort of problem arising even with properly specified dependencies?",
+      "range": {
+        "startLine": 12,
+        "startChar": 27,
+        "endLine": 13,
+        "endChar": 38
+      },
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
