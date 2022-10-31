@@ -22,6 +22,30 @@
       },
       "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "21dba1bb_488bcad6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1001329
+      },
+      "writtenOn": "2022-10-31T08:46:33Z",
+      "side": 1,
+      "message": "I have tested that possibility. Unfortunately, even when x86-power-control is defined to run after service that creates needed DBus interfaces, I\u0027ve observed problem with exception. The problem is that second service doesn\u0027t create all of its interfaces right away, and as result they don\u0027t exist yet when x86-power-control starts.",
+      "parentUuid": "121321fe_30c2e1d1",
+      "range": {
+        "startLine": 12,
+        "startChar": 27,
+        "endLine": 13,
+        "endChar": 38
+      },
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
