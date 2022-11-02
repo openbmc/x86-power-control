@@ -36,6 +36,7 @@ owners:
 - kuiying.wang@intel.com
 
 reviewers:
+- zev@bewilderbeest.net
 
 matchers:
 
@@ -46,3 +47,6 @@ openbmc:
 - name: Kuiying Wang
   email: kuiying.wang@intel.com
   discord: kuiyingw
+- name: Zev Weiss
+  email: zev@bewilderbeest.net
+  discord: zevweiss
