@@ -213,6 +213,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e3becb90_b30d9af3",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2572,
+      "author": {
+        "id": 1001329
+      },
+      "writtenOn": "2022-11-10T11:27:26Z",
+      "side": 1,
+      "message": "For now timer is set to rearm only after DBus exception. Do You think that we should do that for other error cases as well? If so, I\u0027ll handle that. As of a limit of retries, we could handle it by adding a JSON option with some default value, would that be OK?",
+      "parentUuid": "f92ae8b2_4f0cb9b0",
+      "range": {
+        "startLine": 2568,
+        "startChar": 0,
+        "endLine": 2572,
+        "endChar": 9
+      },
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d20f9a5a_0fd7d612",
         "filename": "src/power_control.cpp",
         "patchSetId": 1
@@ -241,6 +265,30 @@
       "writtenOn": "2022-11-10T01:12:28Z",
       "side": 1,
       "message": "I don\u0027t know if any of it might for some reason be mandated by our clang-format config (feel free to ignore me if so), but all the parenthesization here (aside from function calls and `if` conditions of course) seems a bit excessive to me...also, stylistically `readValue \u003e 0` strikes me as a bit odd as a test; should we maybe just make it `bool state` or something instead?",
+      "range": {
+        "startLine": 2580,
+        "startChar": 0,
+        "endLine": 2604,
+        "endChar": 67
+      },
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a1e7809_4809a341",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2604,
+      "author": {
+        "id": 1001329
+      },
+      "writtenOn": "2022-11-10T11:27:26Z",
+      "side": 1,
+      "message": "Unfortunately I don\u0027t see any way to make this sequence more generic, as hostIface properties are of different types and may contain different values depending on read status. I\u0027ll try to make it more readable though.",
+      "parentUuid": "9a4d8e4f_44297c3d",
       "range": {
         "startLine": 2580,
         "startChar": 0,
