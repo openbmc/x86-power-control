@@ -96,6 +96,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "e7c7951a_80e21aec",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-11-10T01:12:28Z",
+      "side": 1,
+      "message": "\u003e That service won\u0027t provide POST Complete status until it sees the correct host state from x86-power-control.\n\nI assume the other service involved here isn\u0027t in upstream OpenBMC?  \n\nI\u0027m sort of curious about the details; from the brief description here it sounds a bit odd -- I\u0027d have thought \"POST not complete\" would be a reasonable default value for it to provide unless/until it knows otherwise (to break the cyclic dependency).",
+      "parentUuid": "47747776_f3e1005e",
+      "range": {
+        "startLine": 12,
+        "startChar": 27,
+        "endLine": 13,
+        "endChar": 38
+      },
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "be361482_0f420ba4",
@@ -126,6 +150,103 @@
       "writtenOn": "2022-11-08T18:51:34Z",
       "side": 1,
       "message": "It may be good to also update the default JSON config file with this default value.",
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54c32659_0a8b3015",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2519,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-11-10T01:12:28Z",
+      "side": 1,
+      "message": "I might suggest putting \"exception\" instead of \"error\" in the log message here, mostly just to more clearly distinguish this case from the `reply.is_method_error()` case handled above.",
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "deef2514_d3de0ed3",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2522,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-11-10T01:12:28Z",
+      "side": 1,
+      "message": "Hmmm...looking at the various callers, it seems like they\u0027re not all necessarily set up to handle an error return here appropriately, but I suppose that\u0027s just a \"status quo\" problem and not really an issue with this patch per se.",
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f92ae8b2_4f0cb9b0",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2572,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-11-10T01:12:28Z",
+      "side": 1,
+      "message": "What if the retry still fails after the wait period -- do we need to re-arm the timer here?  Which I suppose also raises questions of if we should have a limit on how many times (or for how long) we\u0027ll retry...",
+      "range": {
+        "startLine": 2568,
+        "startChar": 0,
+        "endLine": 2572,
+        "endChar": 9
+      },
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d20f9a5a_0fd7d612",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2576,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-11-10T01:12:28Z",
+      "side": 1,
+      "message": "Nit: looks like ordering this one before reschedulePropertyRead() would eliminate the need for the separate declaration of it above (though given the mutual recursion between that one and getProperty() I suppose the other will need to remain).",
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a4d8e4f_44297c3d",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2604,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-11-10T01:12:28Z",
+      "side": 1,
+      "message": "I don\u0027t know if any of it might for some reason be mandated by our clang-format config (feel free to ignore me if so), but all the parenthesization here (aside from function calls and `if` conditions of course) seems a bit excessive to me...also, stylistically `readValue \u003e 0` strikes me as a bit odd as a test; should we maybe just make it `bool state` or something instead?",
+      "range": {
+        "startLine": 2580,
+        "startChar": 0,
+        "endLine": 2604,
+        "endChar": 67
+      },
       "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
