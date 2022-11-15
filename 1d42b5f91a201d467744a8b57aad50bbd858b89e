@@ -156,6 +156,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1f9002ea_31837bd3",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1001329
+      },
+      "writtenOn": "2022-11-15T10:30:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ca96f1c3_2dd48b09",
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "54c32659_0a8b3015",
         "filename": "src/power_control.cpp",
         "patchSetId": 1
@@ -167,6 +185,24 @@
       "writtenOn": "2022-11-10T01:12:28Z",
       "side": 1,
       "message": "I might suggest putting \"exception\" instead of \"error\" in the log message here, mostly just to more clearly distinguish this case from the `reply.is_method_error()` case handled above.",
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b67051f5_2bb10e9b",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2519,
+      "author": {
+        "id": 1001329
+      },
+      "writtenOn": "2022-11-15T10:30:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "54c32659_0a8b3015",
       "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -302,6 +338,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c52450af_ad7df095",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2576,
+      "author": {
+        "id": 1001329
+      },
+      "writtenOn": "2022-11-15T10:30:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d20f9a5a_0fd7d612",
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9a4d8e4f_44297c3d",
         "filename": "src/power_control.cpp",
         "patchSetId": 1
@@ -361,6 +415,30 @@
       "side": 1,
       "message": "The repetitive code is a bit unfortunate, yes, though I also don\u0027t see any obvious/easy better way of structuring it offhand -- what I was referring to in my comment was just dropping some extra parens, e.g. the ones around `readValue \u003d\u003d 0` and the ternary expressions.  (Though I also still wonder if making the `readValue` parameter a bool instead of an int might make more sense.)",
       "parentUuid": "0a1e7809_4809a341",
+      "range": {
+        "startLine": 2580,
+        "startChar": 0,
+        "endLine": 2604,
+        "endChar": 67
+      },
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f401bec4_8730bba8",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2604,
+      "author": {
+        "id": 1001329
+      },
+      "writtenOn": "2022-11-15T10:30:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "77256813_96d0e387",
       "range": {
         "startLine": 2580,
         "startChar": 0,
