@@ -237,6 +237,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "381a1fa1_43382e2f",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2572,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-11-15T03:15:00Z",
+      "side": 1,
+      "message": "Oh, I had missed that the getProperty() call immediately above would re-arm on an exception...I guess one thing I\u0027m not really clear on is what sorts of errors result in an exception vs. an error reply -- a comment providing some detail on that might help clarify?",
+      "parentUuid": "e3becb90_b30d9af3",
+      "range": {
+        "startLine": 2568,
+        "startChar": 0,
+        "endLine": 2572,
+        "endChar": 9
+      },
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d20f9a5a_0fd7d612",
         "filename": "src/power_control.cpp",
         "patchSetId": 1
@@ -289,6 +313,30 @@
       "side": 1,
       "message": "Unfortunately I don\u0027t see any way to make this sequence more generic, as hostIface properties are of different types and may contain different values depending on read status. I\u0027ll try to make it more readable though.",
       "parentUuid": "9a4d8e4f_44297c3d",
+      "range": {
+        "startLine": 2580,
+        "startChar": 0,
+        "endLine": 2604,
+        "endChar": 67
+      },
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "77256813_96d0e387",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2604,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-11-15T03:15:00Z",
+      "side": 1,
+      "message": "The repetitive code is a bit unfortunate, yes, though I also don\u0027t see any obvious/easy better way of structuring it offhand -- what I was referring to in my comment was just dropping some extra parens, e.g. the ones around `readValue \u003d\u003d 0` and the ternary expressions.  (Though I also still wonder if making the `readValue` parameter a bool instead of an int might make more sense.)",
+      "parentUuid": "0a1e7809_4809a341",
       "range": {
         "startLine": 2580,
         "startChar": 0,
