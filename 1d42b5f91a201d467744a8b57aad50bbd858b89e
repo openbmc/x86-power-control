@@ -120,6 +120,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "e74b05c1_e295f7e1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2022-11-16T21:48:45Z",
+      "side": 1,
+      "message": "That\u0027s true.  The only issue with defaulting to \"POST not complete\" is that will trigger the \"InterfacesAdded\"/\"PropertiesChanged\" events on D-Bus with the incorrect state if POST is complete.  I don\u0027t know if that will result in unexpected behavior for the consumers of that signal.",
+      "parentUuid": "e7c7951a_80e21aec",
+      "range": {
+        "startLine": 12,
+        "startChar": 27,
+        "endLine": 13,
+        "endChar": 38
+      },
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "be361482_0f420ba4",
