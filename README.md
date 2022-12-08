@@ -19,32 +19,38 @@ x86-power-control uses default json file (power-config-host0.json) for GPIO
 configuration. However this can be customized by producing your own
 power-config-host0.json file.
 
-Definitions can be configured by two type:
+## Signal Definitions
 
-1. GPIO
+Definitions can be configured by two type: GPIO and DBUS
+
+### GPIO
 
 For the platform having direct GPIO access can use the type GPIO and define like
 below.
 
-    {
-        "Name" : "PostComplete",
-        "LineName" : "POST_COMPLETE",
-        "Type" : "GPIO"
-    },
+```json
+{
+  "Name": "PostComplete",
+  "LineName": "POST_COMPLETE",
+  "Type": "GPIO"
+}
+```
 
-2. DBUS
+### DBUS
 
 For the platform not having direct GPIO access can use dbus based event monitor
 by using the type DBUS.
 
-    {
-        "Name" : "PowerButton",
-        "DbusName" : "xyz.openbmc_project.Chassis.Event",
-        "Path" : "/xyz/openbmc_project/Chassis/Event",
-        "Interface" : "xyz.openbmc_project.Chassis.Event",
-        "Property" : "PowerButton_Host1",
-        "Type" : "DBUS"
-    },
+```json
+{
+  "Name": "PowerButton",
+  "DbusName": "xyz.openbmc_project.Chassis.Event",
+  "Path": "/xyz/openbmc_project/Chassis/Event",
+  "Interface": "xyz.openbmc_project.Chassis.Event",
+  "Property": "PowerButton_Host1",
+  "Type": "DBUS"
+}
+```
 
 x86-power-control will monitor the property change from the given DbusName and
 take appropriate action. \*define Property as a bool variable.
@@ -55,11 +61,11 @@ timing issues and boot inconsistencies during stress operations.
 
 ## Build Options
 
-#### chassis-system-reset
+### chassis-system-reset
 
 Enable chassis system power reset to allow removing power and restoring back.
 
-#### use-plt-rst
+### use-plt-rst
 
 The POST Complete GPIO is usually held asserted by BIOS after POST complete and
 de-asserts on reset. This de-assert behavior is currently used to detect warm
@@ -70,5 +76,5 @@ more accurately detect warm resets. When this option is enabled,
 x86-power-control will use PLT_RST to detect warm resets instead of POST
 Complete.
 
-See https://github.com/Intel-BMC/host-misc-comm-manager for implementation
+See <https://github.com/Intel-BMC/host-misc-comm-manager> for implementation
 example.
