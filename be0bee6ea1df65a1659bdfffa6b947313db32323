@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4b8e1c56_f9ec748c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2022-12-13T03:17:41Z",
+      "side": 1,
+      "message": "LGTM, Value to continue.",
+      "revId": "be0bee6ea1df65a1659bdfffa6b947313db32323",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
