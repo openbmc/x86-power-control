@@ -33,7 +33,7 @@
 
 owners:
 - jason.m.bills@intel.com
-- kuiying.wang@intel.com
+- wangkuiying.wky@alibaba-inc.com 
 
 reviewers:
 - zev@bewilderbeest.net
@@ -45,8 +45,8 @@ openbmc:
   email: jason.m.bills@intel.com
   discord: jmbills
 - name: Kuiying Wang
-  email: kuiying.wang@intel.com
-  discord: kuiyingw
+  email: wangkuiying.wky@alibaba-inc.com
+  discord: Kwin
 - name: Zev Weiss
   email: zev@bewilderbeest.net
   discord: zevweiss
