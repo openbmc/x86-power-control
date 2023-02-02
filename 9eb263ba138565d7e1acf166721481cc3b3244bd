@@ -1,0 +1,7 @@
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+2: Kuiying Wang <wangkuiying.wky@alibaba-inc.com>
+Submitted-by: Kuiying Wang <wangkuiying.wky@alibaba-inc.com>
+Submitted-at: Thu, 02 Feb 2023 02:43:11 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/x86-power-control/+/60575
+Project: openbmc/x86-power-control
+Branch: refs/heads/master
