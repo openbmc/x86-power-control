@@ -68,6 +68,29 @@
       "parentUuid": "36b90763_d8ff929e",
       "revId": "c5f9be9d5d447404fba0baf8ff3068471f04dcd3",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b28760a_344267f1",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2516,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2023-02-07T22:19:53Z",
+      "side": 1,
+      "message": "I\u0027d prefer you to just use sdbusplus::exception_t.  SdBusError is of base type \"internal_exception\" and should not be considered an external API.  I\u0027ll likely change some of these to become of base type generated_exception with full-formed exception names at some point in the future.",
+      "range": {
+        "startLine": 2516,
+        "startChar": 39,
+        "endLine": 2516,
+        "endChar": 49
+      },
+      "revId": "c5f9be9d5d447404fba0baf8ff3068471f04dcd3",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
