@@ -50,6 +50,24 @@
       "message": "@Zev, is this acceptable for now until we can work on the larger change for handling D-Bus on start-up?",
       "revId": "c5f9be9d5d447404fba0baf8ff3068471f04dcd3",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "86bb6809_41ee5545",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2023-02-07T22:08:30Z",
+      "side": 1,
+      "message": "If it\u0027s meant as a temporary stopgap I think I\u0027d be in favor of keeping it entirely internal and just hard-coding the delay instead of exposing it externally as a config parameter.\n\nThough it seems like this might tie into the kinds of issues discussed in @arj\u0027s anti-patterns docs review: https://gerrit.openbmc.org/c/openbmc/docs/+/60394 (though to be honest I\u0027m not sufficiently tuned into the issues there to say exactly how).  I\u0027d be curious if people with a better idea than me of the desired model for dbus interactions \u0026 dependencies have any input here -- Andrew, Patrick?",
+      "parentUuid": "36b90763_d8ff929e",
+      "revId": "c5f9be9d5d447404fba0baf8ff3068471f04dcd3",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
