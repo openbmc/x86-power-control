@@ -18,7 +18,7 @@
 #include <sys/sysinfo.h>
 #include <systemd/sd-journal.h>
 
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 #include <boost/asio/posix/stream_descriptor.hpp>
 #include <boost/asio/steady_timer.hpp>
 #include <boost/container/flat_map.hpp>
@@ -34,7 +34,7 @@
 
 namespace power_control
 {
-static boost::asio::io_service io;
+static boost::asio::io_context io;
 std::shared_ptr<sdbusplus::asio::connection> conn;
 PersistentState appState;
 PowerRestoreController powerRestore(io);

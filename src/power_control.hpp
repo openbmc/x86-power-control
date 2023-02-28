@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 #include <boost/asio/steady_timer.hpp>
 #include <boost/container/flat_map.hpp>
 #include <nlohmann/json.hpp>
@@ -37,7 +37,7 @@ using dbusPropertiesList =
 class PowerRestoreController
 {
   public:
-    PowerRestoreController(boost::asio::io_service& io) :
+    PowerRestoreController(boost::asio::io_context& io) :
         policyInvoked(false), powerRestoreDelay(-1), powerRestoreTimer(io),
         timerFired(false)
     {}
