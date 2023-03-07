@@ -12,6 +12,7 @@
 #include <sdbusplus/asio/object_server.hpp>
 
 #include <filesystem>
+#include <list>
 #include <string_view>
 
 namespace power_control
