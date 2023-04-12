@@ -7,7 +7,7 @@ project(
     ],
     license: 'Apache-2.0',
     version: '0.1',
-    meson_version: '>=0.57.0',
+    meson_version: '>=0.58.0',
 )
 
 add_project_arguments(
@@ -59,7 +59,7 @@ if systemd.found()
     'service_files/chassis-system-reset.service',
     'service_files/chassis-system-reset.target',
     'service_files/xyz.openbmc_project.Chassis.Control.Power@.service',
-    install_dir: systemd.get_variable(pkgconfig: 'systemdsystemunitdir'))
+    install_dir: systemd.get_variable('systemdsystemunitdir'))
 endif
 
 install_data(
