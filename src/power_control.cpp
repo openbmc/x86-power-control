@@ -145,6 +145,7 @@ boost::container::flat_map<std::string, int> TimerMap = {
     {"SlotPowerCycleMs", 200}};
 
 static bool nmiEnabled = true;
+static bool nmiWhenPoweredOff = false;
 static bool sioEnabled = true;
 
 // Timers
@@ -2203,7 +2204,11 @@ static void nmiButtonHandler(bool state)
     nmiButtonIface->set_property("ButtonPressed", !state);
     if (!state)
     {
-        nmiButtonPressLog();
+        if (getHostState(powerState) ==
+            "xyz.openbmc_project.State.Host.HostState.Running")
+        {
+            nmiButtonPressLog();
+        }
         if (nmiButtonMasked)
         {
             lg2::info("NMI button press masked");
@@ -2423,6 +2428,11 @@ static int loadConfigValues()
             timerValue = timers[key.c_str()];
         }
     }
+
+    auto events = jsonData.value(
+        "event_configs", nlohmann::json(nlohmann::json::value_t::object));
+
+    nmiWhenPoweredOff = events.value("NMIWhenPoweredOff", false);
 
     return 0;
 }
