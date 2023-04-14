@@ -83,5 +83,8 @@
         "GracefulPowerOffS": 300,
         "WarmResetCheckMs": 500,
         "PowerOffSaveMs": 7000
+    },
+    "event_configs": {
+        "NMIWhenPoweredOff": true
     }
 }
