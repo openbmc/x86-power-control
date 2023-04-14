@@ -2203,7 +2203,11 @@ static void nmiButtonHandler(bool state)
     nmiButtonIface->set_property("ButtonPressed", !state);
     if (!state)
     {
-        nmiButtonPressLog();
+        if (getHostState(powerState) ==
+            "xyz.openbmc_project.State.Host.HostState.Running")
+        {
+            nmiButtonPressLog();
+        }
         if (nmiButtonMasked)
         {
             lg2::info("NMI button press masked");
