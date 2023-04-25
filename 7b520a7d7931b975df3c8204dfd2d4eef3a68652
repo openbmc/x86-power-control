@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2d24243e_036b86f3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2023-04-25T04:41:02Z",
+      "side": 1,
+      "message": "It\u0027s generally preferable for the commit message\u0027s subject line to describe the change made by the commit, rather than the problem it\u0027s addressing (https://github.com/openbmc/docs/blob/1e09b3cbdb223e2885bc6ba83e84a5cd5a728776/CONTRIBUTING.md#formatting-commit-messages).",
+      "revId": "7b520a7d7931b975df3c8204dfd2d4eef3a68652",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60def2ef_7122f23e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2023-04-25T04:41:02Z",
+      "side": 1,
+      "message": "It would be good to generalize the description a bit here -- it\u0027d be fine to motivate by citing a specific platform and perhaps speculate a bit about the underlying reasons, but ideally the main focus of the commit message would be more generic (e.g. mentioning that NMI button presses aren\u0027t terribly interesting when the host is off, which is true even on hardware that doesn\u0027t generate bogus button-press events when it shuts down).",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 69
+      },
+      "revId": "7b520a7d7931b975df3c8204dfd2d4eef3a68652",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e764d489_ba111ccc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2023-04-25T04:41:02Z",
+      "side": 1,
+      "message": "Code looks fine to me; just a bit of commit message cleanup to do IMO...",
+      "revId": "7b520a7d7931b975df3c8204dfd2d4eef3a68652",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
