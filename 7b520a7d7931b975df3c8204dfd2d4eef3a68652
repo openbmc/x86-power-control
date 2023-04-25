@@ -41,6 +41,23 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "339657b4_0982b1db",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2023-04-25T04:42:51Z",
+      "side": 1,
+      "message": "Oh, and there should be a blank line separating the body from the tag lines at the end (Change-Id, Signed-off-by, etc.).",
+      "revId": "7b520a7d7931b975df3c8204dfd2d4eef3a68652",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "e764d489_ba111ccc",
