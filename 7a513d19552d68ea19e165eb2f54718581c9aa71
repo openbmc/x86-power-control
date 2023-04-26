@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf2d193f_e7bbe62a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2023-04-26T08:07:43Z",
+      "side": 1,
+      "message": "Sorry to nitpick the commit message further, but in the context of the x86-power-control repo itself, putting the repo name as a subject-line tag is a bit redundant, so I\u0027d suggest removing that part.",
+      "revId": "7a513d19552d68ea19e165eb2f54718581c9aa71",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3363fe3f_d671dda2",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2219,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2023-04-26T08:07:43Z",
+      "side": 1,
+      "message": "...though actually now looking at this further I\u0027m wondering if maybe we should broaden the scope of what\u0027s skipped if the host is off -- i.e. maybe combine the powerState check into the `if (!state)` check with `\u0026\u0026`, or perhaps just put an `if (powerState !\u003d running) return` as the first line of the function?\n\nNot sure...possibly Jason or Kuiying can chime in with any thoughts?",
+      "range": {
+        "startLine": 2203,
+        "startChar": 0,
+        "endLine": 2219,
+        "endChar": 5
+      },
+      "revId": "7a513d19552d68ea19e165eb2f54718581c9aa71",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
