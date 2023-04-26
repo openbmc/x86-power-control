@@ -36,6 +36,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2659b0d0_f267eecd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1001744
+      },
+      "writtenOn": "2023-04-26T08:09:28Z",
+      "side": 1,
+      "message": "I modified the commit message, along with adding the component name, but I didn\u0027t manage to be under 50 caracters.",
+      "parentUuid": "2d24243e_036b86f3",
+      "revId": "7b520a7d7931b975df3c8204dfd2d4eef3a68652",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "60def2ef_7122f23e",
@@ -83,6 +101,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0fecc8a_cc75ec6a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1001744
+      },
+      "writtenOn": "2023-04-26T08:09:28Z",
+      "side": 1,
+      "message": "Ok, I updated the description",
+      "parentUuid": "60def2ef_7122f23e",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 69
+      },
+      "revId": "7b520a7d7931b975df3c8204dfd2d4eef3a68652",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "339657b4_0982b1db",
@@ -113,6 +155,24 @@
       "writtenOn": "2023-04-26T08:07:43Z",
       "side": 1,
       "message": "Done",
+      "parentUuid": "339657b4_0982b1db",
+      "revId": "7b520a7d7931b975df3c8204dfd2d4eef3a68652",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f7367b3a_96b9d3a0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1001744
+      },
+      "writtenOn": "2023-04-26T08:09:28Z",
+      "side": 1,
+      "message": "Line added",
       "parentUuid": "339657b4_0982b1db",
       "revId": "7b520a7d7931b975df3c8204dfd2d4eef3a68652",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
