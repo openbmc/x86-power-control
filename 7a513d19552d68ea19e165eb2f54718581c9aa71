@@ -57,6 +57,30 @@
       },
       "revId": "7a513d19552d68ea19e165eb2f54718581c9aa71",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aeb46bc3_bc0b872a",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2219,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2023-04-27T18:44:05Z",
+      "side": 1,
+      "message": "I agree. To me the logging still has some benefit when the host is off, but sending the NMI through to the host probably doesn\u0027t.  Unless the NMI source value in D-Bus should still be updated even when the host is off?",
+      "parentUuid": "3363fe3f_d671dda2",
+      "range": {
+        "startLine": 2203,
+        "startChar": 0,
+        "endLine": 2219,
+        "endChar": 5
+      },
+      "revId": "7a513d19552d68ea19e165eb2f54718581c9aa71",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }

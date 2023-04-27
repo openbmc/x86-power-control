@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "50b61d94_6587710c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2023-04-27T18:44:05Z",
+      "side": 1,
+      "message": "I don\u0027t think I agree with this as a broad change.  It\u0027s true that NMI doesn\u0027t mean anything when the host is off, but the NMI button is user-facing, so it seems useful to know if users are messing with buttons regardless of the state of the host.\n\nIf hardware-specific patching isn\u0027t an option, perhaps this filter could be added as a build or configuration option?",
+      "revId": "e11c8c38608dd4a1bef0f1c74ed7f290282c30e4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
