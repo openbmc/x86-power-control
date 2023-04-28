@@ -81,6 +81,30 @@
       },
       "revId": "7a513d19552d68ea19e165eb2f54718581c9aa71",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d5980a1_3aabc899",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2219,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2023-04-28T10:05:38Z",
+      "side": 1,
+      "message": "\u003e but sending the NMI through to the host probably doesn\u0027t.\n\nDoes this code path have any control over that?  It doesn\u0027t appear to twiddling any GPIO outputs or anything, so it seems like the assumption is that the hardware is set up with that signal line run straight to the host and the BMC just gets to monitor it in a read-only fashion.\n\n\u003e Unless the NMI source value in D-Bus should still be updated even when the host is off?\n\nI don\u0027t think I have any particular opinions on this at the moment; happy to go with whichever you prefer.",
+      "parentUuid": "aeb46bc3_bc0b872a",
+      "range": {
+        "startLine": 2203,
+        "startChar": 0,
+        "endLine": 2219,
+        "endChar": 5
+      },
+      "revId": "7a513d19552d68ea19e165eb2f54718581c9aa71",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }

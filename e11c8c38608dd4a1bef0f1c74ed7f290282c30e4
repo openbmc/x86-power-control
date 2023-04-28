@@ -16,6 +16,24 @@
       "message": "I don\u0027t think I agree with this as a broad change.  It\u0027s true that NMI doesn\u0027t mean anything when the host is off, but the NMI button is user-facing, so it seems useful to know if users are messing with buttons regardless of the state of the host.\n\nIf hardware-specific patching isn\u0027t an option, perhaps this filter could be added as a build or configuration option?",
       "revId": "e11c8c38608dd4a1bef0f1c74ed7f290282c30e4",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "621a7039_1d35c492",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2023-04-28T10:05:38Z",
+      "side": 1,
+      "message": "\u003e the NMI button is user-facing, so it seems useful to know if users are messing with buttons regardless of the state of the host.\n\nI mean it\u0027s an event that the BMC can detect and log, but if the host isn\u0027t powered on to respond to an NMI in any way, I guess I\u0027m sort of unclear on what\u0027s interesting or useful about it -- in that state it just seems kinda like a dummy GPIO.  I suppose it\u0027s conceivable that there could be situations in which it could be useful for some sort of post-mortem debugging or something?\n\nThe main problem we have is that on the hardware we\u0027ve got that produces these spurious button-press events when the host shuts off, the logged events manifest as `CRITICAL`-level errors in the redfish event log, so in the web UI it looks like there\u0027s something deeply wrong with the system even when the only thing that\u0027s happened is a totally healthy shutdown.\n\n\u003e If hardware-specific patching isn\u0027t an option, perhaps this filter could be added as a build or configuration option?\n\nA hardware-specific patch is what we\u0027re currently using internally, but we\u0027d of course prefer to get something upstream instead, and patches in upstream OpenBMC have (quite reasonably, IMO) been disallowed for a while now.  I think it would be preferable to avoid increasing the number of compile-time options; perhaps we could add a config sub-section looking something like this?  (Arranged so as to be extensible to other event-logging customization.)\n\n```\n{\n  \"gpio_configs\": [\n    ...\n  ],\n  \"timing_configs\": {\n    ...\n  },\n  \"logging\": {\n    \"LogNMIButtonPressWhenPoweredOff\": false\n  }\n}\n```\n\nThe name is a bit verbose, but I couldn\u0027t think of anything more concise that was still reasonably self-explanatory.  (Open to suggestions for better alternatives if anyone has any.)",
+      "parentUuid": "50b61d94_6587710c",
+      "revId": "e11c8c38608dd4a1bef0f1c74ed7f290282c30e4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
