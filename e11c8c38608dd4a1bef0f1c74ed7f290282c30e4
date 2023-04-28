@@ -34,6 +34,24 @@
       "parentUuid": "50b61d94_6587710c",
       "revId": "e11c8c38608dd4a1bef0f1c74ed7f290282c30e4",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c2c40d3e_f2311ca9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2023-04-28T18:24:45Z",
+      "side": 1,
+      "message": "\u003e I mean it\u0027s an event that the BMC can detect and log, but if the host isn\u0027t powered on to respond to an NMI in any way, I guess I\u0027m sort of unclear on what\u0027s interesting or useful about it -- in that state it just seems kinda like a dummy GPIO.\n\nI think the clarification below that, at least on my system, the NMI button doesn\u0027t go directly to the system may help clarify my thoughts. Essentially, I look at the NMI button as nothing more than a dummy GPIO that users can control from the front panel.\n\nI guess I\u0027m cautious about BMC filtering events as I feel like we get into as much or more trouble for missing real events as for logging spurious ones.😊\n\nI\u0027m still mulling over what might be affected by filtering the NMI event when the host is off, but here are some of my other thoughts:\n- If the event was \"OK\" severity, would that help? I see that both the Power and Reset button press events are \"OK\". I don\u0027t know why NMI was considered more critical than those, so it would make sense to me to reduce the severity of the button press to \"OK\".\n- Instead of filtering just the logging on host-off, we could filter the entire event (setting the source, pulsing the output GPIO, etc.). Would that make the config option easier to write?  Maybe something like:\n```\n\"event_configs\": {\n   \"NMIWhenPoweredOff\": false\n}\n```",
+      "parentUuid": "621a7039_1d35c492",
+      "revId": "e11c8c38608dd4a1bef0f1c74ed7f290282c30e4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
