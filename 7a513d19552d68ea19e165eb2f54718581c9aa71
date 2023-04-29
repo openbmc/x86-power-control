@@ -129,6 +129,30 @@
       },
       "revId": "7a513d19552d68ea19e165eb2f54718581c9aa71",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c276a24d_9dd4393c",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2219,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2023-04-29T04:37:28Z",
+      "side": 1,
+      "message": "Oh interesting, I hadn\u0027t realized there was all that going on there (the dbus indirection threw me off the path as I was tracing through it)...and yes, I think our hardware works the same way actually.  Thanks for the clarification.",
+      "parentUuid": "69c64578_10db65e2",
+      "range": {
+        "startLine": 2203,
+        "startChar": 0,
+        "endLine": 2219,
+        "endChar": 5
+      },
+      "revId": "7a513d19552d68ea19e165eb2f54718581c9aa71",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }

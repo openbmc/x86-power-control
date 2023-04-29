@@ -52,6 +52,24 @@
       "parentUuid": "621a7039_1d35c492",
       "revId": "e11c8c38608dd4a1bef0f1c74ed7f290282c30e4",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0b67c46_b4b952b5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2023-04-29T04:37:28Z",
+      "side": 1,
+      "message": "\u003e I think the clarification below that, at least on my system, the NMI button doesn\u0027t go directly to the system may help clarify my thoughts.\n\nYeah, with that cleared up I can see more why we might want to keep logging it.\n\n\u003e If the event was \"OK\" severity, would that help?\n\nI think it\u0027d certainly be an improvement, yeah (logging a spurious \"OK\" event is definitely better than logging a spurious \"Critical\" event), though not a complete fix for us (a spurious event is still a spurious event).  I guess an NMI does seem a bit more out of the ordinary than power or reset button events though...maybe a warning or something in between the two instead?\n\n\u003e Instead of filtering just the logging on host-off, we could filter the entire event (setting the source, pulsing the output GPIO, etc.).\n\nSo have the config option just make it ignore the NMI button entirely when the host is off?  I think that sounds reasonable, and would work fine for our situation.  @ofaurax, want to draft up a version taking that approach instead?",
+      "parentUuid": "c2c40d3e_f2311ca9",
+      "revId": "e11c8c38608dd4a1bef0f1c74ed7f290282c30e4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
