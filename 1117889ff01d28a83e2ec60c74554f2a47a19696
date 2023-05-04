@@ -16,6 +16,24 @@
       "message": "These 2 lines don\u0027t induce any rewrite, error or warning with clang-format 14.0.0.\nHowever,regarding the .clang-format file, they should, as they lack braces around the 2nd line.\nIs this the same for you?",
       "revId": "1117889ff01d28a83e2ec60c74554f2a47a19696",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b3bbc2d_68f5ff88",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2437,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2023-05-04T10:34:10Z",
+      "side": 1,
+      "message": "Hmm, yeah, not sure what\u0027s going on there, I would also have expected it to complain about that.  (Manually running clang-format locally I get the same result with both 14 and 15.)  clang-format often seems like a pretty mysterious and unpredictable beast to me I have to say...unless someone else knows what\u0027s going on here, I guess I\u0027d just say fix it manually to make it consistent with the rest of the code?",
+      "parentUuid": "fa18b2cd_d7127b28",
+      "revId": "1117889ff01d28a83e2ec60c74554f2a47a19696",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
