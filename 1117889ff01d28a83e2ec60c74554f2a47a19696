@@ -34,6 +34,24 @@
       "parentUuid": "fa18b2cd_d7127b28",
       "revId": "1117889ff01d28a83e2ec60c74554f2a47a19696",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "34c94810_0e5aa641",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2437,
+      "author": {
+        "id": 1001744
+      },
+      "writtenOn": "2023-05-05T09:27:31Z",
+      "side": 1,
+      "message": "For the record, there is this new option in future clang-format 15, InsertBraces, which does exactly that: https://reviews.llvm.org/D120217\nIn the meantime, I\u0027ll add them by hand, as suggested.",
+      "parentUuid": "8b3bbc2d_68f5ff88",
+      "revId": "1117889ff01d28a83e2ec60c74554f2a47a19696",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
