@@ -35,6 +35,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e67817df_4eb9ac21",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1001744
+      },
+      "writtenOn": "2023-05-11T16:34:14Z",
+      "side": 1,
+      "message": "I added it in the config file",
+      "parentUuid": "05ef7d73_a2c08459",
+      "revId": "fa590c62c6e71d953ed02b0f6109d2dc20710093",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e0e45c95_50ce0317",
@@ -60,6 +78,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "dd8f1bf6_715fcf50",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 2212,
+      "author": {
+        "id": 1001744
+      },
+      "writtenOn": "2023-05-11T16:34:14Z",
+      "side": 1,
+      "message": "We could even put this code just after the `set_property(...)` before the `if`",
+      "parentUuid": "e0e45c95_50ce0317",
+      "range": {
+        "startLine": 2207,
+        "startChar": 1,
+        "endLine": 2212,
+        "endChar": 9
+      },
+      "revId": "fa590c62c6e71d953ed02b0f6109d2dc20710093",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fb14b4d8_d3d8ceb6",
         "filename": "src/power_control.cpp",
         "patchSetId": 9
@@ -71,6 +113,24 @@
       "writtenOn": "2023-05-09T21:33:22Z",
       "side": 1,
       "message": "nit: `auto` is preferred only when the type is clear from the context.  In this case, it appears to be a `bool` which is pretty clear, but then is there any reason to use `auto` instead of just `bool`?",
+      "revId": "fa590c62c6e71d953ed02b0f6109d2dc20710093",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "70d1c8cc_de4963c2",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 2434,
+      "author": {
+        "id": 1001744
+      },
+      "writtenOn": "2023-05-11T16:34:14Z",
+      "side": 1,
+      "message": "`events` is not of type `bool`, it\u0027s `events.value(...)` which is.",
+      "parentUuid": "fb14b4d8_d3d8ceb6",
       "revId": "fa590c62c6e71d953ed02b0f6109d2dc20710093",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
