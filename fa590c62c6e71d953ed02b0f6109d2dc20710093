@@ -180,6 +180,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "87ec7b73_d544ed64",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 2212,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2023-05-12T16:59:15Z",
+      "side": 1,
+      "message": "Good point.  If we\u0027re skipping everything, we should probably not notify anything else about the button-press either.",
+      "parentUuid": "94edc83a_edf1b30a",
+      "range": {
+        "startLine": 2207,
+        "startChar": 1,
+        "endLine": 2212,
+        "endChar": 9
+      },
+      "revId": "fa590c62c6e71d953ed02b0f6109d2dc20710093",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fb14b4d8_d3d8ceb6",
         "filename": "src/power_control.cpp",
         "patchSetId": 9
