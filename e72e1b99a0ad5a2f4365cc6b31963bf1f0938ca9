@@ -16,6 +16,23 @@
       "message": "Looks good to me.  I\u0027ll leave it at +1 to make sure others have a chance for any additional feedback.",
       "revId": "e72e1b99a0ad5a2f4365cc6b31963bf1f0938ca9",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d235ce8d_589b31c5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2023-05-15T19:47:37Z",
+      "side": 1,
+      "message": "Zev is the only other reviewer since this was opened, so that\u0027s good enough for me. 😊",
+      "revId": "e72e1b99a0ad5a2f4365cc6b31963bf1f0938ca9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
