@@ -2423,10 +2423,10 @@ static int loadConfigValues()
         }
     }
 
-    // If "events_configs" key is not in json config, fallback to {}
-    auto events = jsonData.value(
-        "event_configs", nlohmann::json(nlohmann::json::value_t::object));
-    if (events)
+    // If "events_configs" key is not in json config, fallback to null
+    auto events = jsonData.value("event_configs",
+                                 nlohmann::json(nlohmann::json::value_t::null));
+    if (events.is_object())
     {
         nmiWhenPoweredOff = events.value("NMIWhenPoweredOff", true);
     }
