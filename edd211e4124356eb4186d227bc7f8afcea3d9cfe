@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "64f6698f_98614339",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001329
+      },
+      "writtenOn": "2023-06-02T11:54:42Z",
+      "side": 1,
+      "message": "I\u0027ve rebased the patch once again and fixed a little merge conflict during that process.\n\n@Jason, @Zev, please let me know if You still want to merge this change, or You\u0027d rather want to keep it internal. In case You decide to do the former: @Patrick, could You verify if currently used sdbusplus exception type is alright?",
+      "revId": "edd211e4124356eb4186d227bc7f8afcea3d9cfe",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
