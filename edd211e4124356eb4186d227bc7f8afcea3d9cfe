@@ -69,6 +69,24 @@
       "message": "Thanks, Patrick. \n@Jason, @Zev, waiting for Your feedback, whether You still want to merge this change, or You\u0027d rather want to keep it internal.",
       "revId": "edd211e4124356eb4186d227bc7f8afcea3d9cfe",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "41a931a0_81e246de",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2023-06-20T10:05:31Z",
+      "side": 1,
+      "message": "I guess what I was hoping for some more explicit input on was about the general approach of this patch in comparison to solving the problem externally to the daemon via service dependencies, which from the discussion earlier sounded like it might be feasible?  Perhaps @stwcx not commenting on that should be taken as implicit approval, but I\u0027d be a bit curious to hear about the reasoning either way.  Patrick?\n\n(Overall I\u0027m not vehemently opposed so if the maintainers are OK with it feel free to proceed.)",
+      "parentUuid": "58373e80_35e368ba",
+      "revId": "edd211e4124356eb4186d227bc7f8afcea3d9cfe",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
