@@ -196,6 +196,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "eda2d165_5c0801fb",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1001329
+      },
+      "writtenOn": "2023-06-21T13:59:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1f9002ea_31837bd3",
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "54c32659_0a8b3015",
@@ -227,6 +245,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "54c32659_0a8b3015",
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7076e2a1_790dc391",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2519,
+      "author": {
+        "id": 1001329
+      },
+      "writtenOn": "2023-06-21T13:59:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b67051f5_2bb10e9b",
       "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -378,6 +414,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c94976b5_5354cfc5",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2576,
+      "author": {
+        "id": 1001329
+      },
+      "writtenOn": "2023-06-21T13:59:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c52450af_ad7df095",
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9a4d8e4f_44297c3d",
@@ -463,6 +517,30 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "77256813_96d0e387",
+      "range": {
+        "startLine": 2580,
+        "startChar": 0,
+        "endLine": 2604,
+        "endChar": 67
+      },
+      "revId": "1d42b5f91a201d467744a8b57aad50bbd858b89e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "84b863b4_20120b0f",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2604,
+      "author": {
+        "id": 1001329
+      },
+      "writtenOn": "2023-06-21T13:59:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f401bec4_8730bba8",
       "range": {
         "startLine": 2580,
         "startChar": 0,

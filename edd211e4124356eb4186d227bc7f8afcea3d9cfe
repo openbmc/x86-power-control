@@ -105,6 +105,24 @@
       "parentUuid": "41a931a0_81e246de",
       "revId": "edd211e4124356eb4186d227bc7f8afcea3d9cfe",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "44d08157_e3abe7a2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001329
+      },
+      "writtenOn": "2023-06-21T13:59:55Z",
+      "side": 1,
+      "message": "The problem with solving this using service file approach was that even if we added proper mapper-wait dependencies, the other service during startup was waiting for DBus property utilized by x86-power-control, which caused a sort of deadlock situation.\n\nThe other thing is that in this generalized approach we don\u0027t know which exact service needs to be added as a dependency until JSON file is parsed, but I guess this is what You wanted to solve by \"have the system owner give both a JSON and a systemd-conf for the x86-power-control service\".",
+      "parentUuid": "8d5495f2_63b2e8fc",
+      "revId": "edd211e4124356eb4186d227bc7f8afcea3d9cfe",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
