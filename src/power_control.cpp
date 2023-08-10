@@ -124,8 +124,8 @@ static std::shared_ptr<sdbusplus::asio::dbus_interface> idButtonIface;
 static std::shared_ptr<sdbusplus::asio::dbus_interface> nmiOutIface;
 static std::shared_ptr<sdbusplus::asio::dbus_interface> restartCauseIface;
 
-static gpiod::line powerButtonMask;
-static gpiod::line resetButtonMask;
+static std::optional<gpiod::line_request> powerButtonMask;
+static std::optional<gpiod::line_request> resetButtonMask;
 static bool nmiButtonMasked = false;
 #if IGNORE_SOFT_RESETS_DURING_POST
 static bool ignoreNextSoftReset = false;
@@ -175,26 +175,26 @@ static boost::container::flat_map<std::string, boost::asio::steady_timer>
     dBusRetryTimers;
 
 // GPIO Lines and Event Descriptors
-static gpiod::line psPowerOKLine;
+static std::optional<gpiod::line_request> psPowerOKLine;
 static boost::asio::posix::stream_descriptor psPowerOKEvent(io);
-static gpiod::line sioPowerGoodLine;
+static std::optional<gpiod::line_request> sioPowerGoodLine;
 static boost::asio::posix::stream_descriptor sioPowerGoodEvent(io);
-static gpiod::line sioOnControlLine;
+static std::optional<gpiod::line_request> sioOnControlLine;
 static boost::asio::posix::stream_descriptor sioOnControlEvent(io);
-static gpiod::line sioS5Line;
+static std::optional<gpiod::line_request> sioS5Line;
 static boost::asio::posix::stream_descriptor sioS5Event(io);
-static gpiod::line powerButtonLine;
+static std::optional<gpiod::line_request> powerButtonLine;
 static boost::asio::posix::stream_descriptor powerButtonEvent(io);
-static gpiod::line resetButtonLine;
+static std::optional<gpiod::line_request> resetButtonLine;
 static boost::asio::posix::stream_descriptor resetButtonEvent(io);
-static gpiod::line nmiButtonLine;
+static std::optional<gpiod::line_request> nmiButtonLine;
 static boost::asio::posix::stream_descriptor nmiButtonEvent(io);
-static gpiod::line idButtonLine;
+static std::optional<gpiod::line_request> idButtonLine;
 static boost::asio::posix::stream_descriptor idButtonEvent(io);
-static gpiod::line postCompleteLine;
+static std::optional<gpiod::line_request> postCompleteLine;
 static boost::asio::posix::stream_descriptor postCompleteEvent(io);
-static gpiod::line nmiOutLine;
-static gpiod::line slotPowerLine;
+static std::optional<gpiod::line_request> nmiOutLine;
+static std::optional<gpiod::line_request> slotPowerLine;
 
 static constexpr uint8_t beepPowerFail = 8;
 
@@ -1140,7 +1140,7 @@ bool PowerRestoreController::wasPowerDropped()
 
 static void waitForGPIOEvent(const std::string& name,
                              const std::function<void(bool)>& eventHandler,
-                             gpiod::line& line,
+                             gpiod::line_request& line,
                              boost::asio::posix::stream_descriptor& event)
 {
     event.async_wait(boost::asio::posix::stream_descriptor::wait_read,
@@ -1154,91 +1154,113 @@ static void waitForGPIOEvent(const std::string& name,
             // restart?
             return;
         }
-        gpiod::line_event line_event = line.event_read();
-        eventHandler(line_event.event_type == gpiod::line_event::RISING_EDGE);
+        auto line_event = line.get_value(0);
+        eventHandler(line_event == gpiod::line::value::ACTIVE);
         waitForGPIOEvent(name, eventHandler, line, event);
     });
 }
 
 static bool requestGPIOEvents(
     const std::string& name, const std::function<void(bool)>& handler,
-    gpiod::line& gpioLine,
+    std::optional<gpiod::line_request>& gpioLine,
     boost::asio::posix::stream_descriptor& gpioEventDescriptor)
 {
     // Find the GPIO line
-    gpioLine = gpiod::find_line(name);
-    if (!gpioLine)
+    for (const auto& entry : ::std::filesystem::directory_iterator("/dev/"))
     {
-        lg2::error("Failed to find the {GPIO_NAME} line", "GPIO_NAME", name);
-        return false;
-    }
+        if (gpiod::is_gpiochip_device(entry.path()))
+        {
+            gpiod::chip chip = gpiod::chip(entry.path());
 
-    try
-    {
-        gpioLine.request({appName, gpiod::line_request::EVENT_BOTH_EDGES, {}});
-    }
-    catch (const std::exception& e)
-    {
-        lg2::error("Failed to request events for {GPIO_NAME}: {ERROR}",
-                   "GPIO_NAME", name, "ERROR", e);
-        return false;
-    }
+            auto offset = chip.get_line_offset_from_name(name.c_str());
+            if (offset >= 0)
+            {
+                break;
+            }
+            auto settings = gpiod::line_settings();
+            settings.set_direction(gpiod::line::direction::INPUT);
+            settings.set_edge_detection(gpiod::line::edge::BOTH);
+            gpioLine = chip.prepare_request()
+                           .set_consumer("x86-power-control")
+                           .add_line_settings(offset, settings)
+                           .do_request();
+            int gpioLineFd = gpioLine->fd();
+            if (gpioLineFd < 0)
+            {
+                lg2::error("Failed to get {GPIO_NAME} fd", "GPIO_NAME", name);
+                return false;
+            }
 
-    int gpioLineFd = gpioLine.event_get_fd();
-    if (gpioLineFd < 0)
-    {
-        lg2::error("Failed to get {GPIO_NAME} fd", "GPIO_NAME", name);
-        return false;
+            gpioEventDescriptor.assign(gpioLineFd);
+
+            waitForGPIOEvent(name, handler, *gpioLine, gpioEventDescriptor);
+            return true;
+        }
     }
-
-    gpioEventDescriptor.assign(gpioLineFd);
-
-    waitForGPIOEvent(name, handler, gpioLine, gpioEventDescriptor);
-    return true;
+    return false;
 }
 
 static bool setGPIOOutput(const std::string& name, const int value,
-                          gpiod::line& gpioLine)
+                          std::optional<gpiod::line_request>& gpioLine)
 {
     // Find the GPIO line
-    gpioLine = gpiod::find_line(name);
-    if (!gpioLine)
+    for (const auto& entry : ::std::filesystem::directory_iterator("/dev/"))
     {
-        lg2::error("Failed to find the {GPIO_NAME} line", "GPIO_NAME", name);
-        return false;
-    }
+        if (gpiod::is_gpiochip_device(entry.path()))
+        {
+            gpiod::chip chip(entry.path());
 
-    // Request GPIO output to specified value
-    try
-    {
-        gpioLine.request({appName, gpiod::line_request::DIRECTION_OUTPUT, {}},
-                         value);
-    }
-    catch (const std::exception& e)
-    {
-        lg2::error("Failed to request {GPIO_NAME} output: {ERROR}", "GPIO_NAME",
-                   name, "ERROR", e);
-        return false;
-    }
+            auto offset = chip.get_line_offset_from_name(name.c_str());
+            if (offset < 0)
+            {
+                return false;
+            }
+            // Request GPIO output to specified value
+            try
+            {
+                auto settings = gpiod::line_settings();
+                settings.set_direction(gpiod::line::direction::OUTPUT);
 
-    lg2::info("{GPIO_NAME} set to {GPIO_VALUE}", "GPIO_NAME", name,
-              "GPIO_VALUE", value);
-    return true;
+                gpioLine = chip.prepare_request()
+                               .set_consumer("x86-power-control")
+                               .add_line_settings(offset, settings)
+                               .do_request();
+
+                gpiod::line::value gvalue = value
+                                                ? gpiod::line::value::ACTIVE
+                                                : gpiod::line::value::INACTIVE;
+                gpioLine->set_value(0, gvalue);
+            }
+            catch (const std::exception& e)
+            {
+                lg2::error("Failed to request {GPIO_NAME} output: {ERROR}",
+                           "GPIO_NAME", name, "ERROR", e);
+                return false;
+            }
+
+            lg2::info("{GPIO_NAME} set to {GPIO_VALUE}", "GPIO_NAME", name,
+                      "GPIO_VALUE", value);
+            return true;
+        }
+    }
+    return false;
 }
 
-static int setMaskedGPIOOutputForMs(gpiod::line& maskedGPIOLine,
+static int setMaskedGPIOOutputForMs(gpiod::line_request& maskedGPIOLine,
                                     const std::string& name, const int value,
                                     const int durationMs)
 {
     // Set the masked GPIO line to the specified value
-    maskedGPIOLine.set_value(value);
+    maskedGPIOLine.set_value(0, value ? gpiod::line::value::ACTIVE
+                                      : gpiod::line::value::INACTIVE);
     lg2::info("{GPIO_NAME} set to {GPIO_VALUE}", "GPIO_NAME", name,
               "GPIO_VALUE", value);
     gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
     gpioAssertTimer.async_wait(
-        [maskedGPIOLine, value, name](const boost::system::error_code ec) {
+        [&maskedGPIOLine, value, name](const boost::system::error_code ec) {
         // Set the masked GPIO line back to the opposite value
-        maskedGPIOLine.set_value(!value);
+        maskedGPIOLine.set_value(0, value ? gpiod::line::value::ACTIVE
+                                          : gpiod::line::value::INACTIVE);
         lg2::info("{GPIO_NAME} released", "GPIO_NAME", name);
         if (ec)
         {
@@ -1260,17 +1282,17 @@ static int setGPIOOutputForMs(const ConfigData& config, const int value,
     // If the requested GPIO is masked, use the mask line to set the output
     if (powerButtonMask && config.lineName == powerOutConfig.lineName)
     {
-        return setMaskedGPIOOutputForMs(powerButtonMask, config.lineName, value,
-                                        durationMs);
+        return setMaskedGPIOOutputForMs(*powerButtonMask, config.lineName,
+                                        value, durationMs);
     }
     if (resetButtonMask && config.lineName == resetOutConfig.lineName)
     {
-        return setMaskedGPIOOutputForMs(resetButtonMask, config.lineName, value,
-                                        durationMs);
+        return setMaskedGPIOOutputForMs(*resetButtonMask, config.lineName,
+                                        value, durationMs);
     }
 
     // No mask set, so request and set the GPIO normally
-    gpiod::line gpioLine;
+    std::optional<gpiod::line_request> gpioLine;
     if (!setGPIOOutput(config.lineName, value, gpioLine))
     {
         return -1;
@@ -1279,9 +1301,10 @@ static int setGPIOOutputForMs(const ConfigData& config, const int value,
 
     gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
     gpioAssertTimer.async_wait(
-        [gpioLine, value, name](const boost::system::error_code ec) {
+        [&gpioLine, value, name](const boost::system::error_code ec) {
         // Set the GPIO line back to the opposite value
-        gpioLine.set_value(!value);
+        gpioLine->set_value(0, value ? gpiod::line::value::INACTIVE
+                                     : gpiod::line::value::ACTIVE);
         lg2::info("{GPIO_NAME} released", "GPIO_NAME", name);
         if (ec)
         {
@@ -1311,17 +1334,10 @@ static int slotPowerOn()
 {
     if (power_control::slotPowerState != power_control::SlotPowerState::on)
     {
-        slotPowerLine.set_value(1);
+        slotPowerLine.set_value(0, gpiod::line::value::ACTIVE);
 
-        if (slotPowerLine.get_value() > 0)
-        {
-            setSlotPowerState(SlotPowerState::on);
-            lg2::info("Slot Power is switched On\n");
-        }
-        else
-        {
-            return -1;
-        }
+        setSlotPowerState(SlotPowerState::on);
+        lg2::info("Slot Power is switched On\n");
     }
     else
     {
@@ -1334,18 +1350,11 @@ static int slotPowerOff()
 {
     if (power_control::slotPowerState != power_control::SlotPowerState::off)
     {
-        slotPowerLine.set_value(0);
+        slotPowerLine.set_value(0, gpiod::line::value::INACTIVE);
 
-        if (!(slotPowerLine.get_value() > 0))
-        {
-            setSlotPowerState(SlotPowerState::off);
-            setPowerState(PowerState::off);
-            lg2::info("Slot Power is switched Off\n");
-        }
-        else
-        {
-            return -1;
-        }
+        setSlotPowerState(SlotPowerState::off);
+        setPowerState(PowerState::off);
+        lg2::info("Slot Power is switched Off\n");
     }
     else
     {
@@ -2110,13 +2119,17 @@ static void nmiReset(void)
     const static constexpr int nmiOutPulseTimeMs = 200;
 
     lg2::info("NMI out action");
-    nmiOutLine.set_value(nmiOutConfig.polarity);
+    nmiOutLine->set_value(0, nmiOutConfig.polarity
+                                 ? gpiod::line::value::ACTIVE
+                                 : gpiod::line::value::INACTIVE);
     lg2::info("{GPIO_NAME} set to {GPIO_VALUE}", "GPIO_NAME",
               nmiOutConfig.lineName, "GPIO_VALUE", nmiOutConfig.polarity);
     gpioAssertTimer.expires_after(std::chrono::milliseconds(nmiOutPulseTimeMs));
     gpioAssertTimer.async_wait([](const boost::system::error_code ec) {
         // restore the NMI_OUT GPIO line back to the opposite value
-        nmiOutLine.set_value(!nmiOutConfig.polarity);
+        nmiOutLine->set_value(0, nmiOutConfig.polarity
+                                     ? gpiod::line::value::INACTIVE
+                                     : gpiod::line::value::ACTIVE);
         lg2::info("{GPIO_NAME} released", "GPIO_NAME", nmiOutConfig.lineName);
         if (ec)
         {
@@ -2863,7 +2876,7 @@ int main(int argc, char* argv[])
     }
 
     // Initialize POWER_OUT and RESET_OUT GPIO.
-    gpiod::line line;
+    std::optional<gpiod::line_request> line;
     if (!powerOutConfig.lineName.empty())
     {
         if (!setGPIOOutput(powerOutConfig.lineName, !powerOutConfig.polarity,
@@ -2901,9 +2914,11 @@ int main(int argc, char* argv[])
 
     if (powerOkConfig.type == ConfigType::GPIO)
     {
-        if (psPowerOKLine.get_value() > 0 ||
+        if (psPowerOKLine->get_value(0) == gpiod::line::value::ACTIVE ||
             (sioEnabled &&
-             (sioPowerGoodLine.get_value() == sioPwrGoodConfig.polarity)))
+             (sioPowerGoodLine->get_value(0) ==
+              (sioPwrGoodConfig.polarity ? gpiod::line::value::ACTIVE
+                                         : gpiod::line::value::INACTIVE))))
         {
             powerState = PowerState::on;
         }
@@ -3150,7 +3165,7 @@ int main(int argc, char* argv[])
         }
 
         slotPowerState = SlotPowerState::off;
-        if (slotPowerLine.get_value() > 0)
+        if (slotPowerLine->get_value(0) == gpiod::line::value::ACTIVE)
         {
             slotPowerState = SlotPowerState::on;
         }
@@ -3239,7 +3254,8 @@ int main(int argc, char* argv[])
         bool powerButtonPressed;
         if (powerButtonConfig.type == ConfigType::GPIO)
         {
-            powerButtonPressed = powerButtonLine.get_value() == 0;
+            powerButtonPressed = powerButtonLine->get_value(0) ==
+                                 gpiod::line::value::INACTIVE;
         }
         else
         {
@@ -3295,7 +3311,8 @@ int main(int argc, char* argv[])
         bool resetButtonPressed;
         if (resetButtonConfig.type == ConfigType::GPIO)
         {
-            resetButtonPressed = resetButtonLine.get_value() == 0;
+            resetButtonPressed = resetButtonLine->get_value(0) ==
+                                 gpiod::line::value::INACTIVE;
         }
         else
         {
@@ -3341,7 +3358,8 @@ int main(int argc, char* argv[])
         bool nmiButtonPressed;
         if (nmiButtonConfig.type == ConfigType::GPIO)
         {
-            nmiButtonPressed = nmiButtonLine.get_value() == 0;
+            nmiButtonPressed = nmiButtonLine->get_value(0) ==
+                               gpiod::line::value::INACTIVE;
         }
         else
         {
@@ -3378,7 +3396,8 @@ int main(int argc, char* argv[])
         bool idButtonPressed;
         if (idButtonConfig.type == ConfigType::GPIO)
         {
-            idButtonPressed = idButtonLine.get_value() == 0;
+            idButtonPressed = idButtonLine->get_value(0) ==
+                              gpiod::line::value::INACTIVE;
         }
         else
         {
@@ -3405,7 +3424,7 @@ int main(int argc, char* argv[])
     OperatingSystemStateStage osState;
     if (postCompleteConfig.type == ConfigType::GPIO)
     {
-        osState = postCompleteLine.get_value() > 0
+        osState = postCompleteLine->get_value(0) == gpiod::line::value::ACTIVE
                       ? OperatingSystemStateStage::Inactive
                       : OperatingSystemStateStage::Standby;
     }
