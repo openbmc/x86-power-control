@@ -70,6 +70,7 @@ struct ConfigData
     std::string interface;
     bool polarity;
     ConfigType type;
+    bool usesHWPowerControl{true}; // only used for power button gpio
 };
 
 static ConfigData powerOutConfig;
@@ -1718,8 +1719,16 @@ static void powerStateOn(const Event event)
             warmResetCheckTimerStart();
             break;
         case Event::powerButtonPressed:
-            setPowerState(PowerState::gracefulTransitionToOff);
-            gracefulPowerOffTimerStart();
+            if (powerButtonConfig.usesHWPowerControl)
+            {
+                setPowerState(PowerState::gracefulTransitionToOff);
+                gracefulPowerOffTimerStart();
+            }
+            else
+            {
+                setPowerState(PowerState::transitionToOff);
+                forcePowerOff();
+            }
             break;
         case Event::powerOffRequest:
             setPowerState(PowerState::transitionToOff);
@@ -1830,6 +1839,8 @@ static void powerStateOff(const Event event)
         case Event::powerButtonPressed:
             psPowerOKWatchdogTimerStart();
             setPowerState(PowerState::waitForPSPowerOK);
+            if (!powerButtonConfig.usesHWPowerControl)
+                powerOn();
             break;
         case Event::powerOnRequest:
             psPowerOKWatchdogTimerStart();
@@ -1919,6 +1930,8 @@ static void powerStateCycleOff(const Event event)
             powerCycleTimer.cancel();
             psPowerOKWatchdogTimerStart();
             setPowerState(PowerState::waitForPSPowerOK);
+            if (!powerButtonConfig.usesHWPowerControl)
+                powerOn();
             break;
         case Event::powerCycleTimerExpired:
             psPowerOKWatchdogTimerStart();
@@ -2394,6 +2407,8 @@ static int loadConfigValues()
                            "GPIO_NAME", tempGpioData->lineName);
                 return -1;
             }
+            tempGpioData->usesHWPowerControl =
+                gpioConfig.value("UsesHWPowerControl", true);
         }
         else
         {

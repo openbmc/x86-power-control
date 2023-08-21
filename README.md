@@ -36,6 +36,20 @@ below.
 }
 ```
 
+In case of a platform having a power button gpio, which is not connected to
+perform the power control logic in hardware, it can also be used to trigger the
+same power control logic performed in case of dbus events. Example:
+
+```json
+{
+  "Name": "PowerButton",
+  "LineName": "power-button",
+  "Type": "GPIO",
+  "Polarity": "ActiveLow",
+  "UsesHWPowerControl:" false
+}
+```
+
 ### DBUS
 
 For the platform not having direct GPIO access can use dbus based event monitor
