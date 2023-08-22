@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5760bdb_5f873831",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2023-08-22T23:58:26Z",
+      "side": 1,
+      "message": "I\u0027m a bit confused about the hardware arrangement this is intended to handle.  On all the systems I\u0027m using x86-power-control on the power button is only connected to a BMC GPIO and isn\u0027t wired directly to anything else, so it\u0027s up to the BMC to handle it in software (or via an ast2500 GPIO passthrough configuration, but that\u0027s sort of tangential), and the existing code works fine.  What\u0027s different about the Tyan hardware that necessitates altering the logic in this daemon?",
+      "revId": "1de004caa17c95757d77af6b0e195e3cae897f23",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
