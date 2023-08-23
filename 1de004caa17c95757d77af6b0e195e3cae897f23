@@ -16,6 +16,24 @@
       "message": "I\u0027m a bit confused about the hardware arrangement this is intended to handle.  On all the systems I\u0027m using x86-power-control on the power button is only connected to a BMC GPIO and isn\u0027t wired directly to anything else, so it\u0027s up to the BMC to handle it in software (or via an ast2500 GPIO passthrough configuration, but that\u0027s sort of tangential), and the existing code works fine.  What\u0027s different about the Tyan hardware that necessitates altering the logic in this daemon?",
       "revId": "1de004caa17c95757d77af6b0e195e3cae897f23",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1424bb28_fc2f2992",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001712
+      },
+      "writtenOn": "2023-08-23T08:27:35Z",
+      "side": 1,
+      "message": "if i understand the code correctly, \ndifferent events happen and then getPowerStateHandler(...)\nreturns the event handler for that power state to handle it.\n\n\u0027powerStateOn(...)\u0027 is such a handler.\nInside that handler, if event is Event::powerButtonPressed\nit was the case that following code would be run:\n\nsetPowerState(PowerState::gracefulTransitionToOff);\ngracefulPowerOffTimerStart();\n\nwhich changes the power state (has no effect on any gpios or power control hw)\nand starts a timer (has no effect on any gpios or power control hw).\n\nNow the powerStateGracefulTransitionToOff\ncan receive Event::psPowerOKDeAssert event \nwhich can cancel that timer and transition to PowerState::off.\n\nIn my opinion, to explain the diff to the power control happening in case of dbus \nEvent::powerOffRequest, the \nassertGPIOForMs(powerOutConfig, TimerMap[\"ForceOffPulseMs\"])\nfrom forcePowerOff function has to happen in hardware.\n\nIf it were just a gpio without connection to power control logic, where is the power control happening? Which function is then causing the powerok gpio to change state? And why would the logic in that case be any different than a power on/off request from dbus?\n\nOn the specific Tyan S5549 Chassis that this patch is for, x86-power-control registers the button press but the expected change in powerok gpio does not happen without this patch.\n\nOn another Tyan S8030 the x86-power-control works without issue. In both cases the button press is registered.",
+      "parentUuid": "d5760bdb_5f873831",
+      "revId": "1de004caa17c95757d77af6b0e195e3cae897f23",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
