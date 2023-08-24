@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "684c9388_3767cab5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001712
+      },
+      "writtenOn": "2023-08-24T11:58:14Z",
+      "side": 1,
+      "message": "yes, it might be. I can try it out, maybe this patch is not needed after all.\nDo you have any other examples than aspeed-bmc-inspur-nf5280m6.dts which can be shared? \n\nWhen applying it\u0027s configuration, it did not have the same effect as this patch. Maybe some mistake on my part. Some devicetree snippet would already help.",
+      "parentUuid": "87ee2072_fad607a4",
+      "revId": "1de004caa17c95757d77af6b0e195e3cae897f23",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1f1b9a62_54d23b90",
         "filename": "src/power_control.cpp",
         "patchSetId": 3
@@ -67,6 +85,30 @@
       "writtenOn": "2023-08-24T00:27:33Z",
       "side": 1,
       "message": "Do we really want a single power button press to proceed directly to a forceful power cut?  I think on most systems it\u0027s treated more like `gracefulPowerOffRequest`, and to trigger a hard power-cut you press and hold the button for something like 6 seconds or so.",
+      "range": {
+        "startLine": 1729,
+        "startChar": 0,
+        "endLine": 1730,
+        "endChar": 32
+      },
+      "revId": "1de004caa17c95757d77af6b0e195e3cae897f23",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0ac6953b_2505a28c",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1730,
+      "author": {
+        "id": 1001712
+      },
+      "writtenOn": "2023-08-24T11:58:14Z",
+      "side": 1,
+      "message": "Making it configurable would be nice. I would have to look to see if the implementation supports detecting button presses of configurable length.",
+      "parentUuid": "1f1b9a62_54d23b90",
       "range": {
         "startLine": 1729,
         "startChar": 0,
