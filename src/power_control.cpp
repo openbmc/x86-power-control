@@ -212,7 +212,7 @@ static void beep(const uint8_t& beepPriority)
                 "ERROR_MSG", ec.message());
             return;
         }
-        },
+    },
         "xyz.openbmc_project.BeepCode", "/xyz/openbmc_project/BeepCode",
         "xyz.openbmc_project.BeepCode", "Beep", uint8_t(beepPriority));
 }
@@ -685,7 +685,7 @@ static void resetACBootProperty()
             {
                 lg2::error("failed to reset ACBoot property");
             }
-            },
+        },
             "xyz.openbmc_project.Settings",
             "/xyz/openbmc_project/control/host0/ac_boot",
             "org.freedesktop.DBus.Properties", "Set",
@@ -974,7 +974,7 @@ void PowerRestoreController::run()
             return;
         }
         setProperties(properties);
-        },
+    },
         setingsService, powerRestorePolicyObject,
         "org.freedesktop.DBus.Properties", "GetAll", powerRestorePolicyIface);
 
@@ -988,7 +988,7 @@ void PowerRestoreController::run()
             return;
         }
         setProperties(properties);
-        },
+    },
         setingsService, powerACBootObject, "org.freedesktop.DBus.Properties",
         "GetAll", powerACBootIface);
 #endif
@@ -1553,13 +1553,13 @@ static void pohCounterTimerStart()
                 {
                     lg2::error("failed to set poh counter");
                 }
-                },
+            },
                 "xyz.openbmc_project.Settings",
                 "/xyz/openbmc_project/state/chassis0",
                 "org.freedesktop.DBus.Properties", "Set",
                 "xyz.openbmc_project.State.PowerOnHours", "POHCounter",
                 std::variant<uint32_t>(*pohCounter + 1));
-            },
+        },
             "xyz.openbmc_project.Settings",
             "/xyz/openbmc_project/state/chassis0",
             "org.freedesktop.DBus.Properties", "Get",
@@ -1652,7 +1652,7 @@ static void currentHostStateMonitor()
                             "PRIORITY=%i", LOG_INFO, "REDFISH_MESSAGE_ID=%s",
                             "OpenBMC.0.1.DCPowerOff", NULL);
         }
-        });
+    });
 }
 
 static void sioPowerGoodWatchdogTimerStart()
@@ -2083,7 +2083,7 @@ void systemReset()
             lg2::error("Failed to call chassis system reset: {ERR}", "ERR",
                        ec.message());
         }
-        },
+    },
         systemdBusname, systemdPath, systemdInterface, "StartUnit",
         systemTargetName, "replace");
 }
@@ -2097,7 +2097,7 @@ static void nmiSetEnableProperty(bool value)
         {
             lg2::error("failed to set NMI source");
         }
-        },
+    },
         "xyz.openbmc_project.Settings",
         "/xyz/openbmc_project/Chassis/Control/NMISource",
         "org.freedesktop.DBus.Properties", "Set",
@@ -2173,7 +2173,7 @@ static void nmiSourcePropertyMonitor(void)
             lg2::error("Unable to read NMI source: {ERROR}", "ERROR", e);
             return;
         }
-            });
+    });
 }
 
 static void setNmiSource()
@@ -2184,7 +2184,7 @@ static void setNmiSource()
         {
             lg2::error("failed to set NMI source");
         }
-        },
+    },
         "xyz.openbmc_project.Settings",
         "/xyz/openbmc_project/Chassis/Control/NMISource",
         "org.freedesktop.DBus.Properties", "Set",
@@ -2475,8 +2475,8 @@ static bool getDbusMsgGPIOState(sdbusplus::message_t& msg,
 static sdbusplus::bus::match_t
     dbusGPIOMatcher(const ConfigData& cfg, std::function<void(bool)> onMatch)
 {
-    auto pulseEventMatcherCallback =
-        [&cfg, onMatch](sdbusplus::message_t& msg) {
+    auto pulseEventMatcherCallback = [&cfg,
+                                      onMatch](sdbusplus::message_t& msg) {
         bool value = false;
         if (!getDbusMsgGPIOState(msg, cfg.lineName, value))
         {
@@ -3026,7 +3026,7 @@ int main(int argc, char* argv[])
         }
         resp = requested;
         return 1;
-        });
+    });
     hostIface->register_property("CurrentHostState",
                                  std::string(getHostState(powerState)));
 
@@ -3099,7 +3099,7 @@ int main(int argc, char* argv[])
         }
         resp = requested;
         return 1;
-        });
+    });
     chassisIface->register_property("CurrentPowerState",
                                     std::string(getChassisState(powerState)));
     chassisIface->register_property("LastStateChangeTime", getCurrentTimeMs());
@@ -3134,7 +3134,7 @@ int main(int argc, char* argv[])
         }
         resp = requested;
         return 1;
-        });
+    });
     chassisSysIface->register_property(
         "CurrentPowerState", std::string(getChassisState(powerState)));
     chassisSysIface->register_property("LastStateChangeTime",
@@ -3185,7 +3185,7 @@ int main(int argc, char* argv[])
             }
             resp = requested;
             return 1;
-            });
+        });
         chassisSlotIface->register_property(
             "CurrentPowerState", std::string(getSlotState(slotPowerState)));
         chassisSlotIface->register_property("LastStateChangeTime",
@@ -3205,8 +3205,7 @@ int main(int argc, char* argv[])
             "xyz.openbmc_project.Chassis.Buttons");
 
         powerButtonIface->register_property(
-            "ButtonMasked", false,
-            [](const bool requested, bool& current) {
+            "ButtonMasked", false, [](const bool requested, bool& current) {
             if (requested)
             {
                 if (powerButtonMask)
@@ -3233,7 +3232,7 @@ int main(int argc, char* argv[])
             // Update the mask setting
             current = requested;
             return 1;
-            });
+        });
 
         // Check power button state
         bool powerButtonPressed;
@@ -3261,8 +3260,7 @@ int main(int argc, char* argv[])
             "xyz.openbmc_project.Chassis.Buttons");
 
         resetButtonIface->register_property(
-            "ButtonMasked", false,
-            [](const bool requested, bool& current) {
+            "ButtonMasked", false, [](const bool requested, bool& current) {
             if (requested)
             {
                 if (resetButtonMask)
@@ -3289,7 +3287,7 @@ int main(int argc, char* argv[])
             // Update the mask setting
             current = requested;
             return 1;
-            });
+        });
 
         // Check reset button state
         bool resetButtonPressed;
@@ -3317,25 +3315,25 @@ int main(int argc, char* argv[])
 
         nmiButtonIface->register_property(
             "ButtonMasked", false, [](const bool requested, bool& current) {
-                if (nmiButtonMasked == requested)
-                {
-                    // NMI button mask is already set as requested, so no change
-                    return 1;
-                }
-                if (requested)
-                {
-                    lg2::info("NMI Button Masked.");
-                    nmiButtonMasked = true;
-                }
-                else
-                {
-                    lg2::info("NMI Button Un-masked.");
-                    nmiButtonMasked = false;
-                }
-                // Update the mask setting
-                current = nmiButtonMasked;
+            if (nmiButtonMasked == requested)
+            {
+                // NMI button mask is already set as requested, so no change
                 return 1;
-            });
+            }
+            if (requested)
+            {
+                lg2::info("NMI Button Masked.");
+                nmiButtonMasked = true;
+            }
+            else
+            {
+                lg2::info("NMI Button Un-masked.");
+                nmiButtonMasked = false;
+            }
+            // Update the mask setting
+            current = nmiButtonMasked;
+            return 1;
+        });
 
         // Check NMI button state
         bool nmiButtonPressed;
@@ -3454,7 +3452,7 @@ int main(int argc, char* argv[])
                   requested);
         resp = requested;
         return 1;
-        });
+    });
 
     restartCauseIface->initialize();
 
