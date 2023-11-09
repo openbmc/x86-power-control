@@ -59,6 +59,8 @@ if systemd.found()
     'service_files/chassis-system-reset.service',
     'service_files/chassis-system-reset.target',
     'service_files/xyz.openbmc_project.Chassis.Control.Power@.service',
+    'service_files/chassis-poweron.target',
+    'service_files/chassis-poweroff.target',
     install_dir: systemd.get_variable('systemdsystemunitdir'))
 endif
 

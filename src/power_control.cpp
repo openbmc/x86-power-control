@@ -32,6 +32,10 @@
 #include <fstream>
 #include <string_view>
 
+static constexpr auto systemdBusname = "org.freedesktop.systemd1";
+static constexpr auto systemdPath = "/org/freedesktop/systemd1";
+static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
+
 namespace power_control
 {
 static boost::asio::io_context io;
@@ -478,6 +482,20 @@ static std::function<void(const Event)> getPowerStateHandler(PowerState state)
     }
 };
 
+void startService(const std::string serviceName)
+{
+    conn->async_method_call(
+        [serviceName](boost::system::error_code ec) {
+        if (ec)
+        {
+            lg2::error("Failed to call {NAME}: {ERR}", "NAME", serviceName,
+                       "ERR", ec.message());
+        }
+    },
+        systemdBusname, systemdPath, systemdInterface, "StartUnit", serviceName,
+        "replace");
+}
+
 static void sendPowerControlEvent(const Event event)
 {
     std::function<void(const Event)> handler = getPowerStateHandler(powerState);
@@ -537,12 +555,14 @@ static constexpr std::string_view getChassisState(const PowerState state)
         case PowerState::transitionToCycleOff:
         case PowerState::gracefulTransitionToCycleOff:
         case PowerState::checkForWarmReset:
+            startService("chassis-poweron.target");
             return "xyz.openbmc_project.State.Chassis.PowerState.On";
             break;
         case PowerState::waitForPSPowerOK:
         case PowerState::waitForSIOPowerGood:
         case PowerState::off:
         case PowerState::cycleOff:
+            startService("chassis-poweroff.target");
             return "xyz.openbmc_project.State.Chassis.PowerState.Off";
             break;
         default:
@@ -2069,23 +2089,11 @@ static void resetButtonHandler(bool state)
 }
 
 #ifdef CHASSIS_SYSTEM_RESET
-static constexpr auto systemdBusname = "org.freedesktop.systemd1";
-static constexpr auto systemdPath = "/org/freedesktop/systemd1";
-static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
 static constexpr auto systemTargetName = "chassis-system-reset.target";
 
 void systemReset()
 {
-    conn->async_method_call(
-        [](boost::system::error_code ec) {
-        if (ec)
-        {
-            lg2::error("Failed to call chassis system reset: {ERR}", "ERR",
-                       ec.message());
-        }
-    },
-        systemdBusname, systemdPath, systemdInterface, "StartUnit",
-        systemTargetName, "replace");
+    startService(systemTargetName);
 }
 #endif
 
