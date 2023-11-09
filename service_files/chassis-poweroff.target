@@ -1,0 +1,4 @@
+[Unit]
+Description=Chassis (Power Off)
+After=multi-user.target
+Conflicts=chassis-poweron.target

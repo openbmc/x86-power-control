@@ -1,0 +1,6 @@
+[Unit]
+Description=Chassis (Power On)
+After=multi-user.target
+Conflicts=chassis-poweroff.target
+OnFailure=chassis-poweroff.target
+OnFailureJobMode=flush
