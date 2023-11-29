@@ -23,16 +23,16 @@ add_project_arguments(
 
 cpp_args = []
 
-if get_option('chassis-system-reset').enabled()
+if get_option('chassis-system-reset').allowed()
   cpp_args += '-DCHASSIS_SYSTEM_RESET'
 endif
-if get_option('use-plt-rst').enabled()
+if get_option('use-plt-rst').allowed()
   cpp_args += '-DUSE_PLT_RST'
 endif
-if get_option('use-acboot').enabled()
+if get_option('use-acboot').allowed()
   cpp_args += '-DUSE_ACBOOT'
 endif
-if get_option('ignore-soft-resets-during-post').enabled()
+if get_option('ignore-soft-resets-during-post').allowed()
   cpp_args += '-DIGNORE_SOFT_RESETS_DURING_POST'
 endif
 
