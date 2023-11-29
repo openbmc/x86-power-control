@@ -2273,7 +2273,17 @@ static void pltRstHandler(bool pltRst)
 
 static void postCompleteHandler(bool state)
 {
-    if (!state)
+    auto assert = false;
+    if (postCompleteConfig.type == ConfigType::GPIO)
+    {
+        assert = state == postCompleteConfig.polarity;
+    }
+    else if (postCompleteConfig.type == ConfigType::DBUS)
+    {
+        assert = state;
+    }
+
+    if (assert)
     {
         sendPowerControlEvent(Event::postCompleteAssert);
         setOperatingSystemState(OperatingSystemStateStage::Standby);
@@ -3398,20 +3408,21 @@ int main(int argc, char* argv[])
         "xyz.openbmc_project.State.OperatingSystem.Status");
 
     // Get the initial OS state based on POST complete
-    //      0: Asserted, OS state is "Standby" (ready to boot)
-    //      1: De-Asserted, OS state is "Inactive"
-    OperatingSystemStateStage osState;
+    //      For GPIO, should using the polarity to determine the state
+    //      For D-Bus, always assume the state is standby if the property is
+    //      true
+    OperatingSystemStateStage osState{OperatingSystemStateStage::Inactive}
     if (postCompleteConfig.type == ConfigType::GPIO)
     {
-        osState = postCompleteLine.get_value() > 0
-                      ? OperatingSystemStateStage::Inactive
-                      : OperatingSystemStateStage::Standby;
+        osState = postCompleteLine.get_value() == postCompleteConfig.polarity
+                      ? OperatingSystemStateStage::Standby
+                      : OperatingSystemStateStage::Inactive;
     }
-    else
+    else if (postCompleteConfig.type == ConfigType::DBUS)
     {
         osState = getProperty(postCompleteConfig) > 0
-                      ? OperatingSystemStateStage::Inactive
-                      : OperatingSystemStateStage::Standby;
+                      ? OperatingSystemStateStage::Standby
+                      : OperatingSystemStateStage::Inactive;
     }
 
     osIface->register_property(
