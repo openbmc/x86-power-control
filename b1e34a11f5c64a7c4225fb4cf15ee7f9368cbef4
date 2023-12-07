@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "49edaf6d_ae83df1d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2023-12-07T21:58:28Z",
+      "side": 1,
+      "message": "Trivial build change, so going ahead with +2.",
+      "revId": "b1e34a11f5c64a7c4225fb4cf15ee7f9368cbef4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
