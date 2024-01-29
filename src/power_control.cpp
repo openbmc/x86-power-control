@@ -2674,6 +2674,13 @@ int main(int argc, char* argv[])
         lg2::info("SIO control GPIOs not defined, disable SIO support.");
     }
 
+    if (nmiOutConfig.lineName.empty())
+    {
+        nmiEnabled = false;
+        nmiWhenPoweredOff = false;
+        lg2::info("NMI control GPIOs not defined, disable NMI support.");
+    }
+
     // Request PS_PWROK GPIO events
     if (powerOkConfig.type == ConfigType::GPIO)
     {
