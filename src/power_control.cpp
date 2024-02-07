@@ -1739,6 +1739,10 @@ static void powerStateOn(const Event event)
             gracefulPowerOffTimerStart();
             gracefulPowerOff();
             break;
+        case Event::resetButtonPressed:
+            setPowerState(PowerState::checkForWarmReset);
+            warmResetCheckTimerStart();
+            break;
         case Event::resetRequest:
             reset();
             break;
