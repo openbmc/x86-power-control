@@ -23,6 +23,7 @@
 #include <boost/asio/steady_timer.hpp>
 #include <boost/container/flat_map.hpp>
 #include <boost/container/flat_set.hpp>
+#include <boost/unordered_map.hpp>
 #include <gpiod.hpp>
 #include <nlohmann/json.hpp>
 #include <phosphor-logging/lg2.hpp>
@@ -70,6 +71,7 @@ struct ConfigData
     std::string interface;
     bool polarity;
     ConfigType type;
+    std::string initialize;
 };
 
 static ConfigData powerOutConfig;
@@ -90,7 +92,7 @@ static ConfigData warmResetConfig;
 
 // map for storing list of gpio parameters whose config are to be read from x86
 // power control json config
-boost::container::flat_map<std::string, ConfigData*> powerSignalMap = {
+boost::unordered::unordered_map<std::string, ConfigData*> powerSignalMap = {
     {"PowerOut", &powerOutConfig},
     {"PowerOk", &powerOkConfig},
     {"ResetOut", &resetOutConfig},
@@ -2402,6 +2404,22 @@ static int loadConfigValues()
                            "GPIO_NAME", tempGpioData->lineName);
                 return -1;
             }
+
+            if (gpioConfig.contains("Initialize"))
+            {
+                std::string initialize = gpioConfig["Initialize"];
+                if ((initialize == "Low") || (initialize == "High"))
+                {
+                    tempGpioData->initialize = initialize;
+                }
+                else
+                {
+                    lg2::error(
+                        "Initialize defined but not properly setup. Please only High or Low. Currently set to {INITIALIZE}",
+                        "INITIALIZE", initialize);
+                    return -1;
+                }
+            }
         }
         else
         {
@@ -2622,6 +2640,39 @@ void reschedulePropertyRead(const ConfigData& configData)
             dBusRetryTimers.erase(configData.name);
         }
     });
+}
+
+static int gpioInit()
+{
+    lg2::info("GPIO setting to default initilization value");
+    gpiod::line line;
+    for (const auto& pair : powerSignalMap)
+    {
+        auto tempGpioData = pair.second;
+        if ((tempGpioData->type == ConfigType::GPIO) &&
+            (!(tempGpioData->initialize.empty())))
+        {
+            bool val;
+            if (tempGpioData->initialize == "Low")
+            {
+                val = false;
+            }
+            else if (tempGpioData->initialize == "High")
+            {
+                val = true;
+            }
+
+            if (!setGPIOOutput(tempGpioData->lineName, val, line))
+            {
+                line.reset();
+                return -1;
+            }
+        }
+    }
+    // Release line
+    line.reset();
+
+    return 0;
 }
 } // namespace power_control
 
@@ -2909,6 +2960,12 @@ int main(int argc, char* argv[])
 
     // Release line
     line.reset();
+
+    // Additional GPIO  Initilization based on Json config.
+    if (gpioInit() == -1)
+    {
+        lg2::error("GPIO Initialization failed");
+    }
 
     // Initialize the power state and operating system state
     powerState = PowerState::off;
