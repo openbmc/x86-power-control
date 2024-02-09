@@ -22,6 +22,29 @@
       },
       "revId": "620cf8aa34ac9d1f37535e32bdab9d3cd4382da2",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b72634bd_b42fa33b",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2682,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2024-02-09T10:00:34Z",
+      "side": 1,
+      "message": "Looking at the rest of the code, this seems insufficient for thoroughly disabling NMI support -- it looks like `nmiEnabled` could still be set back to true via dbus (see `nmiSourcePropertyMonitor`), and I\u0027m guessing the subsequent `nmiReset()` call would probably then just crash the daemon or something?\n\nAlso, I\u0027m not clear on why we need to unset `nmiWhenPoweredOff` here -- for one thing it appears to be just loaded straight from the config file anyway (so presumably a config for an NMI-less system would already have it disabled anyway), but more importantly it\u0027s only checked in `nmiButtonHandler()` which presumably shouldn\u0027t ever be called anyway unless we\u0027ve installed it as a handler for a GPIO or dbus event, which if NMI support is disabled shouldn\u0027t have happened in the first place, right?",
+      "range": {
+        "startLine": 2677,
+        "startChar": 1,
+        "endLine": 2682,
+        "endChar": 5
+      },
+      "revId": "620cf8aa34ac9d1f37535e32bdab9d3cd4382da2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
