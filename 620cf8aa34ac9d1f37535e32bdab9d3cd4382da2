@@ -24,6 +24,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2fcead8b_1f6c45f0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2024-02-09T10:24:08Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "69957d62_3788f7f9",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 42
+      },
+      "revId": "620cf8aa34ac9d1f37535e32bdab9d3cd4382da2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b72634bd_b42fa33b",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-02-09T10:00:34Z",
       "side": 1,
       "message": "Looking at the rest of the code, this seems insufficient for thoroughly disabling NMI support -- it looks like `nmiEnabled` could still be set back to true via dbus (see `nmiSourcePropertyMonitor`), and I\u0027m guessing the subsequent `nmiReset()` call would probably then just crash the daemon or something?\n\nAlso, I\u0027m not clear on why we need to unset `nmiWhenPoweredOff` here -- for one thing it appears to be just loaded straight from the config file anyway (so presumably a config for an NMI-less system would already have it disabled anyway), but more importantly it\u0027s only checked in `nmiButtonHandler()` which presumably shouldn\u0027t ever be called anyway unless we\u0027ve installed it as a handler for a GPIO or dbus event, which if NMI support is disabled shouldn\u0027t have happened in the first place, right?",
+      "range": {
+        "startLine": 2677,
+        "startChar": 1,
+        "endLine": 2682,
+        "endChar": 5
+      },
+      "revId": "620cf8aa34ac9d1f37535e32bdab9d3cd4382da2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c69f4a2c_a5a37deb",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2682,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2024-02-09T10:24:08Z",
+      "side": 1,
+      "message": "Initially i was under the impression , that \"nmiEnabled\" intended to manage nmi functionalities. If this is not the right assumption , then we should look the approach if the \"NMIOut\" is not supported in config file , we should disable NMIOut GPIO line specific features. After reading your comments here , am little confused . It will be great if maintaners can provide the correct approch here or background , why the \"nmiEnabled\" is override using d-bus properties, and what is the expectation of use case \"NMIOut\" unsupported configuration.here.\n\nRegarding nmiWhenPoweredOff, agreed your point.  Added here from readability/safer side disabled. Ok to remove this.",
+      "parentUuid": "b72634bd_b42fa33b",
       "range": {
         "startLine": 2677,
         "startChar": 1,
