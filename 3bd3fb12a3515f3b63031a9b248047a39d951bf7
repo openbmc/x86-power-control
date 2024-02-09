@@ -109,6 +109,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4e451c43_5ad57062",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000926
+      },
+      "writtenOn": "2024-02-09T23:00:50Z",
+      "side": 1,
+      "message": "Oops, sorry, friday night mistake. Fixed",
+      "parentUuid": "4042ae10_8e2249af",
+      "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d7c2cae1_06c3f2e7",
         "filename": "src/power_control.cpp",
         "patchSetId": 2
