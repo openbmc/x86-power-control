@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f29d3776_6393718e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2024-02-09T15:02:40Z",
+      "side": 1,
+      "message": "AMD CRB\u0027s required these two signal to set the required values , to turn on Power sequencing. see the next patch set in this chain to consume this.\n\nRefer https://gerrit.openbmc.org/c/openbmc/openbmc/+/68546/3/meta-amd/meta-common/recipes-x86/chassis/x86-power-control/power-config-host0.json",
+      "parentUuid": "e3712c22_7150ce8b",
+      "revId": "91563e734419d6ae040c3c38039456349770c4f0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "dbd2d257_17c76715",
         "filename": "src/power_control.cpp",
         "patchSetId": 3
