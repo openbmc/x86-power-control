@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a3fdcfcd_6a53bcfd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000299
+      },
+      "writtenOn": "2024-02-09T00:31:43Z",
+      "side": 1,
+      "message": "initialization misspelled in the commit message.",
+      "revId": "0b1671879a639d58ffd3b6cd7d5222cf1f2a0cab",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "610efc19_e28855af",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1000299
+      },
+      "writtenOn": "2024-02-09T00:31:43Z",
+      "side": 1,
+      "message": "Will initialize work on GPIOs which are inputs to BMC? If FPGA/CPLD drives these GPIOs, it won\u0027t work. is there a way to initialize only for \"out\" direction GPIOs?",
+      "revId": "0b1671879a639d58ffd3b6cd7d5222cf1f2a0cab",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
