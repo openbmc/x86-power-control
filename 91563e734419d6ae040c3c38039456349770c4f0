@@ -33,6 +33,24 @@
       "message": "This one is a somewhat complicated topic that\u0027s come up before (see https://gerrit.openbmc.org/c/openbmc/x86-power-control/+/48951); I don\u0027t think x86-power-control is the right thing to be determining it -- @arj had an alternate proposal for it that I think is probably moving more in the right direction, but hasn\u0027t seen any activity or further discussion in a while: https://gerrit.openbmc.org/c/openbmc/openbmc/+/44839",
       "revId": "91563e734419d6ae040c3c38039456349770c4f0",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9036ffaf_b551efa4",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1000299
+      },
+      "writtenOn": "2024-02-09T14:55:49Z",
+      "side": 1,
+      "message": "If the repository is called x86-power-control, I am assuming that it should have the necessary hooks to accommodate Intel/AMD way of doing the power sequence. The number and purpose of the GPIOs will differ/vary between AMD/Intel platforms. In order to get the AMD power sequencing working properly, we would have to add additional GPIOs which may not be required in Intel/other platforms. However, since we want to re-use x86-power-control without having to fork, need guidance on how to get additional GPIOs for power sequencing which will be optional for other platforms. We are not particular on the naming, we can rename it to power_sequence_ready or something similar. \"BMC_READY\" may be a misnomer, it\u0027s just a signal to FPGA to start honoring requests from BMC.",
+      "parentUuid": "dbd2d257_17c76715",
+      "revId": "91563e734419d6ae040c3c38039456349770c4f0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
