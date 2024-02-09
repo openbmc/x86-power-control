@@ -33,6 +33,24 @@
       "message": "Will initialize work on GPIOs which are inputs to BMC? If FPGA/CPLD drives these GPIOs, it won\u0027t work. is there a way to initialize only for \"out\" direction GPIOs?",
       "revId": "0b1671879a639d58ffd3b6cd7d5222cf1f2a0cab",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0ee53829_cf0aa5b4",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2024-02-09T04:32:40Z",
+      "side": 1,
+      "message": "Good point , \nis this  \"initialize\" name really make sense here ? looking at your https://gerrit.openbmc.org/c/openbmc/openbmc/+/68546/2/meta-amd/meta-common/recipes-x86/chassis/x86-power-control/power-config-host0.json\ncomments , \"set High once the BMC is ready to manage the Host\" ,\nNeed inputs from Maintainers , like using \"Configure\" key instead \"Initialize here ? and using custom values we need to set based on Json configure. Also it is users responsibility use this new key only for required ones, and in the code we should just error out incase fail to set the required value?",
+      "parentUuid": "610efc19_e28855af",
+      "revId": "0b1671879a639d58ffd3b6cd7d5222cf1f2a0cab",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
