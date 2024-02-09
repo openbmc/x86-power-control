@@ -22,6 +22,30 @@
       },
       "revId": "e2784f780c79909fa77cf7a7a0df47d9cbe1de97",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e1930050_63d04271",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2024-02-09T15:05:13Z",
+      "side": 1,
+      "message": "Already discussion is in progress  related same topic , in your previous patchset review comments.",
+      "parentUuid": "7e4fd93e_fbf8f9ce",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 1
+      },
+      "revId": "e2784f780c79909fa77cf7a7a0df47d9cbe1de97",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
