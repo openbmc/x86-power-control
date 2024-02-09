@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7599d711_d9ee5dac",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2904,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2024-02-09T23:00:40Z",
+      "side": 1,
+      "message": "So if we\u0027re just unconditionally asserting it and leaving it that way, I\u0027m not sure I understand the point.  Is the assumption just that if the BMC is running at all, then all the standby rails must be in a good state?  Is there some other input (like a voltage measurement from an ADC or something) that the BMC should be checking first instead of just blindly asserting it?  Because if this is really the entirety of the logic that\u0027s needed, it seems like it might as well just be a gpio-hog in the device tree.",
+      "range": {
+        "startLine": 2899,
+        "startChar": 0,
+        "endLine": 2904,
+        "endChar": 0
+      },
+      "revId": "4717761beb344de23fe52371d34b2f06961512b9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
