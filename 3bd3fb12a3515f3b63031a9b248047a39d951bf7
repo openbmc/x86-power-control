@@ -1,6 +1,7 @@
 {
   "comments": [
     {
+      "unresolved": true,
       "key": {
         "uuid": "66f33a7f_3e57ed9e",
         "filename": "/COMMIT_MSG",
@@ -14,10 +15,10 @@
       "side": 1,
       "message": "FWIW, this description is I think a bit overly specific -- e3c246d4i (a Xeon system) has just such a GPIO, for example, and as far as I know no CPLD (it\u0027s just read by the BIOS so it can wait for the BMC to come online before proceeding with the boot sequence).",
       "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "18a213a7_2236dae9",
         "filename": "/COMMIT_MSG",
@@ -32,10 +33,10 @@
       "message": "This description comes from my experience with AMD boards (Ethanol/EthanolX/DaytonaX). In all of them BMC_READY goes to CPLD, and CPLD is responsible for launching all power to the board.\nSo BIOS wouldn\u0027t even have a change to run if BMC_READY is inactive.\nHow do you suggest to change it?",
       "parentUuid": "66f33a7f_3e57ed9e",
       "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "e833a581_d100a6aa",
         "filename": "/COMMIT_MSG",
@@ -50,10 +51,10 @@
       "message": "I might suggest something like:\n\n```\nSome boards use a GPIO driven by the BMC to signal to the host that the BMC is fully up and running (the host\u0027s BIOS or other components like a CPLD might wait for it to be asserted before allowing the host\u0027s boot sequence to proceed, for example).\n```",
       "parentUuid": "18a213a7_2236dae9",
       "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "d7c2cae1_06c3f2e7",
         "filename": "src/power_control.cpp",
@@ -67,10 +68,10 @@
       "side": 1,
       "message": "I would have expected this to be done significantly later -- presumably we don\u0027t want to assert the ready signal if we\u0027re not yet actually ready (and there are plenty of things after this point that could still fail before we are).",
       "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "d53e13fc_8d1e4b84",
         "filename": "src/power_control.cpp",
@@ -85,10 +86,10 @@
       "message": "+1.  I wouldn\u0027t really expect this to be done in x86-power-control at all.  There\u0027s a systemd target (whos name is escaping me this second) that we use to determine the \"readiness\" of the BMC.  Power control being up doesn\u0027t mean the BMC is ready.",
       "parentUuid": "d7c2cae1_06c3f2e7",
       "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "a830cc78_5674eb30",
         "filename": "src/power_control.cpp",
@@ -103,10 +104,10 @@
       "message": "What do you suggest? What things are needed to be done before we can assert this pin?\nBasically after we activate this pin it is possible to power on the platform. For example manually with a button. And I think we don\u0027t want to delay this functionality for too long for the user experience.\nAlso activation of this pin should be done before restoring any power policy.",
       "parentUuid": "d53e13fc_8d1e4b84",
       "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "fdfe60b1_0c0bf9cd",
         "filename": "src/power_control.cpp",
@@ -121,10 +122,10 @@
       "message": "Well, even if we set aside the question of whether or not this daemon is even the right thing to be asserting `BMC_READY`, this seems to be a premature point in the daemon\u0027s start-up sequence to be doing so (at this point in main() we haven\u0027t yet finished initializing x86-power-contro\u0027s view of the host\u0027s existing power state, for example).\n\nThe question Ed has raised seems like quite a legitimate one to me though -- there are other parts of the BMC\u0027s functionality that are important to consider when declaring the BMC \"ready\" that aren\u0027t taken into account here at all.  For example, on systems I\u0027m familiar with, I think the IPMI service and kcsbridged should be running (so that the host can query the BMC for things like boot source settings and such).  With this approach we might very well end up asserting `BMC_READY` when the BMC is not, in fact, actually ready to do all the things it\u0027s supposed to do.",
       "parentUuid": "a830cc78_5674eb30",
       "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "5bc002f2_39cfb102",
         "filename": "src/power_control.cpp",
@@ -139,10 +140,10 @@
       "message": "This is a good point. Some systems truly would need to have BMC IPMI daemon started before the start of the main system. But at the same time I guess some don\u0027t. And these systems would prefer to set `BMC_READY` as soon as possible. I guess it means that we would need a systemd service that would assert these kind of signals?\n\nAs I understand, with the modern gpiolib framework it is not possible to permanently set GPIO signals with the sysfs. Does it mean that we would need another OpenBMC application to set `BMC_READY` signal? How should it be done? This is another question for the discussion.\n\nAlso the questions you are raising aren\u0027t specific to the `BMC_READY` signal from this commit.\nRight now `x86-power-control` performs all its power policies with no relation to start of IPMI or any other OpenBMC service. So the problems you are referring are not connected to this commit.\n\nMy point is that the raised issues are truly important, but it looks like they should be dealt separately. This commit simply provides an ability to launch AMD systems with OpenBMC.",
       "parentUuid": "fdfe60b1_0c0bf9cd",
       "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "ab020fb8_e6c2ca4a",
         "filename": "src/power_control.cpp",
@@ -157,10 +158,10 @@
       "message": "Maybe there is a simpler solution?\nIf a user would want to start IPMI before `BMC_READY` it simply should override `xyz.openbmc_project.Chassis.Control.Power%40.service` of \u0027x86-power-control`.\nIn this case we don\u0027t need another application to set `BMC_READY` signal.",
       "parentUuid": "5bc002f2_39cfb102",
       "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "9de4aa15_1e5444bc",
         "filename": "src/power_control.cpp",
@@ -175,10 +176,10 @@
       "message": "I think BMC_READY may be a confusing name, but that\u0027s what the schematic calls it so it is appropriate to re-use here. Without BMC_READY being asserted though there is no system power on these boards, so it also seems appropriate to have x86-power-control control this pin.\n\nI also agree with the idea of overriding x86-power-control\u0027s systemd unit file to not start until after ipmid is started, but I think this sort of thing should be clearly documented, ideally right in README in a new section under Build Options. It\u0027d be even better if x86-power-control could provide a unit file itself that could be optionally installed in the recipe, I think there are some ways Yocto/Meson could work together to support something like this?",
       "parentUuid": "ab020fb8_e6c2ca4a",
       "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "3d3eaca7_e54cf93e",
         "filename": "src/power_control.cpp",
@@ -193,8 +194,25 @@
       "message": "\u003e This is a good point. Some systems truly would need to have BMC IPMI daemon started before the start of the main system. But at the same time I guess some don\u0027t.\n\nWhich ones don\u0027t?  Generally the BMC ready signal is used to communicate to the host processor that the BMC is ready to handle commands (be they ipmi pldm or redfish).  Do your systems use it to mean something different?\n\n\u003e What things are needed to be done before we can assert this pin?\n\nAll daemons should be launched and ready.  Generally we would use something like multi-user.target to determine this.\n\n\u003eWithout BMC_READY being asserted though there is no system power on these boards, so it also seems appropriate to have x86-power-control control this pin.\n\nConsidering that x86-power-control doesn\u0027t control the \"readiness\" of the BMC (systemd does), that doesn\u0027t seem accurate.  MAYBE x86-power-control might be the thing that actually toggles the gpio, but it needs to be using something from systemd to determine when the right time to do it is.\n\n\n\u003e I also agree with the idea of overriding x86-power-control\u0027s systemd unit file to not start until after ipmid is started\n\nPlease don\u0027t do that.  It enforces incorrect dependencies within the system.  x86-power-control as an application and state machine has no need to wait for IPMI, and the systemd target is easily waited on with a match expression from within the app.\n\n\n\u003e If a user would want to start IPMI before `BMC_READY` it simply should override `xyz.openbmc_project.Chassis.Control.Power%40.service` of \u0027x86-power-control`.\n\nIt\u0027s much simpler if this is just a configure option within the repository itself.  Making a user understand systemd targets to configure their system is a tall order.",
       "parentUuid": "9de4aa15_1e5444bc",
       "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a487c2d7_b2683737",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2804,
+      "author": {
+        "id": 1000299
+      },
+      "writtenOn": "2024-02-09T16:49:44Z",
+      "side": 1,
+      "message": "\"BMC_READY\" on AMD platforms just means that confirmation goes out to the HPM FPGA/CPLD that FPGA/CPLD can relinquish control of power control GPIOs to BMC.\n\ni.e., Indicates that all DC-SCM STBY power rails are enabled and good and enables STBY power rails on the HPM.\n\nBMC_READY\" may be a misnomer.\n\nThis signal exists as \"HPM_STBY_EN\" in OCP DC-SCM specification: https://drive.google.com/file/d/11svaATDlTM83ZpQn8igNsJerIqtkbtKv/view.\n\nSince its part of Open Compute project DC-SCM Specification dealing power sequence signals, we should add a signal called \"HPM_STBY_EN\" instead of BMC_READY.\nInternally, which signal gets mapped depends on the platform design.",
+      "parentUuid": "3d3eaca7_e54cf93e",
+      "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
