@@ -54,6 +54,23 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "47fbaaba_01cb124e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000299
+      },
+      "writtenOn": "2024-02-09T17:19:25Z",
+      "side": 1,
+      "message": "Konstantin - Not sure if you are actively working on this patch or not. if not, Jayanth (from AMD) will send v2 renaming this signal to \"HPM_STBY_EN\"",
+      "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d7c2cae1_06c3f2e7",
@@ -229,6 +246,24 @@
       "side": 1,
       "message": "\u003e \"BMC_READY\" on AMD platforms just means that confirmation goes out to the HPM FPGA/CPLD that FPGA/CPLD can relinquish control of power control GPIOs to BMC.\n\nThat\u0027s different than any other platform I\u0027ve worked on, but fine, if that works for you, all good.\n\n\u003e \n\u003e i.e., Indicates that all DC-SCM STBY power rails are enabled and good and enables STBY power rails on the HPM.\n\u003e \n\u003e BMC_READY\" may be a misnomer.\n\u003e \n\u003e This signal exists as \"HPM_STBY_EN\" in OCP DC-SCM specification: https://drive.google.com/file/d/11svaATDlTM83ZpQn8igNsJerIqtkbtKv/view.\n\u003e \n\u003e Since its part of Open Compute project DC-SCM Specification dealing power sequence signals, we should add a signal called \"HPM_STBY_EN\" instead of BMC_READY.\n\u003e Internally, which signal gets mapped depends on the platform design.\n\nFrom that doc:\nActive High. Indicates that all DC-SCM STBY power rails are enabled and good.\nEnables STBY power rails on the HPM\n\nSo long as we change the name away from BMC_READY, that sounds like a reasonable approximation of that signal to me.",
       "parentUuid": "a487c2d7_b2683737",
+      "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8685c111_d4b2e102",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2804,
+      "author": {
+        "id": 1000299
+      },
+      "writtenOn": "2024-02-09T17:19:25Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "1bb0248a_f7eeb0bf",
       "revId": "3bd3fb12a3515f3b63031a9b248047a39d951bf7",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
