@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "69957d62_3788f7f9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2024-02-09T09:52:40Z",
+      "side": 1,
+      "message": "I\u0027m afraid even after reading this fairly closely I couldn\u0027t really understand what it was describing -- looking at the code, I think mentioning something like \"make NMI support optional\" (in the subject line hopefully) would make it much more comprehensible.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 42
+      },
+      "revId": "620cf8aa34ac9d1f37535e32bdab9d3cd4382da2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
