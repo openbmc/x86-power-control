@@ -63,6 +63,24 @@
       "message": "I agree with the other feedback so far.  This seems like it may be too broad.  The GPIO initialization that we have is for x86-power-control to properly configure the GPIOs that it controls.  To me, that means the output GPIOs which lines up with the GPIOs that currently get initialized: nmiOut, powerOut, and resetOut.\n\nIf you are adding one or two new output GPIOs that need to be initialized, they could just be added in the same way as these three.\n\nOr if you\u0027d like to make it generic, we already have the polarity in the config file.  So, could we just add direction then initialize each output GPIO to de-asserted polarity?",
       "revId": "e2784f780c79909fa77cf7a7a0df47d9cbe1de97",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "04d2c3a2_a00b4c9a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2024-02-10T10:50:10Z",
+      "side": 1,
+      "message": "Based on the discussion , in the previous patch sets, we can manage gpio init by existing approch. Abandoning this patch now",
+      "parentUuid": "40bca3a4_5e2a581d",
+      "revId": "e2784f780c79909fa77cf7a7a0df47d9cbe1de97",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
