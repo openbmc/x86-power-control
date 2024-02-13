@@ -93,6 +93,30 @@
       },
       "revId": "620cf8aa34ac9d1f37535e32bdab9d3cd4382da2",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e81cf40_d505c32a",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2682,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2024-02-13T02:24:17Z",
+      "side": 1,
+      "message": "Hmm, upon a second look I see the `nmiSourcePropertyMonitor()` is only called if `nmiOutLine` is...\"true\"?  (It\u0027s a `gpiod::line`; I have no idea what that means in a boolean context.)  So, depending on the semantics of that, the scenario I described may actually not be possible, though I\u0027m not sure.",
+      "parentUuid": "c69f4a2c_a5a37deb",
+      "range": {
+        "startLine": 2677,
+        "startChar": 1,
+        "endLine": 2682,
+        "endChar": 5
+      },
+      "revId": "620cf8aa34ac9d1f37535e32bdab9d3cd4382da2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
