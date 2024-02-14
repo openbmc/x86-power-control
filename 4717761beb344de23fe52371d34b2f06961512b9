@@ -22,6 +22,30 @@
       },
       "revId": "4717761beb344de23fe52371d34b2f06961512b9",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a44397f6_cfec0ea8",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2904,
+      "author": {
+        "id": 1000299
+      },
+      "writtenOn": "2024-02-14T16:41:40Z",
+      "side": 1,
+      "message": "A typical power and boot sequence is specified in Open Compute Project - DC SCM v1.0 specification: https://www.opencompute.org/documents/ocp-dc-scm-spec-rev-1-0-pdf\nPlease refer section 3.4.12 Standby Power and Boot Sequence of the above document.",
+      "parentUuid": "7599d711_d9ee5dac",
+      "range": {
+        "startLine": 2899,
+        "startChar": 0,
+        "endLine": 2904,
+        "endChar": 0
+      },
+      "revId": "4717761beb344de23fe52371d34b2f06961512b9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
