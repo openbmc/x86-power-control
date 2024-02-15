@@ -69,6 +69,24 @@
       "parentUuid": "4a089101_d30a1d46",
       "revId": "bbf90f3249044dc1cd3959e998fed5e8c3032f66",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6e7246a9_5a27cb13",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2024-02-15T15:59:02Z",
+      "side": 1,
+      "message": "Jason/Supreeth Logs from Immediate reboot path after making GPIO line change recemented by Jason replacing , looking good to me . please verify.\n\n power-control[246]: powerStateOn: reset request event received\n power-control[246]: ASSERT_WARM_RST_BTN_L set to 0\n power-control[246]: PowerControl: reset button pressed\n power-control[246]: powerStateOn: reset button pressed event received\n power-control[246]: Host0: Moving to \"Check for Warm Reset\" state\n power-control[246]: Warm reset check timer started\n power-control[246]: Moving os state to xyz.openbmc_project.State.OperatingSystem.Status.OSStatus.Inactive stage\n power-control[246]: RestartCause set to xyz.openbmc_project.State.Host.RestartCause.IpmiCommand\n power-control[246]: Host system DC power is off\n power-control[246]: POH timer canceled\n power-control[246]: ASSERT_WARM_RST_BTN_L released\n power-control[246]: Warm reset check timer completed\n power-control[246]: powerStateCheckForWarmReset: warm reset detected event received\n power-control[246]: Host0: Moving to \"On\" state\n power-control[246]: POH timer started\n power-control[246]: Host system DC power is o\n \n If the log is fine , i will make renaming changes recemented by Jason.",
+      "parentUuid": "08b73725_f6804a06",
+      "revId": "bbf90f3249044dc1cd3959e998fed5e8c3032f66",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
