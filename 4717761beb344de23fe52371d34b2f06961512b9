@@ -94,6 +94,30 @@
       },
       "revId": "4717761beb344de23fe52371d34b2f06961512b9",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "15803b67_86d9ca22",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2904,
+      "author": {
+        "id": 1000299
+      },
+      "writtenOn": "2024-02-16T01:55:15Z",
+      "side": 1,
+      "message": "HPM_STBY_EN is a signal to HPM after verifying BMC side VRs are good [Which is optional if the VRs are self-enabled]. The purpose of this patch is to introduce a signal called \"HPM_STBY_EN\" which is a standard signal as per DC-SCM specification and initializing it to default state. HPM_STBY_EN is an indication for the HPM FPGA/CPLD to start the rest of the power sequencing. [Turn on host side power rails, etc].",
+      "parentUuid": "1fa4dca7_24d1deba",
+      "range": {
+        "startLine": 2899,
+        "startChar": 0,
+        "endLine": 2904,
+        "endChar": 0
+      },
+      "revId": "4717761beb344de23fe52371d34b2f06961512b9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
