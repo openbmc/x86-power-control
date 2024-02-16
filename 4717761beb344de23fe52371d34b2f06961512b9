@@ -70,6 +70,30 @@
       },
       "revId": "4717761beb344de23fe52371d34b2f06961512b9",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1fa4dca7_24d1deba",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2904,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2024-02-16T01:29:02Z",
+      "side": 1,
+      "message": "Okay, thanks for the spec link -- that\u0027s a useful reference, but I\u0027m not clear on how it motivates this patch.  From that document, it looks like HPM_STBY_EN must be asserted before HPM_STBY_RDY, which in turn must be asserted before the BMC can even be released from reset, so something else on the SCM must be driving it prior to the BMC coming online -- a CPLD or the like, or maybe just a pull-up resistor?  Are there any situations in which the BMC might want to deassert HPM_STBY_EN, or would doing so also reset the BMC via HPM_STBY_RDY getting deasserted as a result?",
+      "parentUuid": "27de9d68_becd39dd",
+      "range": {
+        "startLine": 2899,
+        "startChar": 0,
+        "endLine": 2904,
+        "endChar": 0
+      },
+      "revId": "4717761beb344de23fe52371d34b2f06961512b9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
