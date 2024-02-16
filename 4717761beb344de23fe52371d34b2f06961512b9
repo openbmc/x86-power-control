@@ -142,6 +142,30 @@
       },
       "revId": "4717761beb344de23fe52371d34b2f06961512b9",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a7caa94e_f85547c0",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2904,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2024-02-16T11:35:14Z",
+      "side": 1,
+      "message": "\"gpio-hog\" sets the pin high/low during boot-up right? This approch will fail follow the sequence mentioned  in the \"Figure 30: Power and Boot Sequence Diagram\" in the document shared by Supreeth. Setting this pin prior to other existing GPIO\u0027s initialization can mess up the host power sequence.",
+      "parentUuid": "32d7fb39_05579337",
+      "range": {
+        "startLine": 2899,
+        "startChar": 0,
+        "endLine": 2904,
+        "endChar": 0
+      },
+      "revId": "4717761beb344de23fe52371d34b2f06961512b9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
