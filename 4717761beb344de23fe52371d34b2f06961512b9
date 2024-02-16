@@ -190,6 +190,30 @@
       },
       "revId": "4717761beb344de23fe52371d34b2f06961512b9",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6a06a1d3_8fae0544",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2904,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2024-02-16T22:03:29Z",
+      "side": 1,
+      "message": "\u003e \"gpio-hog\" sets the pin high/low during boot-up right?\n\nYes, the kernel simply holds the GPIO in a single fixed state (applied during boot) and prevents userspace from accessing it.\n\n\u003e This approch will fail follow the sequence mentioned in the \"Figure 30: Power and Boot Sequence Diagram\" in the document shared by Supreeth. Setting this pin prior to other existing GPIO\u0027s initialization can mess up the host power sequence.\n\nThis is what I don\u0027t understand.  Figure 30 shows \"HPM_STBY_EN \u003d 1\" *before* \"BMC reset released\".  If it\u0027s already asserted before the BMC even boots, how would a gpio-hog (re-)asserting it during the BMC\u0027s boot sequence change anything?",
+      "parentUuid": "bfe35ffc_bc13fb41",
+      "range": {
+        "startLine": 2899,
+        "startChar": 0,
+        "endLine": 2904,
+        "endChar": 0
+      },
+      "revId": "4717761beb344de23fe52371d34b2f06961512b9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
