@@ -105,6 +105,24 @@
       "parentUuid": "6e7246a9_5a27cb13",
       "revId": "bbf90f3249044dc1cd3959e998fed5e8c3032f66",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "16e5fd35_b209e30e",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2024-02-16T17:30:49Z",
+      "side": 1,
+      "message": "Seems fine, so please update this review with the new changes.\n\nAs a side question, does this mean that the WARM_RST_BTN is both an input and output?  It looks like the BMC asserts it then the button handler detects that it was pressed.",
+      "parentUuid": "156c0211_61853ad3",
+      "revId": "bbf90f3249044dc1cd3959e998fed5e8c3032f66",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
