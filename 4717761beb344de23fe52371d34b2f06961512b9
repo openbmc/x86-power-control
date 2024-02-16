@@ -118,6 +118,30 @@
       },
       "revId": "4717761beb344de23fe52371d34b2f06961512b9",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "32d7fb39_05579337",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2904,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2024-02-16T05:25:07Z",
+      "side": 1,
+      "message": "Okay, but what about\n\n\u003e Are there any situations in which the BMC might want to deassert HPM_STBY_EN, or would doing so also reset the BMC via HPM_STBY_RDY getting deasserted as a result?\n\nBecause if it *is* just always unconditionally asserted, I\u0027m back to what I mentioned in my first comment above: could/should it just be a gpio-hog in the device tree instead?",
+      "parentUuid": "15803b67_86d9ca22",
+      "range": {
+        "startLine": 2899,
+        "startChar": 0,
+        "endLine": 2904,
+        "endChar": 0
+      },
+      "revId": "4717761beb344de23fe52371d34b2f06961512b9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
