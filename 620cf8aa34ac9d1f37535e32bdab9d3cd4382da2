@@ -48,6 +48,23 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9e367037_9c31664c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2024-02-16T20:11:02Z",
+      "side": 1,
+      "message": "Can you please describe the problem you see that this change fixes?\n\nLooking through the NMI handling code, it looks like the `nmiOutConfig.lineName` is already checked here: https://github.com/openbmc/x86-power-control/blob/master/src/power_control.cpp#L2859\n\nIf that is false, it will skip enabling `nmiOutLine` which will then skip all the NMI functionality.  This patch doesn\u0027t look like it will result in any functional change in behavior.",
+      "revId": "620cf8aa34ac9d1f37535e32bdab9d3cd4382da2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b72634bd_b42fa33b",
