@@ -166,6 +166,30 @@
       },
       "revId": "4717761beb344de23fe52371d34b2f06961512b9",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bfe35ffc_bc13fb41",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2904,
+      "author": {
+        "id": 1000299
+      },
+      "writtenOn": "2024-02-16T15:08:54Z",
+      "side": 1,
+      "message": "HPM_STBY_EN is one of the dedicated signals that will need to be controlled by power management/control module. i.e., it needs to be initialized at the beginning. Further, this signal will be set to indicate BMC\u0027s power control module is ready to take the inputs [PWR_GOOD] from the HPM FPGA. gpio-hog wont help here because this needs to be initialized first and will then need to be set before the start of IO loop. This patch only initializes it, You are correct that the setting part of it is missing in this. Jayanth will work with Konstantin to verify and push next version of the patch.",
+      "parentUuid": "a7caa94e_f85547c0",
+      "range": {
+        "startLine": 2899,
+        "startChar": 0,
+        "endLine": 2904,
+        "endChar": 0
+      },
+      "revId": "4717761beb344de23fe52371d34b2f06961512b9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
