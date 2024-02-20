@@ -52,6 +52,24 @@
       "parentUuid": "42a02aee_db6717b0",
       "revId": "f3eb54ed55c40454b2b1097d468710b569fb7218",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ace88e0_ad881d67",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1001210
+      },
+      "writtenOn": "2024-02-20T11:28:13Z",
+      "side": 1,
+      "message": "No. It\u0027s the opposite logic. x86-power-control detects host power on/off and runs target. I use this to run my scripts after a host power switch.",
+      "parentUuid": "14c22f54_ecdb684b",
+      "revId": "f3eb54ed55c40454b2b1097d468710b569fb7218",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
