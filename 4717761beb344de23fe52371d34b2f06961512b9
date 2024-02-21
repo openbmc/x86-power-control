@@ -214,6 +214,30 @@
       },
       "revId": "4717761beb344de23fe52371d34b2f06961512b9",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "20f28c5b_8439d01e",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2904,
+      "author": {
+        "id": 1000299
+      },
+      "writtenOn": "2024-02-21T02:22:48Z",
+      "side": 1,
+      "message": "Please note that this is just a reasonable approximation of the signal. This signal is \"Power Management/Control\" signal as per DC-SCM spec, the sequence shown there is just one example. Hence the signal needs to be part of power control Configuration. on AMD platforms, this indicates to HPM FPGA/CPLD to start the power sequence and BMC is ready and will monitor/catch any power events that happens after the power sequence is started. Also, this signal needs to be asserted after firmware update or BMC reboot, after power control module is ready. @Zev - Can you please elaborate on what your specific concerns are, so that we address it appropriately?",
+      "parentUuid": "6a06a1d3_8fae0544",
+      "range": {
+        "startLine": 2899,
+        "startChar": 0,
+        "endLine": 2904,
+        "endChar": 0
+      },
+      "revId": "4717761beb344de23fe52371d34b2f06961512b9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
