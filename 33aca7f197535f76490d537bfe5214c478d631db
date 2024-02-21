@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e5ce021c_9c386fd8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2024-02-21T08:27:04Z",
+      "side": 1,
+      "message": "I mean, need to make sure no impact for the platform without reset button.",
+      "parentUuid": "9318cd96_16c68f50",
+      "revId": "33aca7f197535f76490d537bfe5214c478d631db",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4d3cdd19_69394a86",
         "filename": "/COMMIT_MSG",
         "patchSetId": 4
