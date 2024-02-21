@@ -1,6 +1,7 @@
 {
   "comments": [
     {
+      "unresolved": true,
       "key": {
         "uuid": "3c3dc0ce_26c30d25",
         "filename": "/COMMIT_MSG",
@@ -14,8 +15,25 @@
       "side": 1,
       "message": "\"Tested\" field is necessary and attach your test case and test result.",
       "revId": "e2a0703aa92770caa4f65eb54458ba58bbed0e50",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "87c8f509_53b4e9c2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2024-02-21T10:13:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3c3dc0ce_26c30d25",
+      "revId": "e2a0703aa92770caa4f65eb54458ba58bbed0e50",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
