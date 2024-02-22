@@ -238,6 +238,30 @@
       },
       "revId": "4717761beb344de23fe52371d34b2f06961512b9",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c86d3e5_5f9255b3",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2904,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2024-02-22T21:27:32Z",
+      "side": 1,
+      "message": "```\nAlso, this signal needs to be asserted after firmware update or BMC reboot, after power control module is ready\n```\n\nDoes it de-assert automatically after firmware update or BMC reboot? Or does it need to be explicitly de-asserted somehow?",
+      "parentUuid": "20f28c5b_8439d01e",
+      "range": {
+        "startLine": 2899,
+        "startChar": 0,
+        "endLine": 2904,
+        "endChar": 0
+      },
+      "revId": "4717761beb344de23fe52371d34b2f06961512b9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }

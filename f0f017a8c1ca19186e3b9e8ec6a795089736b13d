@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f7c1597_36e3ed6d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2024-02-22T21:27:32Z",
+      "side": 1,
+      "message": "Seems okay to me, but I\u0027d like Zev\u0027s feedback still.\n\nI\u0027m curious about needing to initialize it de-asserted then shortly after assert it.  Is that in case x86-power-control crashes in between?  If we can assume that the GPIO must be de-asserted in the beginning, could we get by with just asserting it at the end?",
+      "revId": "f0f017a8c1ca19186e3b9e8ec6a795089736b13d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "10ea84ee_d52e39dc",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 3481,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2024-02-22T21:27:32Z",
+      "side": 1,
+      "message": "You may not need this here as I think it happens automatically when hpmLine goes out of scope.",
+      "range": {
+        "startLine": 3480,
+        "startChar": 7,
+        "endLine": 3481,
+        "endChar": 24
+      },
+      "revId": "f0f017a8c1ca19186e3b9e8ec6a795089736b13d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
