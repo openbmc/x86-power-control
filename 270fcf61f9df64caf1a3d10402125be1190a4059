@@ -22,6 +22,30 @@
       },
       "revId": "270fcf61f9df64caf1a3d10402125be1190a4059",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ddc89f4_150ca773",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2024-02-23T21:24:17Z",
+      "side": 1,
+      "message": "\u003e Can you add link to where it is used in phosphor-state-manager?\n\nPSM places this interface on the host object.  This is the only place it has ever been documented to be.  \"state/os\" is not found in any documentation and is intrinsically broken for any multi-host system.\n\nhttps://github.com/openbmc/phosphor-state-manager/blob/master/host_state_manager.hpp#L31\n\n\u003e A quick search showed that \"/xyz/openbmc_project/state/os\" is used in many repos in openbmc org. This will break all of them.\n\nI\u0027m only finding it in the following files:\n```\npeci-pcie/src/peci_pcie.cpp\nsmbios-mdr/src/cpuinfo_utils.cpp\ndbus-sensors/src/Utils.hpp\nintel-ipmi-oem/src/biosconfigcommands.cpp\nintel-ipmi-oem/src/allowlist-filter.cpp\nx86-power-control/src/power_control.cpp\n```\n\nx86-power-control is this fix.  dbus-sensors is already up.  I guess we need Potin to do the other 3 also?",
+      "parentUuid": "e264eb64_423300c3",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 39
+      },
+      "revId": "270fcf61f9df64caf1a3d10402125be1190a4059",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
