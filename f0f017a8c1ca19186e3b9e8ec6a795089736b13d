@@ -81,6 +81,30 @@
       },
       "revId": "f0f017a8c1ca19186e3b9e8ec6a795089736b13d",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "65012c34_db9b9a32",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 3481,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2024-02-23T04:07:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b24344a4_61daa434",
+      "range": {
+        "startLine": 3480,
+        "startChar": 7,
+        "endLine": 3481,
+        "endChar": 24
+      },
+      "revId": "f0f017a8c1ca19186e3b9e8ec6a795089736b13d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
