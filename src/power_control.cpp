@@ -3400,7 +3400,7 @@ int main(int argc, char* argv[])
 
     // OS State Interface
     osIface = osServer.add_interface(
-        "/xyz/openbmc_project/state/os",
+        "/xyz/openbmc_project/state/host" + node,
         "xyz.openbmc_project.State.OperatingSystem.Status");
 
     // Get the initial OS state based on POST complete
