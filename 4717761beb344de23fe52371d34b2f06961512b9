@@ -262,6 +262,30 @@
       },
       "revId": "4717761beb344de23fe52371d34b2f06961512b9",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "024d16f7_11e35de6",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2904,
+      "author": {
+        "id": 1000299
+      },
+      "writtenOn": "2024-02-23T02:42:00Z",
+      "side": 1,
+      "message": "Since there will be latch, it usually does not de-assert, but depends on the circuitry, if there is a low pullup/pulldown on the line.",
+      "parentUuid": "0c86d3e5_5f9255b3",
+      "range": {
+        "startLine": 2899,
+        "startChar": 0,
+        "endLine": 2904,
+        "endChar": 0
+      },
+      "revId": "4717761beb344de23fe52371d34b2f06961512b9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
