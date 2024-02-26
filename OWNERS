@@ -32,7 +32,7 @@
 # data within them will be kept sorted.
 
 owners:
-- jason.m.bills@intel.com
+- jason.m.bills@linux.intel.com
 - wangkuiying.wky@alibaba-inc.com 
 
 reviewers:
@@ -42,7 +42,7 @@ matchers:
 
 openbmc:
 - name: Jason Bills
-  email: jason.m.bills@intel.com
+  email: jason.m.bills@linux.intel.com
   discord: jmbills
 - name: Kuiying Wang
   email: wangkuiying.wky@alibaba-inc.com
