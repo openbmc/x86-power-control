@@ -46,6 +46,30 @@
       },
       "revId": "270fcf61f9df64caf1a3d10402125be1190a4059",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "72980b98_b7701f19",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1001264
+      },
+      "writtenOn": "2024-02-26T07:42:09Z",
+      "side": 1,
+      "message": "Hi @Patrick \u0026 @Zhikui, busname \u0026 objpath fix are submitted to each repo, please have a check with the links below, thanks.\n\n- peci-pcie: https://gerrit.openbmc.org/c/openbmc/peci-pcie/+/69666\n- smbios-mdr: https://gerrit.openbmc.org/c/openbmc/smbios-mdr/+/69668\n- intel-ipmi-oem: https://gerrit.openbmc.org/c/openbmc/intel-ipmi-oem/+/69669\n\nBTW, I don\u0027t have an Intel system to test these three repositories, it would be grateful if someone could help confirm the modifications work.",
+      "parentUuid": "4ddc89f4_150ca773",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 39
+      },
+      "revId": "270fcf61f9df64caf1a3d10402125be1190a4059",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
