@@ -33,6 +33,24 @@
       "message": "I\u0027m a bit confused about exactly what\u0027s now being done with the new line...\n\nDuring initialization in `main()` first we deassert it, and then later assert it just before entering the main event loop -- but both times it\u0027s then immediately reset?  (Explicitly at line 2910, and implicitly in the `hpmLine` dtor at line 3484.)  I\u0027m not clear on (a) what the deassert \u0026 reassert are actually needed for (i.e. what operations in between them actually *need* to be in between them, or why they\u0027re placed where they are), and (b) if they\u0027re actually going to reliably do anything other than just momentarily glitch the state of the line if there\u0027s a `.reset()` right after each one.  Am I misunderstanding something here?",
       "revId": "ed682b5c415a0b9518168196c696fc0a1ac8d143",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c35d1bdb_49005ba7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2024-02-27T09:19:40Z",
+      "side": 1,
+      "message": "Zev,\nCan you please look/respond to https://gerrit.openbmc.org/c/openbmc/x86-power-control/+/48951/4..6/src/power_control.cpp#b2904 supreeth comments dated  on Feb 21.",
+      "parentUuid": "5165fcfc_b3dcbd30",
+      "revId": "ed682b5c415a0b9518168196c696fc0a1ac8d143",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
