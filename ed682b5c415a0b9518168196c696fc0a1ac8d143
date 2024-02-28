@@ -87,6 +87,24 @@
       "parentUuid": "3fd9869c_fe41c0ba",
       "revId": "ed682b5c415a0b9518168196c696fc0a1ac8d143",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "475ff5db_ee5d5c1b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2024-02-28T08:38:45Z",
+      "side": 1,
+      "message": "Summarizing some out-of-band discussion with Jayanth:\n\n - The deassert during initialization seems oddly placed to me; it seems like (to minimize the amount of time the line might theoretically be incorrectly asserted) we\u0027d want to do that as early as possible, but currently it seems to have been inserted into the GPIO init sequence somewhat arbitrarily.  I\u0027d think it should probably be OK to move it earlier; any foreseeable problems with that?\n\n - The `line.reset()` operation (by closing open file descriptors) effectively releases the line and leaves its state undefined, which isn\u0027t great -- however, this is an existing problem with the codebase and not a new issue with this patch (numerous existing GPIOs are already kind of only working by luck in the same way, so what\u0027s one more...)\n\n@Jason, any thoughts on the deassert reordering or historical background on why the daemon releases output GPIOs instead of holding them open persistently while it\u0027s running?",
+      "parentUuid": "16533556_ba676b6d",
+      "revId": "ed682b5c415a0b9518168196c696fc0a1ac8d143",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
