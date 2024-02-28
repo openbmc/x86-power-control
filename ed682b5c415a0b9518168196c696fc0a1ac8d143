@@ -105,6 +105,24 @@
       "parentUuid": "16533556_ba676b6d",
       "revId": "ed682b5c415a0b9518168196c696fc0a1ac8d143",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54bb973a_7afc120f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2024-02-28T21:15:55Z",
+      "side": 1,
+      "message": "The time between the init-to-deasserted (even if moved earlier) and the assert seems arbitrary.  The other GPIOs are initialized to de-asserted because we need to start somewhere and don\u0027t want to trigger hardware behavior.  In this case, it seems like we want to trigger the hardware behavior from the start.  So, my opinion is we don\u0027t need to init to deasserted at all, and we can just init to asserted at the end of x86-power-control init where it is currently placed.\n\nFor the GPIO release:  With libgpiod, only one application can hold a GPIO at a time.  If multiple applications need a GPIO, they should release the line when they are done.  On the other hand, you can \"protect\" a GPIO by claiming it persistently in an application.\n\nWith most GPIOs if you claim the line and set the output value, they will maintain that state even if the line is released, but I agree it\u0027s not intuitive to rely on this behavior.  POWER_OUT and RESET_OUT are special cases, because they are assumed to be connected to the BMC passthrough GPIOs.  Not sure about other vendors, but in the case of ASPEED, the pinctrl driver will automatically return the GPIO to the passthrough state when the line is released.  So, for POWER_OUT and RESET_OUT, we take control only when we want to override the passthrough, and we release to give control back to hardware.\n\nSo, my opinion on HpmStbyEn is if there isn\u0027t any special hardware reason to release, it would be better for x86-power-control to persistently claim this GPIO.  This will make it clear with tools like `gpioinfo` who owns it, and nobody else can change the state unexpectedly.",
+      "parentUuid": "475ff5db_ee5d5c1b",
+      "revId": "ed682b5c415a0b9518168196c696fc0a1ac8d143",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
