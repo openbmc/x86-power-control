@@ -69,6 +69,24 @@
       "parentUuid": "c35d1bdb_49005ba7",
       "revId": "ed682b5c415a0b9518168196c696fc0a1ac8d143",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "16533556_ba676b6d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2024-02-28T07:22:40Z",
+      "side": 1,
+      "message": "1. https://gerrit.openbmc.org/c/openbmc/x86-power-control/+/48951/6/src/power_control.cpp#2900 --\u003e Make sure when the power-control application starts , HpmStdby signal default state . deassert. This is based on earlier conversation with Jason and you. Yo make sure any application crash or reboot we need to hold the host power-control after the pre-steps completion, to avoid un-expected results due to HPM_STBY_EN ready state.\n\n2. https://gerrit.openbmc.org/c/openbmc/x86-power-control/+/48951/6/src/power_control.cpp#2910 -\u003e this is only reset C++ object. No real hardware actions  \n\n3. https://github.com/brgl/libgpiod/blob/6d5d8afc9c7e9a7b47d54fe51f4cb8d7077cdb8b/bindings/cxx/gpiodcxx/line-config.hpp#L58)\nhttps://gerrit.openbmc.org/c/openbmc/x86-power-control/+/48951/6/src/power_control.cpp#3474 -\u003e\nHPM_STBY_EN is one of the dedicated signals that will need to be controlled by power management/control module. , this signal will be set to indicate BMC\u0027s power control module is ready to take the inputs [PWR_GOOD] from the HPM FPGA after the app initialization completion. That is why we moved just before sd-event loop.",
+      "parentUuid": "3fd9869c_fe41c0ba",
+      "revId": "ed682b5c415a0b9518168196c696fc0a1ac8d143",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
