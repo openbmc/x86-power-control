@@ -51,6 +51,24 @@
       "parentUuid": "5165fcfc_b3dcbd30",
       "revId": "ed682b5c415a0b9518168196c696fc0a1ac8d143",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3fd9869c_fe41c0ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2024-02-28T02:59:26Z",
+      "side": 1,
+      "message": "I\u0027m assuming you mean the comment starting \"Please note ...\"?  Due to time zone differences (I\u0027m guessing) that appears as Feb 20 for me, anyway (it sure would be nice if gerrit could link to a specific comment and not just an entire thread, but oh well...)\n\nAs for specific concerns, my main concern is just more a general lack of clarity about what\u0027s going on.  From Supreeth\u0027s description and the initial implementation, it seems like simply holding the line asserted and leaving it that way at all times (i.e. functionally equivalent to a gpio-hog as far as I can tell) is sufficient logic for the hardware you\u0027re working on to work, but then later the patch was changed to first deassert (at the same point in the initialization sequence where it had initially been asserted) and then later assert it (and again, both of those are immediately followed by resets, so it\u0027s even less clear what\u0027s actually happening).\n\nFrom Supreeth\u0027s description it sounds like this line being asserted is a signal that the BMC is ready to handle power events (i.e. a \"BMC ready\" signal but scoped only to power control, which if that\u0027s what it is does seem like a reasonable thing for x86-power-control to handle).  It seems like the only sensible way for that to work at a hardware level though would be to have a pull-up/down on the line to deassert it unless/until the BMC actively asserts it.  Is that the case?  (The reference to latching behavior in Supreeth\u0027s subsequent message is also confusing to me; I\u0027m not sure what to make of it.)\n\nWhat I\u0027d like is a clear explanation of:\n - what specifically the deassert/assert actions in the current patch are intended to achieve and why they\u0027re placed where they are, and\n - what the expected behavior is given that both of those actions are immediately followed by a reset of the line.",
+      "parentUuid": "c35d1bdb_49005ba7",
+      "revId": "ed682b5c415a0b9518168196c696fc0a1ac8d143",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
