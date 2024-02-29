@@ -123,6 +123,24 @@
       "parentUuid": "475ff5db_ee5d5c1b",
       "revId": "ed682b5c415a0b9518168196c696fc0a1ac8d143",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d74e0d50_850015ee",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2024-02-29T03:19:00Z",
+      "side": 1,
+      "message": "\u003e So, my opinion is we don\u0027t need to init to deasserted at all, and we can just init to asserted at the end of x86-power-control init where it is currently placed.\n\nMy understanding was that the initial deassert was a sort of best-effort attempt to mitigate the problem of the line potentially being wrongly asserted if a previous instance of the daemon had crashed or something after asserting it (and I suppose would at least leave it correctly deasserted if it were to crash or exit during initialization).  I\u0027m sort of on the fence here about whether I think it\u0027s worthwhile -- it\u0027s kind of \"closing the barn door after the horse has bolted\" in some ways, but maybe better than nothing?  (Shrug...)  I dunno, no strong opinion at the moment so I\u0027d be okay either way (keeping it or removing it).\n\n\u003e the pinctrl driver will automatically return the GPIO to the passthrough state when the line is released\n\nThat\u0027s only the case with an out-of-tree kernel patch though, right?  Though regardless I guess I\u0027m still not clear on why we want to release it and re-enable passthrough while the daemon is running.  I can see wanting that functionality as a fallback if the daemon crashes or something, but if x86-power-control is there to receive button-press events and act on them appropriately (effectively acting as a software GPIO passthrough), why does it need the hardware passthrough?",
+      "parentUuid": "54bb973a_7afc120f",
+      "revId": "ed682b5c415a0b9518168196c696fc0a1ac8d143",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
