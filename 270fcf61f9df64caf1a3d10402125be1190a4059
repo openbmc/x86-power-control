@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "987740f2_86196c10",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2024-03-01T15:01:01Z",
+      "side": 1,
+      "message": "Isn\u0027t the commit message clear?  There are undocumented paths in this repository and documented paths in phosphor-state-manager, both of which are intended to be the same thing.  Then there are hard-coded paths in other repositories.  We\u0027re trying to align them all to match.",
+      "parentUuid": "36839cce_4484b557",
+      "revId": "270fcf61f9df64caf1a3d10402125be1190a4059",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e264eb64_423300c3",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
