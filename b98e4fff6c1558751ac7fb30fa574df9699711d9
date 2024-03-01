@@ -16,6 +16,24 @@
       "message": "As you mentioned, you passed Testing on AMD CRB already.\nhttps://gerrit.openbmc.org/c/openbmc/x86-power-control/+/69294",
       "revId": "b98e4fff6c1558751ac7fb30fa574df9699711d9",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a614e010_2b5461f3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2024-03-01T09:50:47Z",
+      "side": 1,
+      "message": "I verified regular power on and off , The issue  noticed was in application crash use case ,  when i was testing with my new commit.",
+      "parentUuid": "03c19489_e09a75b6",
+      "revId": "b98e4fff6c1558751ac7fb30fa574df9699711d9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
