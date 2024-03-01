@@ -16,6 +16,24 @@
       "message": "Ok,now it is not much different from my v4 version of the patchset. Wonder if moving gpioset operation to the very end makes any difference",
       "revId": "7a4e3997f7b41981965b32cf92e9d5a388cb484d",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "501d42ef_5e8a8fa9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2024-03-01T12:40:23Z",
+      "side": 1,
+      "message": "Not really patch set 5 , shifted the assert code just before currentHostStateMonitor. Anyway iverified moving code , just before event loop , and verified.",
+      "parentUuid": "f0aeb8af_5041a11d",
+      "revId": "7a4e3997f7b41981965b32cf92e9d5a388cb484d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
