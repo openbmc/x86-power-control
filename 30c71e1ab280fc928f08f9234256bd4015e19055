@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b41f3579_b5675326",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2024-03-04T10:44:13Z",
+      "side": 1,
+      "message": "it is a special signal and no impact for existing platforms.",
+      "revId": "30c71e1ab280fc928f08f9234256bd4015e19055",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
