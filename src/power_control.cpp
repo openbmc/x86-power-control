@@ -2196,7 +2196,7 @@ static void setNmiSource()
         "org.freedesktop.DBus.Properties", "Set",
         "xyz.openbmc_project.Chassis.Control.NMISource", "BMCSource",
         std::variant<std::string>{
-            "xyz.openbmc_project.Chassis.Control.NMISource.BMCSourceSignal.FpBtn"});
+            "xyz.openbmc_project.Chassis.Control.NMISource.BMCSourceSignal.FrontPanelButton"});
     // set Enable Property
     nmiSetEnableProperty(true);
 }
