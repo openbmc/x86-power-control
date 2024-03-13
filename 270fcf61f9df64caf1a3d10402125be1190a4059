@@ -105,6 +105,30 @@
       },
       "revId": "270fcf61f9df64caf1a3d10402125be1190a4059",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6590fa69_8487514a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000559
+      },
+      "writtenOn": "2024-03-13T17:12:29Z",
+      "side": 1,
+      "message": "Thanks for submitting all the dependent changes. Approving all so they can land together",
+      "parentUuid": "72980b98_b7701f19",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 39
+      },
+      "revId": "270fcf61f9df64caf1a3d10402125be1190a4059",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
