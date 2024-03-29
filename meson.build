@@ -42,6 +42,7 @@ deps = [
   dependency('sdbusplus'),
   dependency('phosphor-logging'),
   dependency('nlohmann_json', include_type: 'system'),
+  dependency('boost'),
 ]
 
 executable(
