@@ -219,8 +219,7 @@ static void beep(const uint8_t& beepPriority)
                 "ERROR_MSG", ec.message());
             return;
         }
-    },
-        "xyz.openbmc_project.BeepCode", "/xyz/openbmc_project/BeepCode",
+    }, "xyz.openbmc_project.BeepCode", "/xyz/openbmc_project/BeepCode",
         "xyz.openbmc_project.BeepCode", "Beep", uint8_t(beepPriority));
 }
 
@@ -692,8 +691,7 @@ static void resetACBootProperty()
             {
                 lg2::error("failed to reset ACBoot property");
             }
-        },
-            "xyz.openbmc_project.Settings",
+        }, "xyz.openbmc_project.Settings",
             "/xyz/openbmc_project/control/host0/ac_boot",
             "org.freedesktop.DBus.Properties", "Set",
             "xyz.openbmc_project.Common.ACBoot", "ACBoot",
@@ -1560,8 +1558,7 @@ static void pohCounterTimerStart()
                 {
                     lg2::error("failed to set poh counter");
                 }
-            },
-                "xyz.openbmc_project.Settings",
+            }, "xyz.openbmc_project.Settings",
                 "/xyz/openbmc_project/state/chassis0",
                 "org.freedesktop.DBus.Properties", "Set",
                 "xyz.openbmc_project.State.PowerOnHours", "POHCounter",
@@ -2100,8 +2097,7 @@ void systemReset()
             lg2::error("Failed to call chassis system reset: {ERR}", "ERR",
                        ec.message());
         }
-    },
-        systemdBusname, systemdPath, systemdInterface, "StartUnit",
+    }, systemdBusname, systemdPath, systemdInterface, "StartUnit",
         systemTargetName, "replace");
 }
 #endif
@@ -2114,8 +2110,7 @@ static void nmiSetEnableProperty(bool value)
         {
             lg2::error("failed to set NMI source");
         }
-    },
-        "xyz.openbmc_project.Settings",
+    }, "xyz.openbmc_project.Settings",
         "/xyz/openbmc_project/Chassis/Control/NMISource",
         "org.freedesktop.DBus.Properties", "Set",
         "xyz.openbmc_project.Chassis.Control.NMISource", "Enabled",
@@ -2201,8 +2196,7 @@ static void setNmiSource()
         {
             lg2::error("failed to set NMI source");
         }
-    },
-        "xyz.openbmc_project.Settings",
+    }, "xyz.openbmc_project.Settings",
         "/xyz/openbmc_project/Chassis/Control/NMISource",
         "org.freedesktop.DBus.Properties", "Set",
         "xyz.openbmc_project.Chassis.Control.NMISource", "BMCSource",
