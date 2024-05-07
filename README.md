@@ -32,7 +32,8 @@ below.
 {
   "Name": "PostComplete",
   "LineName": "POST_COMPLETE",
-  "Type": "GPIO"
+  "Type": "GPIO",
+  "Polarity": "ActiveLow"
 }
 ```
 
@@ -48,6 +49,7 @@ by using the type DBUS.
   "Path": "/xyz/openbmc_project/Chassis/Event",
   "Interface": "xyz.openbmc_project.Chassis.Event",
   "Property": "PowerButton_Host1",
+  "Polarity": "ActiveLow",
   "Type": "DBUS"
 }
 ```
