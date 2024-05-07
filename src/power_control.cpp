@@ -2385,31 +2385,6 @@ static int loadConfigValues()
                     "The \'LineName\' field must be defined for GPIO configuration");
                 return -1;
             }
-            if (gpioConfig.contains("Polarity"))
-            {
-                std::string polarity = gpioConfig["Polarity"];
-                if (polarity == "ActiveLow")
-                {
-                    tempGpioData->polarity = false;
-                }
-                else if (polarity == "ActiveHigh")
-                {
-                    tempGpioData->polarity = true;
-                }
-                else
-                {
-                    lg2::error(
-                        "Polarity defined but not properly setup. Please only ActiveHigh or ActiveLow. Currently set to {POLARITY}",
-                        "POLARITY", polarity);
-                    return -1;
-                }
-            }
-            else
-            {
-                lg2::error("Polarity field not found for {GPIO_NAME}",
-                           "GPIO_NAME", tempGpioData->lineName);
-                return -1;
-            }
         }
         else
         {
@@ -2432,6 +2407,32 @@ static int loadConfigValues()
                 gpioConfig[dbusParams[DbusConfigType::interface]];
             tempGpioData->lineName =
                 gpioConfig[dbusParams[DbusConfigType::property]];
+        }
+
+        if (gpioConfig.contains("Polarity"))
+        {
+            std::string polarity = gpioConfig["Polarity"];
+            if (polarity == "ActiveLow")
+            {
+                tempGpioData->polarity = false;
+            }
+            else if (polarity == "ActiveHigh")
+            {
+                tempGpioData->polarity = true;
+            }
+            else
+            {
+                lg2::error(
+                    "Polarity defined but not properly setup. Please only ActiveHigh or ActiveLow. Currently set to {POLARITY}",
+                    "POLARITY", polarity);
+                return -1;
+            }
+        }
+        else
+        {
+            lg2::error("Polarity field not found for {LINE_NAME}", "LINE_NAME",
+		       tempGpioData->lineName);
+            return -1;
         }
     }
 
