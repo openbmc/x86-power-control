@@ -2014,15 +2014,17 @@ static void powerStateCheckForWarmReset(const Event event)
 
 static void psPowerOKHandler(bool state)
 {
-    Event powerControlEvent = state ? Event::psPowerOKAssert
-                                    : Event::psPowerOKDeAssert;
+    Event powerControlEvent = (state == powerOkConfig.polarity)
+                                  ? Event::psPowerOKAssert
+                                  : Event::psPowerOKDeAssert;
     sendPowerControlEvent(powerControlEvent);
 }
 
 static void sioPowerGoodHandler(bool state)
 {
-    Event powerControlEvent = state ? Event::sioPowerGoodAssert
-                                    : Event::sioPowerGoodDeAssert;
+    Event powerControlEvent = (state == sioPwrGoodConfig.polarity)
+                                  ? Event::sioPowerGoodAssert
+                                  : Event::sioPowerGoodDeAssert;
     sendPowerControlEvent(powerControlEvent);
 }
 
@@ -2034,14 +2036,17 @@ static void sioOnControlHandler(bool state)
 
 static void sioS5Handler(bool state)
 {
-    Event powerControlEvent = state ? Event::sioS5DeAssert : Event::sioS5Assert;
+    Event powerControlEvent = (state == sioS5Config.polarity)
+                                  ? Event::sioS5Assert
+                                  : Event::sioS5DeAssert;
     sendPowerControlEvent(powerControlEvent);
 }
 
 static void powerButtonHandler(bool state)
 {
-    powerButtonIface->set_property("ButtonPressed", !state);
-    if (!state)
+    bool asserted = state == powerButtonConfig.polarity;
+    powerButtonIface->set_property("ButtonPressed", asserted);
+    if (asserted)
     {
         powerButtonPressLog();
         if (!powerButtonMask)
@@ -2058,8 +2063,9 @@ static void powerButtonHandler(bool state)
 
 static void resetButtonHandler(bool state)
 {
-    resetButtonIface->set_property("ButtonPressed", !state);
-    if (!state)
+    bool asserted = state == resetButtonConfig.polarity;
+    resetButtonIface->set_property("ButtonPressed", asserted);
+    if (asserted)
     {
         resetButtonPressLog();
         if (!resetButtonMask)
@@ -2210,8 +2216,10 @@ static void nmiButtonHandler(bool state)
     {
         return;
     }
-    nmiButtonIface->set_property("ButtonPressed", !state);
-    if (!state)
+
+    bool asserted = state == nmiButtonConfig.polarity;
+    nmiButtonIface->set_property("ButtonPressed", asserted);
+    if (asserted)
     {
         nmiButtonPressLog();
         if (nmiButtonMasked)
@@ -2227,7 +2235,8 @@ static void nmiButtonHandler(bool state)
 
 static void idButtonHandler(bool state)
 {
-    idButtonIface->set_property("ButtonPressed", !state);
+    bool asserted = state == idButtonConfig.polarity;
+    idButtonIface->set_property("ButtonPressed", asserted);
 }
 
 static void pltRstHandler(bool pltRst)
@@ -2279,7 +2288,8 @@ static void pltRstHandler(bool pltRst)
 
 static void postCompleteHandler(bool state)
 {
-    if (!state)
+    bool asserted = state == postCompleteConfig.polarity;
+    if (asserted)
     {
         sendPowerControlEvent(Event::postCompleteAssert);
         setOperatingSystemState(OperatingSystemStateStage::Standby);
