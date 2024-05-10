@@ -16,6 +16,46 @@
       "message": "Given the current/past state of things, this unfortunately seems likely to cause breakage, because if any existing configs have had incorrect polarity settings on input signals it would have been silently ignored (and so working) thus far, and will suddenly break with this change.  The alternative of retaining the current behavior doesn\u0027t seem terribly appealing either though (requiring explicit polarity settings and then totally ignoring them seems pretty broken IMO), so it seems like our best bet might be to just try to give people a heads-up to watch out for things they might need to fix...",
       "revId": "5b08636a2e9e2a9ac48043df68731ac485ddcdfd",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3188d077_236d1157",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2024-05-10T21:04:50Z",
+      "side": 1,
+      "message": "Looks great with one thing to check!",
+      "revId": "5b08636a2e9e2a9ac48043df68731ac485ddcdfd",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e1a51878_34088ed0",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2041,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2024-05-10T21:04:50Z",
+      "side": 1,
+      "message": "These were ordered for active-low, so I think they now need to be reversed:\n```\n    Event powerControlEvent \u003d (state \u003d\u003d sioS5Config.polarity)\n                                  ? Event::sioS5Assert\n                                  : Event::sioS5DeAssert;\n```",
+      "range": {
+        "startLine": 2039,
+        "startChar": 0,
+        "endLine": 2041,
+        "endChar": 55
+      },
+      "revId": "5b08636a2e9e2a9ac48043df68731ac485ddcdfd",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
