@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "6962e54c_c42214a9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2024-05-10T22:14:22Z",
+      "side": 1,
+      "message": "What does any of this mean?  There are no dbus \"GPIOs\".  The interfaces are required to be well-formed interfaces like xyz.openbmc_project.Chassis.Control.Power, which have a clear meaning.  There is no such thing as \"polarity\" because these aren\u0027t GPIOs.",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 18
+      },
+      "revId": "af4a8da508ffc10fcda2fe9a610ddc8ec79078eb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "39d7579b_e12f4ea5",
