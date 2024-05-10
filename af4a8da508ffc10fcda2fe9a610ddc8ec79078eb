@@ -16,6 +16,23 @@
       "message": "CCing owners of the x86-power-control configs in openbmc/openbmc (yosemitev2 \u0026 rl300-g11) that utilize dbus signals...",
       "revId": "af4a8da508ffc10fcda2fe9a610ddc8ec79078eb",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a715eb9c_35fb56c8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2024-05-10T21:07:15Z",
+      "side": 1,
+      "message": "Looks good to me.  I\u0027ll leave at +1 for a bit to give others a chance to provide feedback.",
+      "revId": "af4a8da508ffc10fcda2fe9a610ddc8ec79078eb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
