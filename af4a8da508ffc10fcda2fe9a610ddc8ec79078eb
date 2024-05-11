@@ -24,6 +24,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "e55fc844_4a4bf336",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2024-05-11T00:39:18Z",
+      "side": 1,
+      "message": "Well, yes, but...\n\nx86-power-control has had support for some time for reading inputs from dbus (since commit 7012051a49 was marged in July 2021).  I don\u0027t know the particulars of what motivated that (some platform specifics of tiogapass and yosemitev2 I guess?) or what (if any) discussion at the time there was of the appropriateness of that and what alternatives there might have been.\n\nI would agree that polarity on a dbus property is a fairly nonsensical concept in general, since if we take the position that the properties this is being used for are in fact some higher-level, more abstract representation of the information a raw GPIO would provide, presenting that information on dbus in an \"active-low\" way would be kind of silly.\n\nHowever, upon looking at the existing code and existing configs I could find in openbmc/openbmc, `meta-hpe/meta-rl300-g11/recipes-x86/x86-power-control/x86-power-control/power-config-host0.json` gets its `PowerButton` signal via dbus, and the code implementing the handler for that currently hard-codes it to active-low (though see also https://gerrit.openbmc.org/c/openbmc/x86-power-control/+/71283 for a somewhat related patch), so it does appear that some existing platforms do in fact have \"active-low\" dbus inputs anyway.\n\nGiven the existence of the functionality, I for one was looking at using it on a platform that doesn\u0027t have a (working) `POST_COMPLETE` GPIO and instead has the host notify the BMC of POST state transitions via OEM IPMI commands over KCS.  So I suppose the obvious alternative there would be to make the `xyz.openbmc_project.State.OperatingSystem.Status` handling in x86-power-control optional and move it to ipmid on that platform?  Though it seems like a bit of an odd fit there, TBH...maybe there\u0027s some better possibility I haven\u0027t considered.",
+      "parentUuid": "6962e54c_c42214a9",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 18
+      },
+      "revId": "af4a8da508ffc10fcda2fe9a610ddc8ec79078eb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "39d7579b_e12f4ea5",
