@@ -48,6 +48,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f2a4493_7fd55fce",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2024-05-13T17:00:47Z",
+      "side": 1,
+      "message": "\u003e However, upon looking at the existing code and existing configs I could find in openbmc/openbmc, meta-hpe/meta-rl300-g11/recipes-x86/x86-power-control/x86-power-control/power-config-host0.json gets its PowerButton signal via dbus...\n\nThis is 100% a violation of our anti-patterns though and doesn\u0027t actually work with any real code in upstream:\n\n```\n    {\n        \"Name\" : \"PowerButton\",\n        \"DbusName\" : \"xyz.openbmc_project.Chassis.Gpios\",\n        \"Path\" : \"/xyz/openbmc_project/chassis/gpios\",\n        \"Interface\" : \"xyz.openbmc_project.Chassis.Gpios\",\n        \"Property\" : \"PButton\",\n        \"Type\" : \"DBUS\"\n    },\n```\n\nI can\u0027t help when machine owners violate project practices if we\u0027ve made them OWNERs, but we can\u0027t use that as an example of \"existing code\".\n\nHPE seems to have a bunch of implementations using some downstream `xyz.openbmc_project.Chassis.Gpios` service.",
+      "parentUuid": "e55fc844_4a4bf336",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 18
+      },
+      "revId": "af4a8da508ffc10fcda2fe9a610ddc8ec79078eb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "39d7579b_e12f4ea5",
