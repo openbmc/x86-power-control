@@ -72,6 +72,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "e309647e_5f4fe9a6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2024-05-14T03:30:41Z",
+      "side": 1,
+      "message": "Ack -- though in fairness, aside from avoiding the active-low oddity is this from meta-facebook appreciably different?\n\n```\n    {\n        \"Name\" : \"PowerOk\",\n        \"DbusName\" : \"xyz.openbmc_project.IpmbSensor\",\n        \"Path\" : \"/xyz/openbmc_project/gpio/ipmbGpioState/1_CPU_Good\",\n        \"Interface\" : \"xyz.openbmc_project.Chassis.Control.Power\",\n        \"Property\" : \"PGood\",\n        \"Type\" : \"DBUS\"\n    }\n```\n\n(That file and its siblings are the only hits I get on `ipmbGpioState` on both grok.openbmc.org and a github openbmc org search, FWIW.)\n\nStepping back a bit though -- would you say the x86-power-control dbus-input feature entirely inappropriate then?  Does there (or could there hypothetically) exist a use of it that isn\u0027t an anti-pattern violation?\n\n(And at the moment I\u0027m also still a bit stumped as to how to go about supporting a system that communicates POST state via IPMI/KCS instead of a GPIO.)",
+      "parentUuid": "2f2a4493_7fd55fce",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 18
+      },
+      "revId": "af4a8da508ffc10fcda2fe9a610ddc8ec79078eb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "39d7579b_e12f4ea5",
