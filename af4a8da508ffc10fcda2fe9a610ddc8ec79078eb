@@ -96,6 +96,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "b6dedbba_22408205",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2024-05-15T19:21:20Z",
+      "side": 1,
+      "message": "\u003e Stepping back a bit though -- would you say the x86-power-control dbus-input feature entirely inappropriate then? Does there (or could there hypothetically) exist a use of it that isn\u0027t an anti-pattern violation?\n\nConceptually, it should not be inappropriate.  The implementation might lean towards inappropriateness, but fundamentally there is nothing wrong here.\n\nThe usage you highlighted above uses a well-defined dbus object (Control.Power) that exposes a PGood property.  This is totally reasonable, since in many designs you cannot get a PGood signal from a GPIO directly.  There many designs that use some kind of communication to get the PGood state: IPMB, PLDM, custom CPLD protocol.",
+      "parentUuid": "e309647e_5f4fe9a6",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 18
+      },
+      "revId": "af4a8da508ffc10fcda2fe9a610ddc8ec79078eb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "39d7579b_e12f4ea5",
