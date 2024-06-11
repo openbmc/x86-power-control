@@ -192,6 +192,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "85b1c051_f831a991",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2024-06-11T20:00:13Z",
+      "side": 1,
+      "message": "\u003e\u003e You do have to consider both IPMI and PLDM providing these values.\n\n\u003e I\u0027m not sure I understand your intent here though -- are the particular constraints or behavioral aspects of one vs. the other that would need special accommodation here?\n\nOnly that you mentioned IPMI but PLDM is also a possible end-point.\n\nOverall I don\u0027t have a strong opinion on x86-power-control.  I\u0027m recommending all of the systems I work with use phosphor-state-manager at this point.  There are a few references of x86 systems using it.",
+      "parentUuid": "683a1a47_6247f2d6",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 18
+      },
+      "revId": "af4a8da508ffc10fcda2fe9a610ddc8ec79078eb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "39d7579b_e12f4ea5",
