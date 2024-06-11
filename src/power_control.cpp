@@ -30,6 +30,8 @@
 
 #include <filesystem>
 #include <fstream>
+#include <optional>
+#include <regex>
 #include <string_view>
 
 namespace power_control
@@ -49,6 +51,8 @@ enum class DbusConfigType
     interface,
     property
 };
+
+// Mandatory config parameters for dbus inputs
 boost::container::flat_map<DbusConfigType, std::string> dbusParams = {
     {DbusConfigType::name, "DbusName"},
     {DbusConfigType::path, "Path"},
@@ -68,6 +72,7 @@ struct ConfigData
     std::string dbusName;
     std::string path;
     std::string interface;
+    std::optional<std::regex> matchRegex;
     bool polarity;
     ConfigType type;
 };
@@ -2432,6 +2437,22 @@ static int loadConfigValues()
                 gpioConfig[dbusParams[DbusConfigType::interface]];
             tempGpioData->lineName =
                 gpioConfig[dbusParams[DbusConfigType::property]];
+
+            // MatchRegex is optional
+            auto item = gpioConfig.find("MatchRegex");
+            if (item != gpioConfig.end())
+            {
+                try
+                {
+                    tempGpioData->matchRegex = std::regex(*item);
+                }
+                catch (const std::regex_error& e)
+                {
+                    lg2::error("Invalid MatchRegex for {NAME}: {ERR}", "NAME",
+                               gpioName, "ERR", e.what());
+                    return -1;
+                }
+            }
         }
     }
 
@@ -2455,35 +2476,62 @@ static int loadConfigValues()
     return 0;
 }
 
-static bool getDbusMsgGPIOState(sdbusplus::message_t& msg,
-                                const std::string& lineName, bool& value)
+template <typename T>
+static std::optional<T> getMessageValue(sdbusplus::message_t& msg,
+                                        const std::string& name)
 {
-    std::string thresholdInterface;
     std::string event;
-    boost::container::flat_map<std::string, std::variant<bool>>
-        propertiesChanged;
+    std::string thresholdInterface;
+    boost::container::flat_map<std::string, std::variant<T>> propertiesChanged;
+
+    msg.read(thresholdInterface, propertiesChanged);
+    if (propertiesChanged.empty())
+    {
+        return std::nullopt;
+    }
+
+    event = propertiesChanged.begin()->first;
+    if (event.empty() || event != name)
+    {
+        return std::nullopt;
+    }
+
+    return std::get<T>(propertiesChanged.begin()->second);
+}
+
+static bool getDbusMsgGPIOState(sdbusplus::message_t& msg,
+                                const ConfigData& config, bool& value)
+{
     try
     {
-        msg.read(thresholdInterface, propertiesChanged);
-        if (propertiesChanged.empty())
+        if (config.matchRegex.has_value())
         {
-            return false;
-        }
+            std::optional<std::string> s =
+                getMessageValue<std::string>(msg, config.lineName);
+            if (!s.has_value())
+            {
+                return false;
+            }
 
-        event = propertiesChanged.begin()->first;
-        if (event.empty() || event != lineName)
+            std::smatch m;
+            value = std::regex_match(s.value(), m, config.matchRegex.value());
+        }
+        else
         {
-            return false;
+            std::optional<bool> v = getMessageValue<bool>(msg, config.lineName);
+            if (!v.has_value())
+            {
+                return false;
+            }
+            value = v.value();
         }
-
-        value = std::get<bool>(propertiesChanged.begin()->second);
         return true;
     }
     catch (const std::exception& e)
     {
         lg2::error(
             "exception while reading dbus property \'{DBUS_NAME}\': {ERROR}",
-            "DBUS_NAME", lineName, "ERROR", e);
+            "DBUS_NAME", config.lineName, "ERROR", e);
         return false;
     }
 }
@@ -2494,7 +2542,7 @@ static sdbusplus::bus::match_t
     auto pulseEventMatcherCallback = [&cfg,
                                       onMatch](sdbusplus::message_t& msg) {
         bool value = false;
-        if (!getDbusMsgGPIOState(msg, cfg.lineName, value))
+        if (!getDbusMsgGPIOState(msg, cfg, value))
         {
             return;
         }
