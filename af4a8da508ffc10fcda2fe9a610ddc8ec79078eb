@@ -120,6 +120,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "ec1f174e_7d500511",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2024-06-11T10:24:55Z",
+      "side": 1,
+      "message": "Okay, so bringing this back toward the problem I\u0027m grappling with...with PGood we have the Chassis.Control.Power interface that x86-power-control can use to retrieve the current state of the signal (and of course receive notifications when it changes).  The existing State.OperatingSystem.Status interface is *almost* small/simple enough to be analogous for POST_COMPLETE, but it\u0027s a string/enum property instead of a bool as x86-power-control would currently require, so it seems like we\u0027d either need to add yet another even more minimal special-purpose dbus interface or perhaps alternately build a slightly richer config mechanism into x86-power-control\u0027s dbus inputs to give them an optional string to compare against to map enums to bools, e.g. something like:\n\n```\n{\n  \"Name\": \"PostComplete\",\n  \"Type\": \"DBUS\",\n  \"DbusName\": \"...\",\n  \"Path\": \"...\",\n  \"Interface\": \"xyz.openbmc_project.State.OperatingSystem.Status\",\n  \"Property\": \"OperatingSystemState\",\n  \"MatchString\": \"xyz.openbmc_project.State.OperatingSystem.Status.OSStatus.Standby\"\n}\n```\n\nSo the signal would be considered `true` when the value of the property compares equal to `MatchString`.\n\n(x86-power-control also happens to provide the State.OperatingSystem.Status interface itself, but I guess we could have that basically just be a slightly roundabout replica of an \"upstream\" one optionally provided by ipmid?)",
+      "parentUuid": "b6dedbba_22408205",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 18
+      },
+      "revId": "af4a8da508ffc10fcda2fe9a610ddc8ec79078eb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "39d7579b_e12f4ea5",
