@@ -168,6 +168,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "683a1a47_6247f2d6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2024-06-11T19:52:57Z",
+      "side": 1,
+      "message": "Yeah, that definitely seemed like the more appealing of the two to me.\n\nI guess then the next question that occurs to me is if it\u0027d be good to generalize it a bit more...in principle we\u0027d want some mechanism to convert a dbus property of arbitrary type into a bool, but building that in just for this (let alone devising a way of expressing it in JSON) seems like overkill.  I\u0027m thinking perhaps a regex match instead of a straight string-equality comparison might be a good compromise between simplicity of implementation and flexibility for potential future needs (e.g. matching any of multiple possible values of an enum instead of just one).\n\n\u003e You do have to consider both IPMI and PLDM providing these values.\n\nI\u0027m not sure I understand your intent here though -- are the particular constraints or behavioral aspects of one vs. the other that would need special accommodation here?",
+      "parentUuid": "2c4253b2_36bc70ae",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 18
+      },
+      "revId": "af4a8da508ffc10fcda2fe9a610ddc8ec79078eb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "39d7579b_e12f4ea5",
