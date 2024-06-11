@@ -216,6 +216,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c9681d3_3e8b5f55",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2024-06-11T20:37:01Z",
+      "side": 1,
+      "message": "\u003e Only that you mentioned IPMI but PLDM is also a possible end-point.\n\nAh, okay -- that was just an artifact of the fact that the system I\u0027m working on happens to receive the info via IPMI; I don\u0027t think it\u0027ll really factor into the implementation here.\n\n\u003e Overall I don\u0027t have a strong opinion on x86-power-control.\n\nAck.  Alright, I think I\u0027ll proceed with something like a `MatchRegex` config key as outlined above.",
+      "parentUuid": "85b1c051_f831a991",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 18
+      },
+      "revId": "af4a8da508ffc10fcda2fe9a610ddc8ec79078eb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "39d7579b_e12f4ea5",
