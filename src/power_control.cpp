@@ -2554,7 +2554,8 @@ static sdbusplus::bus::match_t
         static_cast<sdbusplus::bus_t&>(*conn),
         "type='signal',interface='org.freedesktop.DBus.Properties',member='"
         "PropertiesChanged',arg0='" +
-            cfg.interface + "'",
+            cfg.interface + "',path='" + cfg.path +
+        "',sender='" + cfg.dbusName + "'",
         std::move(pulseEventMatcherCallback));
 }
 
