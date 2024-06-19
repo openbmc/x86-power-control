@@ -2438,6 +2438,9 @@ static int loadConfigValues()
             tempGpioData->lineName =
                 gpioConfig[dbusParams[DbusConfigType::property]];
 
+            // dbus-based inputs must be active-high.
+            tempGpioData->polarity = true;
+
             // MatchRegex is optional
             auto item = gpioConfig.find("MatchRegex");
             if (item != gpioConfig.end())
