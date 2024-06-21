@@ -1,0 +1,8 @@
+Code-Review+2: Kuiying Wang <wangkuiying.wky@alibaba-inc.com>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Submitted-by: Zev Weiss <zev@bewilderbeest.net>
+Submitted-at: Fri, 21 Jun 2024 02:06:59 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/x86-power-control/+/72228
+Comments-Total: 3
+Project: openbmc/x86-power-control
+Branch: refs/heads/master
