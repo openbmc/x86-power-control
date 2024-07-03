@@ -6,3 +6,7 @@ option('use-acboot', type: 'feature', value : 'disabled',
        description: 'Use hardware Reset Reason to control Power Restore. Note: this only works with Intel-BMC')
 option('ignore-soft-resets-during-post', type: 'feature', value : 'disabled',
        description: 'Ignore soft resets from host during POST')
+option('button-passthrough', type: 'feature', value : 'disabled',
+       description: 'Send actions based on power and reset button presses')
+option('button-direct-passthrough', type: 'feature', value : 'disabled',
+       description: 'Directly couple through power and reset buttons')
