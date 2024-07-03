@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dcad21de_fdd812a6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001616
+      },
+      "writtenOn": "2024-07-03T22:59:33Z",
+      "side": 1,
+      "message": "Hello Zev,\n\nThe Asrock-Rack X570D4U connects it\u0027s power and reset buttons to GPIOs of the AST2500 and emulates button presses to the host via control output GPIOs.\n\nWithout this change power and reset button events only register an expected change but the events themselves are not acted upon.\n\nThis merge request adds two methods for acting on button presses.\n\nThe first method is an indirect method where pressing the power and reset buttons results in events being generated. This allows for control over the power state via the buttons. But a slight delay is noticeable especially for the long-press force power-off action where after holding the button for 5 seconds the BMC emulates a long press via the control output, resulting in a noticable delay.\n\nThe second method is a direct method where changes to the state of the power and reset buttons are directly passed through onto the control outputs. This results in the behavior people expect the physical power and reset buttons to have.\n\nI\u0027d love to hear your opinion on this change and the methods used.\n\nBest regards,\nRenze Nicolai",
+      "revId": "2ab283adcc565516f06f8ba1fbc9e172e16f876f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
