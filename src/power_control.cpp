@@ -155,6 +155,7 @@ boost::container::flat_map<std::string, int> TimerMap = {
 static bool nmiEnabled = true;
 static bool nmiWhenPoweredOff = true;
 static bool sioEnabled = true;
+static bool powerButtonLongPressed = false;
 
 // Timers
 // Time holding GPIOs asserted
@@ -176,6 +177,8 @@ static boost::asio::steady_timer pohCounterTimer(io);
 // Time when to allow restart cause updates
 static boost::asio::steady_timer restartCauseTimer(io);
 static boost::asio::steady_timer slotPowerCycleTimer(io);
+// Power button long press timer
+static boost::asio::steady_timer powerButtonLongPressTimer(io);
 
 // Map containing timers used for D-Bus get-property retries
 static boost::container::flat_map<std::string, boost::asio::steady_timer>
@@ -336,6 +339,7 @@ enum class Event
     postCompleteAssert,
     postCompleteDeAssert,
     powerButtonPressed,
+    powerButtonLongPressed,
     resetButtonPressed,
     powerCycleTimerExpired,
     psPowerOKWatchdogTimerExpired,
@@ -385,6 +389,9 @@ static std::string getEventName(Event event)
             break;
         case Event::powerButtonPressed:
             return "power button pressed";
+            break;
+        case Event::powerButtonLongPressed:
+            return "power button long pressed";
             break;
         case Event::resetButtonPressed:
             return "reset button pressed";
@@ -771,9 +778,16 @@ static void powerRestorePolicyLog()
                     "OpenBMC.0.1.PowerRestorePolicyApplied", NULL);
 }
 
-static void powerButtonPressLog()
+static void powerButtonShortPressLog()
 {
     sd_journal_send("MESSAGE=PowerControl: power button pressed", "PRIORITY=%i",
+                    LOG_INFO, "REDFISH_MESSAGE_ID=%s",
+                    "OpenBMC.0.1.PowerButtonPressed", NULL);
+}
+
+static void powerButtonLongPressLog()
+{
+    sd_journal_send("MESSAGE=PowerControl: power button pressed long", "PRIORITY=%i",
                     LOG_INFO, "REDFISH_MESSAGE_ID=%s",
                     "OpenBMC.0.1.PowerButtonPressed", NULL);
 }
@@ -1727,6 +1741,15 @@ static void powerStateOn(const Event event)
         case Event::powerButtonPressed:
             setPowerState(PowerState::gracefulTransitionToOff);
             gracefulPowerOffTimerStart();
+#if USE_BUTTON_PASSTHROUGH
+            gracefulPowerOff();
+#endif
+            break;
+        case Event::powerButtonLongPressed:
+#if USE_BUTTON_PASSTHROUGH
+            setPowerState(PowerState::transitionToOff);
+            forcePowerOff();
+#endif
             break;
         case Event::powerOffRequest:
             setPowerState(PowerState::transitionToOff);
@@ -1747,8 +1770,12 @@ static void powerStateOn(const Event event)
             gracefulPowerOff();
             break;
         case Event::resetButtonPressed:
+#if USE_BUTTON_PASSTHROUGH
+            reset();
+#else
             setPowerState(PowerState::checkForWarmReset);
             warmResetCheckTimerStart();
+#endif
             break;
         case Event::resetRequest:
             reset();
@@ -1841,6 +1868,9 @@ static void powerStateOff(const Event event)
         case Event::powerButtonPressed:
             psPowerOKWatchdogTimerStart();
             setPowerState(PowerState::waitForPSPowerOK);
+#if USE_BUTTON_PASSTHROUGH
+            powerOn();
+#endif
             break;
         case Event::powerOnRequest:
             psPowerOKWatchdogTimerStart();
@@ -1896,6 +1926,13 @@ static void powerStateGracefulTransitionToOff(const Event event)
             setPowerState(PowerState::on);
             reset();
             break;
+#if USE_BUTTON_PASSTHROUGH
+        case Event::powerButtonLongPressed:
+            gracefulPowerOffTimer.cancel();
+            setPowerState(PowerState::transitionToOff);
+            forcePowerOff();
+            break;
+#endif
         default:
             lg2::info("No action taken.");
             break;
@@ -1930,6 +1967,9 @@ static void powerStateCycleOff(const Event event)
             powerCycleTimer.cancel();
             psPowerOKWatchdogTimerStart();
             setPowerState(PowerState::waitForPSPowerOK);
+#if USE_BUTTON_PASSTHROUGH
+            powerOn();
+#endif
             break;
         case Event::powerCycleTimerExpired:
             psPowerOKWatchdogTimerStart();
@@ -1987,6 +2027,13 @@ static void powerStateGracefulTransitionToCycleOff(const Event event)
             setPowerState(PowerState::on);
             reset();
             break;
+#if USE_BUTTON_PASSTHROUGH
+        case Event::powerButtonLongPressed:
+            gracefulPowerOffTimer.cancel();
+            setPowerState(PowerState::transitionToOff);
+            forcePowerOff();
+            break;
+#endif
         default:
             lg2::info("No action taken.");
             break;
@@ -2049,27 +2096,81 @@ static void sioS5Handler(bool state)
 
 static void powerButtonHandler(bool state)
 {
+    const static constexpr int longPressTimeMs = 5000;
+
     bool asserted = state == powerButtonConfig.polarity;
     powerButtonIface->set_property("ButtonPressed", asserted);
+
+#if USE_BUTTON_DIRECT_PASSTHROUGH
+    if (asserted) {
+        addRestartCause(RestartCause::powerButton);
+        powerButtonShortPressLog();
+    }
+    gpiod::line gpioLine;
+    bool output_state = asserted ? powerOutConfig.polarity : (!powerOutConfig.polarity);
+    if (!setGPIOOutput(powerOutConfig.lineName, output_state, gpioLine))
+    {
+        lg2::error("{GPIO_NAME} power button passthrough failed",
+                    "GPIO_NAME", powerOutConfig.lineName);
+    }
+#else
     if (asserted)
     {
-        powerButtonPressLog();
-        if (!powerButtonMask)
-        {
-            sendPowerControlEvent(Event::powerButtonPressed);
-            addRestartCause(RestartCause::powerButton);
+        powerButtonLongPressTimer.expires_after(std::chrono::milliseconds(longPressTimeMs));
+        powerButtonLongPressTimer.async_wait([](const boost::system::error_code ec) {
+            if (ec) {
+                // operation_aborted is expected if timer is canceled before
+                // completion.
+                if (ec != boost::asio::error::operation_aborted)
+                {
+                    lg2::error("Power button long press timer failed: {ERROR_MSG}", "ERROR_MSG", ec.message());
+                }
+            } else {
+                powerButtonLongPressed = true;
+                powerButtonLongPressLog();
+                if (!powerButtonMask)
+                {
+                    sendPowerControlEvent(Event::powerButtonLongPressed);
+                    addRestartCause(RestartCause::powerButton);
+                } else {
+                    lg2::info("power button long press masked");
+                }
+            }
+        });
+    } else {
+        powerButtonLongPressTimer.cancel();
+        if (!powerButtonLongPressed) {
+            powerButtonShortPressLog();
+            if (!powerButtonMask)
+            {
+                sendPowerControlEvent(Event::powerButtonPressed);
+                addRestartCause(RestartCause::powerButton);
+            } else {
+                lg2::info("power button press masked");
+            }
         }
-        else
-        {
-            lg2::info("power button press masked");
-        }
+        powerButtonLongPressed = false; // Reset flag
     }
+#endif
 }
 
 static void resetButtonHandler(bool state)
 {
     bool asserted = state == resetButtonConfig.polarity;
     resetButtonIface->set_property("ButtonPressed", asserted);
+
+#if USE_BUTTON_DIRECT_PASSTHROUGH
+    if (asserted) {
+        addRestartCause(RestartCause::resetButton);
+    }
+    gpiod::line gpioLine;
+    bool output_state = asserted ? resetOutConfig.polarity : (!resetOutConfig.polarity);
+    if (!setGPIOOutput(resetOutConfig.lineName, output_state, gpioLine))
+    {
+        lg2::error("{GPIO_NAME} reset button passthrough failed",
+                    "GPIO_NAME", resetOutConfig.lineName);
+    }
+#else
     if (asserted)
     {
         resetButtonPressLog();
@@ -2083,6 +2184,7 @@ static void resetButtonHandler(bool state)
             lg2::info("reset button press masked");
         }
     }
+#endif
 }
 
 #ifdef CHASSIS_SYSTEM_RESET
