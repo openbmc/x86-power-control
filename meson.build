@@ -35,6 +35,9 @@ endif
 if get_option('ignore-soft-resets-during-post').allowed()
   cpp_args += '-DIGNORE_SOFT_RESETS_DURING_POST'
 endif
+if get_option('button-passthrough').allowed()
+  cpp_args += '-DUSE_BUTTON_PASSTHROUGH'
+endif
 
 deps = [
   dependency('libgpiodcxx', default_options: ['bindings=cxx']),
