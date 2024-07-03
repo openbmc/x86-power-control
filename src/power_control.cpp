@@ -2064,6 +2064,16 @@ static void powerButtonHandler(bool state)
             lg2::info("power button press masked");
         }
     }
+#if USE_BUTTON_PASSTHROUGH
+    gpiod::line gpioLine;
+    bool outputState = asserted ? powerOutConfig.polarity
+                                 : (!powerOutConfig.polarity);
+    if (!setGPIOOutput(powerOutConfig.lineName, outputState, gpioLine))
+    {
+        lg2::error("{GPIO_NAME} power button passthrough failed", "GPIO_NAME",
+                   powerOutConfig.lineName);
+    }
+#endif
 }
 
 static void resetButtonHandler(bool state)
@@ -2083,6 +2093,16 @@ static void resetButtonHandler(bool state)
             lg2::info("reset button press masked");
         }
     }
+#if USE_BUTTON_PASSTHROUGH
+    gpiod::line gpioLine;
+    bool outputState = asserted ? resetOutConfig.polarity
+                                 : (!resetOutConfig.polarity);
+    if (!setGPIOOutput(resetOutConfig.lineName, outputState, gpioLine))
+    {
+        lg2::error("{GPIO_NAME} reset button passthrough failed", "GPIO_NAME",
+                   resetOutConfig.lineName);
+    }
+#endif
 }
 
 #ifdef CHASSIS_SYSTEM_RESET
