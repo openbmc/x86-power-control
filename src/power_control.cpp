@@ -212,14 +212,14 @@ static void beep(const uint8_t& beepPriority)
 
     conn->async_method_call(
         [](boost::system::error_code ec) {
-        if (ec)
-        {
-            lg2::error(
-                "beep returned error with async_method_call (ec = {ERROR_MSG})",
-                "ERROR_MSG", ec.message());
-            return;
-        }
-    },
+            if (ec)
+            {
+                lg2::error(
+                    "beep returned error with async_method_call (ec = {ERROR_MSG})",
+                    "ERROR_MSG", ec.message());
+                return;
+            }
+        },
         "xyz.openbmc_project.BeepCode", "/xyz/openbmc_project/BeepCode",
         "xyz.openbmc_project.BeepCode", "Beep", uint8_t(beepPriority));
 }
@@ -688,11 +688,11 @@ static void resetACBootProperty()
     {
         conn->async_method_call(
             [](boost::system::error_code ec) {
-            if (ec)
-            {
-                lg2::error("failed to reset ACBoot property");
-            }
-        },
+                if (ec)
+                {
+                    lg2::error("failed to reset ACBoot property");
+                }
+            },
             "xyz.openbmc_project.Settings",
             "/xyz/openbmc_project/control/host0/ac_boot",
             "org.freedesktop.DBus.Properties", "Set",
@@ -946,8 +946,8 @@ static int powerRestoreConfigHandler(sd_bus_message* m, void* context,
 
 void PowerRestoreController::run()
 {
-    std::string powerRestorePolicyObject = "/xyz/openbmc_project/control/host" +
-                                           node + "/power_restore_policy";
+    std::string powerRestorePolicyObject =
+        "/xyz/openbmc_project/control/host" + node + "/power_restore_policy";
     powerRestorePolicyLog();
     // this list only needs to be created once
     if (matches.empty())
@@ -976,12 +976,12 @@ void PowerRestoreController::run()
     conn->async_method_call(
         [this](boost::system::error_code ec,
                const dbusPropertiesList properties) {
-        if (ec)
-        {
-            return;
-        }
-        setProperties(properties);
-    },
+            if (ec)
+            {
+                return;
+            }
+            setProperties(properties);
+        },
         setingsService, powerRestorePolicyObject,
         "org.freedesktop.DBus.Properties", "GetAll", powerRestorePolicyIface);
 
@@ -990,12 +990,12 @@ void PowerRestoreController::run()
     conn->async_method_call(
         [this](boost::system::error_code ec,
                const dbusPropertiesList properties) {
-        if (ec)
-        {
-            return;
-        }
-        setProperties(properties);
-    },
+            if (ec)
+            {
+                return;
+            }
+            setProperties(properties);
+        },
         setingsService, powerACBootObject, "org.freedesktop.DBus.Properties",
         "GetAll", powerACBootIface);
 #endif
@@ -1073,8 +1073,8 @@ void PowerRestoreController::invokeIfReady()
             powerRestoreTimer.expires_after(std::chrono::seconds(delay));
             lg2::info("Power Restore delay of {DELAY} seconds started", "DELAY",
                       delay);
-            powerRestoreTimer.async_wait(
-                [this](const boost::system::error_code ec) {
+            powerRestoreTimer.async_wait([this](const boost::system::error_code
+                                                    ec) {
                 if (ec)
                 {
                     // operation_aborted is expected if timer is canceled before
@@ -1145,26 +1145,27 @@ bool PowerRestoreController::wasPowerDropped()
     return state == "xyz.openbmc_project.State.Chassis.PowerState.On";
 }
 
-static void waitForGPIOEvent(const std::string& name,
-                             const std::function<void(bool)>& eventHandler,
-                             gpiod::line& line,
-                             boost::asio::posix::stream_descriptor& event)
+static void waitForGPIOEvent(
+    const std::string& name, const std::function<void(bool)>& eventHandler,
+    gpiod::line& line, boost::asio::posix::stream_descriptor& event)
 {
-    event.async_wait(boost::asio::posix::stream_descriptor::wait_read,
-                     [&name, eventHandler, &line,
-                      &event](const boost::system::error_code ec) {
-        if (ec)
-        {
-            lg2::error("{GPIO_NAME} fd handler error: {ERROR_MSG}", "GPIO_NAME",
-                       name, "ERROR_MSG", ec.message());
-            // TODO: throw here to force power-control to
-            // restart?
-            return;
-        }
-        gpiod::line_event line_event = line.event_read();
-        eventHandler(line_event.event_type == gpiod::line_event::RISING_EDGE);
-        waitForGPIOEvent(name, eventHandler, line, event);
-    });
+    event.async_wait(
+        boost::asio::posix::stream_descriptor::wait_read,
+        [&name, eventHandler, &line,
+         &event](const boost::system::error_code ec) {
+            if (ec)
+            {
+                lg2::error("{GPIO_NAME} fd handler error: {ERROR_MSG}",
+                           "GPIO_NAME", name, "ERROR_MSG", ec.message());
+                // TODO: throw here to force power-control to
+                // restart?
+                return;
+            }
+            gpiod::line_event line_event = line.event_read();
+            eventHandler(line_event.event_type ==
+                         gpiod::line_event::RISING_EDGE);
+            waitForGPIOEvent(name, eventHandler, line, event);
+        });
 }
 
 static bool requestGPIOEvents(
@@ -1244,20 +1245,20 @@ static int setMaskedGPIOOutputForMs(gpiod::line& maskedGPIOLine,
     gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
     gpioAssertTimer.async_wait(
         [maskedGPIOLine, value, name](const boost::system::error_code ec) {
-        // Set the masked GPIO line back to the opposite value
-        maskedGPIOLine.set_value(!value);
-        lg2::info("{GPIO_NAME} released", "GPIO_NAME", name);
-        if (ec)
-        {
-            // operation_aborted is expected if timer is canceled before
-            // completion.
-            if (ec != boost::asio::error::operation_aborted)
+            // Set the masked GPIO line back to the opposite value
+            maskedGPIOLine.set_value(!value);
+            lg2::info("{GPIO_NAME} released", "GPIO_NAME", name);
+            if (ec)
             {
-                lg2::error("{GPIO_NAME} async_wait failed: {ERROR_MSG}",
-                           "GPIO_NAME", name, "ERROR_MSG", ec.message());
+                // operation_aborted is expected if timer is canceled before
+                // completion.
+                if (ec != boost::asio::error::operation_aborted)
+                {
+                    lg2::error("{GPIO_NAME} async_wait failed: {ERROR_MSG}",
+                               "GPIO_NAME", name, "ERROR_MSG", ec.message());
+                }
             }
-        }
-    });
+        });
     return 0;
 }
 
@@ -1287,20 +1288,20 @@ static int setGPIOOutputForMs(const ConfigData& config, const int value,
     gpioAssertTimer.expires_after(std::chrono::milliseconds(durationMs));
     gpioAssertTimer.async_wait(
         [gpioLine, value, name](const boost::system::error_code ec) {
-        // Set the GPIO line back to the opposite value
-        gpioLine.set_value(!value);
-        lg2::info("{GPIO_NAME} released", "GPIO_NAME", name);
-        if (ec)
-        {
-            // operation_aborted is expected if timer is canceled before
-            // completion.
-            if (ec != boost::asio::error::operation_aborted)
+            // Set the GPIO line back to the opposite value
+            gpioLine.set_value(!value);
+            lg2::info("{GPIO_NAME} released", "GPIO_NAME", name);
+            if (ec)
             {
-                lg2::error("{GPIO_NAME} async_wait failed: {ERROR_MSG}",
-                           "GPIO_NAME", name, "ERROR_MSG", ec.message());
+                // operation_aborted is expected if timer is canceled before
+                // completion.
+                if (ec != boost::asio::error::operation_aborted)
+                {
+                    lg2::error("{GPIO_NAME} async_wait failed: {ERROR_MSG}",
+                               "GPIO_NAME", name, "ERROR_MSG", ec.message());
+                }
             }
-        }
-    });
+        });
     return 0;
 }
 
@@ -1541,32 +1542,32 @@ static void pohCounterTimerStart()
         conn->async_method_call(
             [](boost::system::error_code ec,
                const std::variant<uint32_t>& pohCounterProperty) {
-            if (ec)
-            {
-                lg2::error("error getting poh counter");
-                return;
-            }
-            const uint32_t* pohCounter =
-                std::get_if<uint32_t>(&pohCounterProperty);
-            if (pohCounter == nullptr)
-            {
-                lg2::error("unable to read poh counter");
-                return;
-            }
-
-            conn->async_method_call(
-                [](boost::system::error_code ec) {
                 if (ec)
                 {
-                    lg2::error("failed to set poh counter");
+                    lg2::error("error getting poh counter");
+                    return;
                 }
+                const uint32_t* pohCounter =
+                    std::get_if<uint32_t>(&pohCounterProperty);
+                if (pohCounter == nullptr)
+                {
+                    lg2::error("unable to read poh counter");
+                    return;
+                }
+
+                conn->async_method_call(
+                    [](boost::system::error_code ec) {
+                        if (ec)
+                        {
+                            lg2::error("failed to set poh counter");
+                        }
+                    },
+                    "xyz.openbmc_project.Settings",
+                    "/xyz/openbmc_project/state/chassis0",
+                    "org.freedesktop.DBus.Properties", "Set",
+                    "xyz.openbmc_project.State.PowerOnHours", "POHCounter",
+                    std::variant<uint32_t>(*pohCounter + 1));
             },
-                "xyz.openbmc_project.Settings",
-                "/xyz/openbmc_project/state/chassis0",
-                "org.freedesktop.DBus.Properties", "Set",
-                "xyz.openbmc_project.State.PowerOnHours", "POHCounter",
-                std::variant<uint32_t>(*pohCounter + 1));
-        },
             "xyz.openbmc_project.Settings",
             "/xyz/openbmc_project/state/chassis0",
             "org.freedesktop.DBus.Properties", "Get",
@@ -1592,74 +1593,76 @@ static void currentHostStateMonitor()
         setRestartCause();
     }
 
-    static auto match =
-        sdbusplus::bus::match_t(*conn,
-                                "type='signal',member='PropertiesChanged', "
-                                "interface='org.freedesktop.DBus.Properties', "
-                                "arg0='xyz.openbmc_project.State.Host'",
-                                [](sdbusplus::message_t& message) {
-        std::string intfName;
-        std::map<std::string, std::variant<std::string>> properties;
+    static auto match = sdbusplus::bus::match_t(
+        *conn,
+        "type='signal',member='PropertiesChanged', "
+        "interface='org.freedesktop.DBus.Properties', "
+        "arg0='xyz.openbmc_project.State.Host'",
+        [](sdbusplus::message_t& message) {
+            std::string intfName;
+            std::map<std::string, std::variant<std::string>> properties;
 
-        try
-        {
-            message.read(intfName, properties);
-        }
-        catch (const std::exception& e)
-        {
-            lg2::error("Unable to read host state: {ERROR}", "ERROR", e);
-            return;
-        }
-        if (properties.empty())
-        {
-            lg2::error("ERROR: Empty PropertiesChanged signal received");
-            return;
-        }
+            try
+            {
+                message.read(intfName, properties);
+            }
+            catch (const std::exception& e)
+            {
+                lg2::error("Unable to read host state: {ERROR}", "ERROR", e);
+                return;
+            }
+            if (properties.empty())
+            {
+                lg2::error("ERROR: Empty PropertiesChanged signal received");
+                return;
+            }
 
-        // We only want to check for CurrentHostState
-        if (properties.begin()->first != "CurrentHostState")
-        {
-            return;
-        }
-        std::string* currentHostState =
-            std::get_if<std::string>(&(properties.begin()->second));
-        if (currentHostState == nullptr)
-        {
-            lg2::error("{PROPERTY} property invalid", "PROPERTY",
-                       properties.begin()->first);
-            return;
-        }
+            // We only want to check for CurrentHostState
+            if (properties.begin()->first != "CurrentHostState")
+            {
+                return;
+            }
+            std::string* currentHostState =
+                std::get_if<std::string>(&(properties.begin()->second));
+            if (currentHostState == nullptr)
+            {
+                lg2::error("{PROPERTY} property invalid", "PROPERTY",
+                           properties.begin()->first);
+                return;
+            }
 
-        if (*currentHostState ==
-            "xyz.openbmc_project.State.Host.HostState.Running")
-        {
-            pohCounterTimerStart();
-            // Clear the restart cause set for the next restart
-            clearRestartCause();
-            sd_journal_send("MESSAGE=Host system DC power is on", "PRIORITY=%i",
-                            LOG_INFO, "REDFISH_MESSAGE_ID=%s",
-                            "OpenBMC.0.1.DCPowerOn", NULL);
-        }
-        else
-        {
-            pohCounterTimer.cancel();
-            // POST_COMPLETE GPIO event is not working in some platforms
-            // when power state is changed to OFF. This resulted in
-            // 'OperatingSystemState' to stay at 'Standby', even though
-            // system is OFF. Set 'OperatingSystemState' to 'Inactive'
-            // if HostState is trurned to OFF.
-            setOperatingSystemState(OperatingSystemStateStage::Inactive);
+            if (*currentHostState ==
+                "xyz.openbmc_project.State.Host.HostState.Running")
+            {
+                pohCounterTimerStart();
+                // Clear the restart cause set for the next restart
+                clearRestartCause();
+                sd_journal_send("MESSAGE=Host system DC power is on",
+                                "PRIORITY=%i", LOG_INFO,
+                                "REDFISH_MESSAGE_ID=%s",
+                                "OpenBMC.0.1.DCPowerOn", NULL);
+            }
+            else
+            {
+                pohCounterTimer.cancel();
+                // POST_COMPLETE GPIO event is not working in some platforms
+                // when power state is changed to OFF. This resulted in
+                // 'OperatingSystemState' to stay at 'Standby', even though
+                // system is OFF. Set 'OperatingSystemState' to 'Inactive'
+                // if HostState is trurned to OFF.
+                setOperatingSystemState(OperatingSystemStateStage::Inactive);
 
-            // Set the restart cause set for this restart
-            setRestartCause();
+                // Set the restart cause set for this restart
+                setRestartCause();
 #ifdef USE_ACBOOT
-            resetACBootProperty();
+                resetACBootProperty();
 #endif // USE_ACBOOT
-            sd_journal_send("MESSAGE=Host system DC power is off",
-                            "PRIORITY=%i", LOG_INFO, "REDFISH_MESSAGE_ID=%s",
-                            "OpenBMC.0.1.DCPowerOff", NULL);
-        }
-    });
+                sd_journal_send("MESSAGE=Host system DC power is off",
+                                "PRIORITY=%i", LOG_INFO,
+                                "REDFISH_MESSAGE_ID=%s",
+                                "OpenBMC.0.1.DCPowerOff", NULL);
+            }
+        });
 }
 
 static void sioPowerGoodWatchdogTimerStart()
@@ -1667,8 +1670,8 @@ static void sioPowerGoodWatchdogTimerStart()
     lg2::info("SIO power good watchdog timer started");
     sioPowerGoodWatchdogTimer.expires_after(
         std::chrono::milliseconds(TimerMap["SioPowerGoodWatchdogMs"]));
-    sioPowerGoodWatchdogTimer.async_wait(
-        [](const boost::system::error_code ec) {
+    sioPowerGoodWatchdogTimer.async_wait([](const boost::system::error_code
+                                                ec) {
         if (ec)
         {
             // operation_aborted is expected if timer is canceled before
@@ -2095,12 +2098,12 @@ void systemReset()
 {
     conn->async_method_call(
         [](boost::system::error_code ec) {
-        if (ec)
-        {
-            lg2::error("Failed to call chassis system reset: {ERR}", "ERR",
-                       ec.message());
-        }
-    },
+            if (ec)
+            {
+                lg2::error("Failed to call chassis system reset: {ERR}", "ERR",
+                           ec.message());
+            }
+        },
         systemdBusname, systemdPath, systemdInterface, "StartUnit",
         systemTargetName, "replace");
 }
@@ -2110,11 +2113,11 @@ static void nmiSetEnableProperty(bool value)
 {
     conn->async_method_call(
         [](boost::system::error_code ec) {
-        if (ec)
-        {
-            lg2::error("failed to set NMI source");
-        }
-    },
+            if (ec)
+            {
+                lg2::error("failed to set NMI source");
+            }
+        },
         "xyz.openbmc_project.Settings",
         "/xyz/openbmc_project/Chassis/Control/NMISource",
         "org.freedesktop.DBus.Properties", "Set",
@@ -2165,43 +2168,47 @@ static void nmiSourcePropertyMonitor(void)
             "member='PropertiesChanged',"
             "arg0namespace='xyz.openbmc_project.Chassis.Control.NMISource'",
             [](sdbusplus::message_t& msg) {
-        std::string interfaceName;
-        boost::container::flat_map<std::string, std::variant<bool, std::string>>
-            propertiesChanged;
-        std::string state;
-        bool value = true;
-        try
-        {
-            msg.read(interfaceName, propertiesChanged);
-            if (propertiesChanged.begin()->first == "Enabled")
-            {
-                value = std::get<bool>(propertiesChanged.begin()->second);
-                lg2::info("NMI Enabled propertiesChanged value: {VALUE}",
-                          "VALUE", value);
-                nmiEnabled = value;
-                if (nmiEnabled)
+                std::string interfaceName;
+                boost::container::flat_map<std::string,
+                                           std::variant<bool, std::string>>
+                    propertiesChanged;
+                std::string state;
+                bool value = true;
+                try
                 {
-                    nmiReset();
+                    msg.read(interfaceName, propertiesChanged);
+                    if (propertiesChanged.begin()->first == "Enabled")
+                    {
+                        value =
+                            std::get<bool>(propertiesChanged.begin()->second);
+                        lg2::info(
+                            "NMI Enabled propertiesChanged value: {VALUE}",
+                            "VALUE", value);
+                        nmiEnabled = value;
+                        if (nmiEnabled)
+                        {
+                            nmiReset();
+                        }
+                    }
                 }
-            }
-        }
-        catch (const std::exception& e)
-        {
-            lg2::error("Unable to read NMI source: {ERROR}", "ERROR", e);
-            return;
-        }
-    });
+                catch (const std::exception& e)
+                {
+                    lg2::error("Unable to read NMI source: {ERROR}", "ERROR",
+                               e);
+                    return;
+                }
+            });
 }
 
 static void setNmiSource()
 {
     conn->async_method_call(
         [](boost::system::error_code ec) {
-        if (ec)
-        {
-            lg2::error("failed to set NMI source");
-        }
-    },
+            if (ec)
+            {
+                lg2::error("failed to set NMI source");
+            }
+        },
         "xyz.openbmc_project.Settings",
         "/xyz/openbmc_project/Chassis/Control/NMISource",
         "org.freedesktop.DBus.Properties", "Set",
@@ -2480,8 +2487,8 @@ static int loadConfigValues()
 }
 
 template <typename T>
-static std::optional<T> getMessageValue(sdbusplus::message_t& msg,
-                                        const std::string& name)
+static std::optional<T>
+    getMessageValue(sdbusplus::message_t& msg, const std::string& name)
 {
     std::string event;
     std::string thresholdInterface;
@@ -2542,15 +2549,15 @@ static bool getDbusMsgGPIOState(sdbusplus::message_t& msg,
 static sdbusplus::bus::match_t
     dbusGPIOMatcher(const ConfigData& cfg, std::function<void(bool)> onMatch)
 {
-    auto pulseEventMatcherCallback = [&cfg,
-                                      onMatch](sdbusplus::message_t& msg) {
-        bool value = false;
-        if (!getDbusMsgGPIOState(msg, cfg, value))
-        {
-            return;
-        }
-        onMatch(value);
-    };
+    auto pulseEventMatcherCallback =
+        [&cfg, onMatch](sdbusplus::message_t& msg) {
+            bool value = false;
+            if (!getDbusMsgGPIOState(msg, cfg, value))
+            {
+                return;
+            }
+            onMatch(value);
+        };
 
     return sdbusplus::bus::match_t(
         static_cast<sdbusplus::bus_t&>(*conn),
@@ -3008,93 +3015,96 @@ int main(int argc, char* argv[])
         "RequestedHostTransition",
         std::string("xyz.openbmc_project.State.Host.Transition.Off"),
         [](const std::string& requested, std::string& resp) {
-        if (requested == "xyz.openbmc_project.State.Host.Transition.Off")
-        {
-            // if power button is masked, ignore this
-            if (!powerButtonMask)
+            if (requested == "xyz.openbmc_project.State.Host.Transition.Off")
             {
-                sendPowerControlEvent(Event::gracefulPowerOffRequest);
-                addRestartCause(RestartCause::command);
+                // if power button is masked, ignore this
+                if (!powerButtonMask)
+                {
+                    sendPowerControlEvent(Event::gracefulPowerOffRequest);
+                    addRestartCause(RestartCause::command);
+                }
+                else
+                {
+                    lg2::info("Power Button Masked.");
+                    throw std::invalid_argument("Transition Request Masked");
+                    return 0;
+                }
+            }
+            else if (requested ==
+                     "xyz.openbmc_project.State.Host.Transition.On")
+            {
+                // if power button is masked, ignore this
+                if (!powerButtonMask)
+                {
+                    sendPowerControlEvent(Event::powerOnRequest);
+                    addRestartCause(RestartCause::command);
+                }
+                else
+                {
+                    lg2::info("Power Button Masked.");
+                    throw std::invalid_argument("Transition Request Masked");
+                    return 0;
+                }
+            }
+            else if (requested ==
+                     "xyz.openbmc_project.State.Host.Transition.Reboot")
+            {
+                // if power button is masked, ignore this
+                if (!powerButtonMask)
+                {
+                    sendPowerControlEvent(Event::powerCycleRequest);
+                    addRestartCause(RestartCause::command);
+                }
+                else
+                {
+                    lg2::info("Power Button Masked.");
+                    throw std::invalid_argument("Transition Request Masked");
+                    return 0;
+                }
+            }
+            else if (
+                requested ==
+                "xyz.openbmc_project.State.Host.Transition.GracefulWarmReboot")
+            {
+                // if reset button is masked, ignore this
+                if (!resetButtonMask)
+                {
+                    sendPowerControlEvent(Event::gracefulPowerCycleRequest);
+                    addRestartCause(RestartCause::command);
+                }
+                else
+                {
+                    lg2::info("Reset Button Masked.");
+                    throw std::invalid_argument("Transition Request Masked");
+                    return 0;
+                }
+            }
+            else if (
+                requested ==
+                "xyz.openbmc_project.State.Host.Transition.ForceWarmReboot")
+            {
+                // if reset button is masked, ignore this
+                if (!resetButtonMask)
+                {
+                    sendPowerControlEvent(Event::resetRequest);
+                    addRestartCause(RestartCause::command);
+                }
+                else
+                {
+                    lg2::info("Reset Button Masked.");
+                    throw std::invalid_argument("Transition Request Masked");
+                    return 0;
+                }
             }
             else
             {
-                lg2::info("Power Button Masked.");
-                throw std::invalid_argument("Transition Request Masked");
+                lg2::error("Unrecognized host state transition request.");
+                throw std::invalid_argument("Unrecognized Transition Request");
                 return 0;
             }
-        }
-        else if (requested == "xyz.openbmc_project.State.Host.Transition.On")
-        {
-            // if power button is masked, ignore this
-            if (!powerButtonMask)
-            {
-                sendPowerControlEvent(Event::powerOnRequest);
-                addRestartCause(RestartCause::command);
-            }
-            else
-            {
-                lg2::info("Power Button Masked.");
-                throw std::invalid_argument("Transition Request Masked");
-                return 0;
-            }
-        }
-        else if (requested ==
-                 "xyz.openbmc_project.State.Host.Transition.Reboot")
-        {
-            // if power button is masked, ignore this
-            if (!powerButtonMask)
-            {
-                sendPowerControlEvent(Event::powerCycleRequest);
-                addRestartCause(RestartCause::command);
-            }
-            else
-            {
-                lg2::info("Power Button Masked.");
-                throw std::invalid_argument("Transition Request Masked");
-                return 0;
-            }
-        }
-        else if (requested ==
-                 "xyz.openbmc_project.State.Host.Transition.GracefulWarmReboot")
-        {
-            // if reset button is masked, ignore this
-            if (!resetButtonMask)
-            {
-                sendPowerControlEvent(Event::gracefulPowerCycleRequest);
-                addRestartCause(RestartCause::command);
-            }
-            else
-            {
-                lg2::info("Reset Button Masked.");
-                throw std::invalid_argument("Transition Request Masked");
-                return 0;
-            }
-        }
-        else if (requested ==
-                 "xyz.openbmc_project.State.Host.Transition.ForceWarmReboot")
-        {
-            // if reset button is masked, ignore this
-            if (!resetButtonMask)
-            {
-                sendPowerControlEvent(Event::resetRequest);
-                addRestartCause(RestartCause::command);
-            }
-            else
-            {
-                lg2::info("Reset Button Masked.");
-                throw std::invalid_argument("Transition Request Masked");
-                return 0;
-            }
-        }
-        else
-        {
-            lg2::error("Unrecognized host state transition request.");
-            throw std::invalid_argument("Unrecognized Transition Request");
-            return 0;
-        }
-        resp = requested;
-        return 1;
-    });
+            resp = requested;
+            return 1;
+        });
     hostIface->register_property("CurrentHostState",
                                  std::string(getHostState(powerState)));
 
@@ -3113,61 +3123,62 @@ int main(int argc, char* argv[])
         "RequestedPowerTransition",
         std::string("xyz.openbmc_project.State.Chassis.Transition.Off"),
         [](const std::string& requested, std::string& resp) {
-        if (requested == "xyz.openbmc_project.State.Chassis.Transition.Off")
-        {
-            // if power button is masked, ignore this
-            if (!powerButtonMask)
+            if (requested == "xyz.openbmc_project.State.Chassis.Transition.Off")
             {
-                sendPowerControlEvent(Event::powerOffRequest);
-                addRestartCause(RestartCause::command);
+                // if power button is masked, ignore this
+                if (!powerButtonMask)
+                {
+                    sendPowerControlEvent(Event::powerOffRequest);
+                    addRestartCause(RestartCause::command);
+                }
+                else
+                {
+                    lg2::info("Power Button Masked.");
+                    throw std::invalid_argument("Transition Request Masked");
+                    return 0;
+                }
+            }
+            else if (requested ==
+                     "xyz.openbmc_project.State.Chassis.Transition.On")
+            {
+                // if power button is masked, ignore this
+                if (!powerButtonMask)
+                {
+                    sendPowerControlEvent(Event::powerOnRequest);
+                    addRestartCause(RestartCause::command);
+                }
+                else
+                {
+                    lg2::info("Power Button Masked.");
+                    throw std::invalid_argument("Transition Request Masked");
+                    return 0;
+                }
+            }
+            else if (requested ==
+                     "xyz.openbmc_project.State.Chassis.Transition.PowerCycle")
+            {
+                // if power button is masked, ignore this
+                if (!powerButtonMask)
+                {
+                    sendPowerControlEvent(Event::powerCycleRequest);
+                    addRestartCause(RestartCause::command);
+                }
+                else
+                {
+                    lg2::info("Power Button Masked.");
+                    throw std::invalid_argument("Transition Request Masked");
+                    return 0;
+                }
             }
             else
             {
-                lg2::info("Power Button Masked.");
-                throw std::invalid_argument("Transition Request Masked");
+                lg2::error("Unrecognized chassis state transition request.");
+                throw std::invalid_argument("Unrecognized Transition Request");
                 return 0;
             }
-        }
-        else if (requested == "xyz.openbmc_project.State.Chassis.Transition.On")
-        {
-            // if power button is masked, ignore this
-            if (!powerButtonMask)
-            {
-                sendPowerControlEvent(Event::powerOnRequest);
-                addRestartCause(RestartCause::command);
-            }
-            else
-            {
-                lg2::info("Power Button Masked.");
-                throw std::invalid_argument("Transition Request Masked");
-                return 0;
-            }
-        }
-        else if (requested ==
-                 "xyz.openbmc_project.State.Chassis.Transition.PowerCycle")
-        {
-            // if power button is masked, ignore this
-            if (!powerButtonMask)
-            {
-                sendPowerControlEvent(Event::powerCycleRequest);
-                addRestartCause(RestartCause::command);
-            }
-            else
-            {
-                lg2::info("Power Button Masked.");
-                throw std::invalid_argument("Transition Request Masked");
-                return 0;
-            }
-        }
-        else
-        {
-            lg2::error("Unrecognized chassis state transition request.");
-            throw std::invalid_argument("Unrecognized Transition Request");
-            return 0;
-        }
-        resp = requested;
-        return 1;
-    });
+            resp = requested;
+            return 1;
+        });
     chassisIface->register_property("CurrentPowerState",
                                     std::string(getChassisState(powerState)));
     chassisIface->register_property("LastStateChangeTime", getCurrentTimeMs());
@@ -3188,21 +3199,22 @@ int main(int argc, char* argv[])
         "RequestedPowerTransition",
         std::string("xyz.openbmc_project.State.Chassis.Transition.On"),
         [](const std::string& requested, std::string& resp) {
-        if (requested ==
-            "xyz.openbmc_project.State.Chassis.Transition.PowerCycle")
-        {
-            systemReset();
-            addRestartCause(RestartCause::command);
-        }
-        else
-        {
-            lg2::error("Unrecognized chassis system state transition request.");
-            throw std::invalid_argument("Unrecognized Transition Request");
-            return 0;
-        }
-        resp = requested;
-        return 1;
-    });
+            if (requested ==
+                "xyz.openbmc_project.State.Chassis.Transition.PowerCycle")
+            {
+                systemReset();
+                addRestartCause(RestartCause::command);
+            }
+            else
+            {
+                lg2::error(
+                    "Unrecognized chassis system state transition request.");
+                throw std::invalid_argument("Unrecognized Transition Request");
+                return 0;
+            }
+            resp = requested;
+            return 1;
+        });
     chassisSysIface->register_property(
         "CurrentPowerState", std::string(getChassisState(powerState)));
     chassisSysIface->register_property("LastStateChangeTime",
@@ -3230,30 +3242,33 @@ int main(int argc, char* argv[])
             "RequestedPowerTransition",
             std::string("xyz.openbmc_project.State.Chassis.Transition.On"),
             [](const std::string& requested, std::string& resp) {
-            if (requested == "xyz.openbmc_project.State.Chassis.Transition.On")
-            {
-                slotPowerOn();
-            }
-            else if (requested ==
-                     "xyz.openbmc_project.State.Chassis.Transition.Off")
-            {
-                slotPowerOff();
-            }
-            else if (requested ==
-                     "xyz.openbmc_project.State.Chassis.Transition.PowerCycle")
-            {
-                slotPowerCycle();
-            }
-            else
-            {
-                lg2::error(
-                    "Unrecognized chassis system state transition request.\n");
-                throw std::invalid_argument("Unrecognized Transition Request");
-                return 0;
-            }
-            resp = requested;
-            return 1;
-        });
+                if (requested ==
+                    "xyz.openbmc_project.State.Chassis.Transition.On")
+                {
+                    slotPowerOn();
+                }
+                else if (requested ==
+                         "xyz.openbmc_project.State.Chassis.Transition.Off")
+                {
+                    slotPowerOff();
+                }
+                else if (
+                    requested ==
+                    "xyz.openbmc_project.State.Chassis.Transition.PowerCycle")
+                {
+                    slotPowerCycle();
+                }
+                else
+                {
+                    lg2::error(
+                        "Unrecognized chassis system state transition request.\n");
+                    throw std::invalid_argument(
+                        "Unrecognized Transition Request");
+                    return 0;
+                }
+                resp = requested;
+                return 1;
+            });
         chassisSlotIface->register_property(
             "CurrentPowerState", std::string(getSlotState(slotPowerState)));
         chassisSlotIface->register_property("LastStateChangeTime",
@@ -3274,33 +3289,34 @@ int main(int argc, char* argv[])
 
         powerButtonIface->register_property(
             "ButtonMasked", false, [](const bool requested, bool& current) {
-            if (requested)
-            {
-                if (powerButtonMask)
+                if (requested)
                 {
-                    return 1;
+                    if (powerButtonMask)
+                    {
+                        return 1;
+                    }
+                    if (!setGPIOOutput(powerOutConfig.lineName,
+                                       !powerOutConfig.polarity,
+                                       powerButtonMask))
+                    {
+                        throw std::runtime_error("Failed to request GPIO");
+                        return 0;
+                    }
+                    lg2::info("Power Button Masked.");
                 }
-                if (!setGPIOOutput(powerOutConfig.lineName,
-                                   !powerOutConfig.polarity, powerButtonMask))
+                else
                 {
-                    throw std::runtime_error("Failed to request GPIO");
-                    return 0;
+                    if (!powerButtonMask)
+                    {
+                        return 1;
+                    }
+                    lg2::info("Power Button Un-masked");
+                    powerButtonMask.reset();
                 }
-                lg2::info("Power Button Masked.");
-            }
-            else
-            {
-                if (!powerButtonMask)
-                {
-                    return 1;
-                }
-                lg2::info("Power Button Un-masked");
-                powerButtonMask.reset();
-            }
-            // Update the mask setting
-            current = requested;
-            return 1;
-        });
+                // Update the mask setting
+                current = requested;
+                return 1;
+            });
 
         // Check power button state
         bool powerButtonPressed;
@@ -3329,33 +3345,34 @@ int main(int argc, char* argv[])
 
         resetButtonIface->register_property(
             "ButtonMasked", false, [](const bool requested, bool& current) {
-            if (requested)
-            {
-                if (resetButtonMask)
+                if (requested)
                 {
-                    return 1;
+                    if (resetButtonMask)
+                    {
+                        return 1;
+                    }
+                    if (!setGPIOOutput(resetOutConfig.lineName,
+                                       !resetOutConfig.polarity,
+                                       resetButtonMask))
+                    {
+                        throw std::runtime_error("Failed to request GPIO");
+                        return 0;
+                    }
+                    lg2::info("Reset Button Masked.");
                 }
-                if (!setGPIOOutput(resetOutConfig.lineName,
-                                   !resetOutConfig.polarity, resetButtonMask))
+                else
                 {
-                    throw std::runtime_error("Failed to request GPIO");
-                    return 0;
+                    if (!resetButtonMask)
+                    {
+                        return 1;
+                    }
+                    lg2::info("Reset Button Un-masked");
+                    resetButtonMask.reset();
                 }
-                lg2::info("Reset Button Masked.");
-            }
-            else
-            {
-                if (!resetButtonMask)
-                {
-                    return 1;
-                }
-                lg2::info("Reset Button Un-masked");
-                resetButtonMask.reset();
-            }
-            // Update the mask setting
-            current = requested;
-            return 1;
-        });
+                // Update the mask setting
+                current = requested;
+                return 1;
+            });
 
         // Check reset button state
         bool resetButtonPressed;
@@ -3383,25 +3400,25 @@ int main(int argc, char* argv[])
 
         nmiButtonIface->register_property(
             "ButtonMasked", false, [](const bool requested, bool& current) {
-            if (nmiButtonMasked == requested)
-            {
-                // NMI button mask is already set as requested, so no change
+                if (nmiButtonMasked == requested)
+                {
+                    // NMI button mask is already set as requested, so no change
+                    return 1;
+                }
+                if (requested)
+                {
+                    lg2::info("NMI Button Masked.");
+                    nmiButtonMasked = true;
+                }
+                else
+                {
+                    lg2::info("NMI Button Un-masked.");
+                    nmiButtonMasked = false;
+                }
+                // Update the mask setting
+                current = nmiButtonMasked;
                 return 1;
-            }
-            if (requested)
-            {
-                lg2::info("NMI Button Masked.");
-                nmiButtonMasked = true;
-            }
-            else
-            {
-                lg2::info("NMI Button Un-masked.");
-                nmiButtonMasked = false;
-            }
-            // Update the mask setting
-            current = nmiButtonMasked;
-            return 1;
-        });
+            });
 
         // Check NMI button state
         bool nmiButtonPressed;
@@ -3505,22 +3522,23 @@ int main(int argc, char* argv[])
         "RequestedRestartCause",
         std::string("xyz.openbmc_project.State.Host.RestartCause.Unknown"),
         [](const std::string& requested, std::string& resp) {
-        if (requested ==
-            "xyz.openbmc_project.State.Host.RestartCause.WatchdogTimer")
-        {
-            addRestartCause(RestartCause::watchdog);
-        }
-        else
-        {
-            throw std::invalid_argument("Unrecognized RestartCause Request");
-            return 0;
-        }
+            if (requested ==
+                "xyz.openbmc_project.State.Host.RestartCause.WatchdogTimer")
+            {
+                addRestartCause(RestartCause::watchdog);
+            }
+            else
+            {
+                throw std::invalid_argument(
+                    "Unrecognized RestartCause Request");
+                return 0;
+            }
 
-        lg2::info("RestartCause requested: {RESTART_CAUSE}", "RESTART_CAUSE",
-                  requested);
-        resp = requested;
-        return 1;
-    });
+            lg2::info("RestartCause requested: {RESTART_CAUSE}",
+                      "RESTART_CAUSE", requested);
+            resp = requested;
+            return 1;
+        });
 
     restartCauseIface->initialize();
 
