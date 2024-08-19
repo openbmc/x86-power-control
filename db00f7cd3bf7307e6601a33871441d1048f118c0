@@ -18,6 +18,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d1e067e_cf5660ca",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001616
+      },
+      "writtenOn": "2024-08-19T21:33:49Z",
+      "side": 1,
+      "message": "Awesome, thank you.",
+      "parentUuid": "e15358e8_3681cb68",
+      "revId": "db00f7cd3bf7307e6601a33871441d1048f118c0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "53eb7376_11d27056",
@@ -31,6 +49,30 @@
       "writtenOn": "2024-08-19T21:24:31Z",
       "side": 1,
       "message": "This needs to be lowerCamelCase",
+      "range": {
+        "startLine": 2069,
+        "startChar": 9,
+        "endLine": 2069,
+        "endChar": 21
+      },
+      "revId": "db00f7cd3bf7307e6601a33871441d1048f118c0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ae9ccf0_48b4b8dd",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 2069,
+      "author": {
+        "id": 1001616
+      },
+      "writtenOn": "2024-08-19T21:33:49Z",
+      "side": 1,
+      "message": "Changed!",
+      "parentUuid": "53eb7376_11d27056",
       "range": {
         "startLine": 2069,
         "startChar": 9,
