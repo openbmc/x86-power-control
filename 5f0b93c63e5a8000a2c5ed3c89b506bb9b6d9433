@@ -24,6 +24,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "90270c23_fd1535ff",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 793,
+      "author": {
+        "id": 1001616
+      },
+      "writtenOn": "2024-08-19T11:59:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae6428f_d21fbe24",
+      "range": {
+        "startLine": 790,
+        "startChar": 4,
+        "endLine": 793,
+        "endChar": 1
+      },
+      "revId": "5f0b93c63e5a8000a2c5ed3c89b506bb9b6d9433",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a9931efe_d9e444f6",
@@ -37,6 +61,24 @@
       "writtenOn": "2024-07-12T21:00:05Z",
       "side": 1,
       "message": "This would be good to add to the timing parameters in the config file.",
+      "revId": "5f0b93c63e5a8000a2c5ed3c89b506bb9b6d9433",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7a9e6635_13378fae",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2099,
+      "author": {
+        "id": 1001616
+      },
+      "writtenOn": "2024-08-19T11:59:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a9931efe_d9e444f6",
       "revId": "5f0b93c63e5a8000a2c5ed3c89b506bb9b6d9433",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -64,6 +106,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7f652b79_d08641c7",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2111,
+      "author": {
+        "id": 1001616
+      },
+      "writtenOn": "2024-08-19T11:59:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d85babc7_362b67bf",
+      "range": {
+        "startLine": 2111,
+        "startChar": 9,
+        "endLine": 2111,
+        "endChar": 21
+      },
+      "revId": "5f0b93c63e5a8000a2c5ed3c89b506bb9b6d9433",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "83b1915f_3e25b59b",
@@ -77,6 +143,24 @@
       "writtenOn": "2024-07-12T21:00:05Z",
       "side": 1,
       "message": "You can `return;` here and remove the `else`",
+      "revId": "5f0b93c63e5a8000a2c5ed3c89b506bb9b6d9433",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b0e801a8_75a36e35",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2134,
+      "author": {
+        "id": 1001616
+      },
+      "writtenOn": "2024-08-19T11:59:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "83b1915f_3e25b59b",
       "revId": "5f0b93c63e5a8000a2c5ed3c89b506bb9b6d9433",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }

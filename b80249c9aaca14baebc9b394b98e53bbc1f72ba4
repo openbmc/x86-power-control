@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e25e3004_02a9dd30",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001616
+      },
+      "writtenOn": "2024-08-19T11:59:55Z",
+      "side": 1,
+      "message": "I\u0027ve removed the indirect mode as I only need the direct mode for the X570D4U and this minimizes the changes required.",
+      "revId": "b80249c9aaca14baebc9b394b98e53bbc1f72ba4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
