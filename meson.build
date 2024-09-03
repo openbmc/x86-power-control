@@ -38,7 +38,7 @@ endif
 
 deps = [
     dependency('libgpiodcxx', default_options: ['bindings=cxx']),
-    dependency('systemd'),
+    dependency('libsystemd'),
     dependency('sdbusplus'),
     dependency('phosphor-logging'),
     dependency('nlohmann_json', include_type: 'system'),
