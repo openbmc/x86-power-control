@@ -2640,8 +2640,9 @@ void setInitialValue(const ConfigData& configData, bool initialValue)
     else if (configData.name == "PostComplete")
     {
         OperatingSystemStateStage osState =
-            (initialValue ? OperatingSystemStateStage::Inactive
-                          : OperatingSystemStateStage::Standby);
+            (initialValue == postCompleteConfig.polarity
+                 ? OperatingSystemStateStage::Standby
+                 : OperatingSystemStateStage::Inactive);
         setOperatingSystemState(osState);
     }
     else
@@ -3483,20 +3484,20 @@ int main(int argc, char* argv[])
         "xyz.openbmc_project.State.OperatingSystem.Status");
 
     // Get the initial OS state based on POST complete
-    //      0: Asserted, OS state is "Standby" (ready to boot)
-    //      1: De-Asserted, OS state is "Inactive"
+    //      Asserted, OS state is "Standby" (ready to boot)
+    //      De-Asserted, OS state is "Inactive"
     OperatingSystemStateStage osState;
     if (postCompleteConfig.type == ConfigType::GPIO)
     {
-        osState = postCompleteLine.get_value() > 0
-                      ? OperatingSystemStateStage::Inactive
-                      : OperatingSystemStateStage::Standby;
+        osState = postCompleteLine.get_value() == postCompleteConfig.polarity
+                      ? OperatingSystemStateStage::Standby
+                      : OperatingSystemStateStage::Inactive;
     }
     else
     {
         osState = getProperty(postCompleteConfig) > 0
-                      ? OperatingSystemStateStage::Inactive
-                      : OperatingSystemStateStage::Standby;
+                      ? OperatingSystemStateStage::Standby
+                      : OperatingSystemStateStage::Inactive;
     }
 
     osIface->register_property(
