@@ -36,7 +36,6 @@ owners:
 - wangkuiying.wky@alibaba-inc.com 
 
 reviewers:
-- zev@bewilderbeest.net
 
 matchers:
 
@@ -47,6 +46,3 @@ openbmc:
 - name: Kuiying Wang
   email: wangkuiying.wky@alibaba-inc.com
   discord: Kwin
-- name: Zev Weiss
-  email: zev@bewilderbeest.net
-  discord: zevweiss
