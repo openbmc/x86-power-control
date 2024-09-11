@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f1f2b0c0_00b5cc48",
+        "filename": "OWNERS",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2024-09-11T20:46:25Z",
+      "side": 0,
+      "message": "Looking at the history, it looks like we want to keep the `reviewers:` tag present even if it\u0027s empty.",
+      "revId": "a0a39f82d8299ab4959d1765d56ba614c36236eb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
