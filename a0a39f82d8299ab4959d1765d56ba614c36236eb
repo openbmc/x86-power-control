@@ -16,6 +16,24 @@
       "message": "Looking at the history, it looks like we want to keep the `reviewers:` tag present even if it\u0027s empty.",
       "revId": "a0a39f82d8299ab4959d1765d56ba614c36236eb",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ad21eb67_2ef12064",
+        "filename": "OWNERS",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2024-09-12T04:58:50Z",
+      "side": 0,
+      "message": "Given the minimal OWNERS files in openbmc/openbmc I doubt it\u0027d cause any functional problems, but yeah, that is how it previously was and seems advantageous for clarity, so might as well.",
+      "parentUuid": "f1f2b0c0_00b5cc48",
+      "revId": "a0a39f82d8299ab4959d1765d56ba614c36236eb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
