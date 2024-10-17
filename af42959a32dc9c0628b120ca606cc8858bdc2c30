@@ -34,6 +34,24 @@
       "parentUuid": "1ea06676_3249b997",
       "revId": "af42959a32dc9c0628b120ca606cc8858bdc2c30",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "602ffd01_a76a01e5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2024-10-17T20:06:54Z",
+      "side": 1,
+      "message": "Yes, but it needs to be rebased to pass the CI build.  I can do it if nobody else is available.",
+      "parentUuid": "44a6cdf2_a8ea458e",
+      "revId": "af42959a32dc9c0628b120ca606cc8858bdc2c30",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
