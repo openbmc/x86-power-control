@@ -52,6 +52,24 @@
       "parentUuid": "44a6cdf2_a8ea458e",
       "revId": "af42959a32dc9c0628b120ca606cc8858bdc2c30",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c976bdf0_95ed6c4f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002221
+      },
+      "writtenOn": "2024-10-22T10:34:06Z",
+      "side": 1,
+      "message": "AFAIK Renze is currently busy with other stuff (chat on Discord few weeks ago), so I think he\u0027d appreciate you taking over the rebase. If no issues arise of course.",
+      "parentUuid": "602ffd01_a76a01e5",
+      "revId": "af42959a32dc9c0628b120ca606cc8858bdc2c30",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
