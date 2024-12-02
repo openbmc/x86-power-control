@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c493ced5_5b1c7a76",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2024-12-02T13:47:49Z",
+      "side": 1,
+      "message": "Added TOF team for some early feedback: \nWorking on creating a common base version of the .clang-tidy file that can be used to enable required features incrementally. The base version is copied from BMCWeb, which includes all the necessary checks (special thanks to Ed). I have disabled the checks that are failing for this specific repository. Looking some  early feedback to determine if this approach makes sense and if it can be enabled for other repositories.",
+      "revId": "bf5b22ae7616591f8c0589de78445a67173b5c17",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
