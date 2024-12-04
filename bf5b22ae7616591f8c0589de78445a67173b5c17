@@ -16,6 +16,23 @@
       "message": "Added TOF team for some early feedback: \nWorking on creating a common base version of the .clang-tidy file that can be used to enable required features incrementally. The base version is copied from BMCWeb, which includes all the necessary checks (special thanks to Ed). I have disabled the checks that are failing for this specific repository. Looking some  early feedback to determine if this approach makes sense and if it can be enabled for other repositories.",
       "revId": "bf5b22ae7616591f8c0589de78445a67173b5c17",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2037490b_4e974c29",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2024-12-04T14:33:24Z",
+      "side": 1,
+      "message": "Looks okay to me.  Will this baseline `.clang-tidy` file be published to docs like our example `.clang-format` file? https://github.com/openbmc/docs/blob/master/cpp-style-and-conventions.md#clang-formatting",
+      "revId": "bf5b22ae7616591f8c0589de78445a67173b5c17",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
