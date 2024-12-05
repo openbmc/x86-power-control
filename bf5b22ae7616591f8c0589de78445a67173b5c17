@@ -33,6 +33,24 @@
       "message": "Looks okay to me.  Will this baseline `.clang-tidy` file be published to docs like our example `.clang-format` file? https://github.com/openbmc/docs/blob/master/cpp-style-and-conventions.md#clang-formatting",
       "revId": "bf5b22ae7616591f8c0589de78445a67173b5c17",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fbd14c5c_e12f455f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2024-12-05T11:14:10Z",
+      "side": 1,
+      "message": "Good point will update the documenation.",
+      "parentUuid": "2037490b_4e974c29",
+      "revId": "bf5b22ae7616591f8c0589de78445a67173b5c17",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
