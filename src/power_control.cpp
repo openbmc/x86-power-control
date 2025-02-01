@@ -230,8 +230,8 @@ enum class OperatingSystemStateStage
     Standby,
 };
 static OperatingSystemStateStage operatingSystemState;
-static constexpr std::string_view
-    getOperatingSystemStateStage(const OperatingSystemStateStage stage)
+static constexpr std::string_view getOperatingSystemStateStage(
+    const OperatingSystemStateStage stage)
 {
     switch (stage)
     {
@@ -2507,8 +2507,8 @@ static int loadConfigValues()
 }
 
 template <typename T>
-static std::optional<T>
-    getMessageValue(sdbusplus::message_t& msg, const std::string& name)
+static std::optional<T> getMessageValue(sdbusplus::message_t& msg,
+                                        const std::string& name)
 {
     std::string event;
     std::string thresholdInterface;
@@ -2566,8 +2566,8 @@ static bool getDbusMsgGPIOState(sdbusplus::message_t& msg,
     }
 }
 
-static sdbusplus::bus::match_t
-    dbusGPIOMatcher(const ConfigData& cfg, std::function<void(bool)> onMatch)
+static sdbusplus::bus::match_t dbusGPIOMatcher(
+    const ConfigData& cfg, std::function<void(bool)> onMatch)
 {
     auto pulseEventMatcherCallback =
         [&cfg, onMatch](sdbusplus::message_t& msg) {
