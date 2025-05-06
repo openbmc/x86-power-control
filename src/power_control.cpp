@@ -1,5 +1,5 @@
 /*
-// Copyright (c) 2018-2019 Intel Corporation
+// Copyright (c) 2018-2025 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -145,7 +145,7 @@ boost::container::flat_map<std::string, int> TimerMap = {
     {"ResetPulseMs", 500},
     {"PowerCycleMs", 5000},
     {"SioPowerGoodWatchdogMs", 1000},
-    {"PsPowerOKWatchdogMs", 8000},
+    {"PowerOKWatchdogMs", 8000},
     {"GracefulPowerOffS", (5 * 60)},
     {"WarmResetCheckMs", 500},
     {"PowerOffSaveMs", 7000},
@@ -165,8 +165,8 @@ static boost::asio::steady_timer powerCycleTimer(io);
 static boost::asio::steady_timer gracefulPowerOffTimer(io);
 // Time the warm reset check
 static boost::asio::steady_timer warmResetCheckTimer(io);
-// Time power supply power OK assertion on power-on
-static boost::asio::steady_timer psPowerOKWatchdogTimer(io);
+// Time power OK assertion on power-on
+static boost::asio::steady_timer powerOKWatchdogTimer(io);
 // Time SIO power good assertion on power-on
 static boost::asio::steady_timer sioPowerGoodWatchdogTimer(io);
 // Time power-off state save for power loss tracking
@@ -182,8 +182,8 @@ static boost::container::flat_map<std::string, boost::asio::steady_timer>
     dBusRetryTimers;
 
 // GPIO Lines and Event Descriptors
-static gpiod::line psPowerOKLine;
-static boost::asio::posix::stream_descriptor psPowerOKEvent(io);
+static gpiod::line powerOKLine;
+static boost::asio::posix::stream_descriptor powerOKEvent(io);
 static gpiod::line sioPowerGoodLine;
 static boost::asio::posix::stream_descriptor sioPowerGoodEvent(io);
 static gpiod::line sioOnControlLine;
@@ -267,7 +267,7 @@ static void setOperatingSystemState(const OperatingSystemStateStage stage)
 enum class PowerState
 {
     on,
-    waitForPSPowerOK,
+    waitForPowerOK,
     waitForSIOPowerGood,
     off,
     transitionToOff,
@@ -285,8 +285,8 @@ static std::string getPowerStateName(PowerState state)
         case PowerState::on:
             return "On";
             break;
-        case PowerState::waitForPSPowerOK:
-            return "Wait for Power Supply Power OK";
+        case PowerState::waitForPowerOK:
+            return "Wait for Power OK";
             break;
         case PowerState::waitForSIOPowerGood:
             return "Wait for SIO Power Good";
@@ -325,8 +325,8 @@ static void logStateTransition(const PowerState state)
 
 enum class Event
 {
-    psPowerOKAssert,
-    psPowerOKDeAssert,
+    powerOKAssert,
+    powerOKDeAssert,
     sioPowerGoodAssert,
     sioPowerGoodDeAssert,
     sioS5Assert,
@@ -338,7 +338,7 @@ enum class Event
     powerButtonPressed,
     resetButtonPressed,
     powerCycleTimerExpired,
-    psPowerOKWatchdogTimerExpired,
+    powerOKWatchdogTimerExpired,
     sioPowerGoodWatchdogTimerExpired,
     gracefulPowerOffTimerExpired,
     powerOnRequest,
@@ -353,11 +353,11 @@ static std::string getEventName(Event event)
 {
     switch (event)
     {
-        case Event::psPowerOKAssert:
-            return "power supply power OK assert";
+        case Event::powerOKAssert:
+            return "power OK assert";
             break;
-        case Event::psPowerOKDeAssert:
-            return "power supply power OK de-assert";
+        case Event::powerOKDeAssert:
+            return "power OK de-assert";
             break;
         case Event::sioPowerGoodAssert:
             return "SIO power good assert";
@@ -392,8 +392,8 @@ static std::string getEventName(Event event)
         case Event::powerCycleTimerExpired:
             return "power cycle timer expired";
             break;
-        case Event::psPowerOKWatchdogTimerExpired:
-            return "power supply power OK watchdog timer expired";
+        case Event::powerOKWatchdogTimerExpired:
+            return "power OK watchdog timer expired";
             break;
         case Event::sioPowerGoodWatchdogTimerExpired:
             return "SIO power good watchdog timer expired";
@@ -435,7 +435,7 @@ static void logEvent(const std::string_view stateHandler, const Event event)
 
 // Power state handlers
 static void powerStateOn(const Event event);
-static void powerStateWaitForPSPowerOK(const Event event);
+static void powerStateWaitForPowerOK(const Event event);
 static void powerStateWaitForSIOPowerGood(const Event event);
 static void powerStateOff(const Event event);
 static void powerStateTransitionToOff(const Event event);
@@ -452,8 +452,8 @@ static std::function<void(const Event)> getPowerStateHandler(PowerState state)
         case PowerState::on:
             return powerStateOn;
             break;
-        case PowerState::waitForPSPowerOK:
-            return powerStateWaitForPSPowerOK;
+        case PowerState::waitForPowerOK:
+            return powerStateWaitForPowerOK;
             break;
         case PowerState::waitForSIOPowerGood:
             return powerStateWaitForSIOPowerGood;
@@ -520,7 +520,7 @@ static constexpr std::string_view getHostState(const PowerState state)
         case PowerState::gracefulTransitionToCycleOff:
             return "xyz.openbmc_project.State.Host.HostState.Running";
             break;
-        case PowerState::waitForPSPowerOK:
+        case PowerState::waitForPowerOK:
         case PowerState::waitForSIOPowerGood:
         case PowerState::off:
         case PowerState::transitionToOff:
@@ -546,7 +546,7 @@ static constexpr std::string_view getChassisState(const PowerState state)
         case PowerState::checkForWarmReset:
             return "xyz.openbmc_project.State.Chassis.PowerState.On";
             break;
-        case PowerState::waitForPSPowerOK:
+        case PowerState::waitForPowerOK:
         case PowerState::waitForSIOPowerGood:
         case PowerState::off:
         case PowerState::cycleOff:
@@ -755,13 +755,11 @@ static void systemPowerGoodFailedLog()
         TimerMap["SioPowerGoodWatchdogMs"], NULL);
 }
 
-static void psPowerOKFailedLog()
+static void powerOKFailedLog()
 {
-    sd_journal_send(
-        "MESSAGE=PowerControl: power supply power good failed to assert",
-        "PRIORITY=%i", LOG_INFO, "REDFISH_MESSAGE_ID=%s",
-        "OpenBMC.0.1.PowerSupplyPowerGoodFailed", "REDFISH_MESSAGE_ARGS=%d",
-        TimerMap["PsPowerOKWatchdogMs"], NULL);
+    sd_journal_send("MESSAGE=PowerControl: power okay failed to assert",
+                    "PRIORITY=%i", LOG_INFO, "REDFISH_MESSAGE_ID=%s",
+                    "OpenBMC.0.1.SystemPowerOnFailed", NULL);
 }
 
 static void powerRestorePolicyLog()
@@ -1467,27 +1465,26 @@ static void powerCycleTimerStart()
     });
 }
 
-static void psPowerOKWatchdogTimerStart()
+static void powerOKWatchdogTimerStart()
 {
-    lg2::info("power supply power OK watchdog timer started");
-    psPowerOKWatchdogTimer.expires_after(
-        std::chrono::milliseconds(TimerMap["PsPowerOKWatchdogMs"]));
-    psPowerOKWatchdogTimer.async_wait([](const boost::system::error_code ec) {
+    lg2::info("power OK watchdog timer started");
+    powerOKWatchdogTimer.expires_after(
+        std::chrono::milliseconds(TimerMap["PowerOKWatchdogMs"]));
+    powerOKWatchdogTimer.async_wait([](const boost::system::error_code ec) {
         if (ec)
         {
             // operation_aborted is expected if timer is canceled before
             // completion.
             if (ec != boost::asio::error::operation_aborted)
             {
-                lg2::error(
-                    "power supply power OK watchdog async_wait failed: {ERROR_MSG}",
-                    "ERROR_MSG", ec.message());
+                lg2::error("power OK watchdog async_wait failed: {ERROR_MSG}",
+                           "ERROR_MSG", ec.message());
             }
-            lg2::info("power supply power OK watchdog timer canceled");
+            lg2::info("power OK watchdog timer canceled");
             return;
         }
-        lg2::info("power supply power OK watchdog timer expired");
-        sendPowerControlEvent(Event::psPowerOKWatchdogTimerExpired);
+        lg2::info("power OK watchdog timer expired");
+        sendPowerControlEvent(Event::powerOKWatchdogTimerExpired);
     });
 }
 
@@ -1695,7 +1692,7 @@ static void powerStateOn(const Event event)
     logEvent(__FUNCTION__, event);
     switch (event)
     {
-        case Event::psPowerOKDeAssert:
+        case Event::powerOKDeAssert:
             setPowerState(PowerState::off);
             // DC power is unexpectedly lost, beep
             beep(beepPowerFail);
@@ -1762,16 +1759,16 @@ static void powerStateOn(const Event event)
     }
 }
 
-static void powerStateWaitForPSPowerOK(const Event event)
+static void powerStateWaitForPowerOK(const Event event)
 {
     logEvent(__FUNCTION__, event);
     switch (event)
     {
-        case Event::psPowerOKAssert:
+        case Event::powerOKAssert:
         {
             // Cancel any GPIO assertions held during the transition
             gpioAssertTimer.cancel();
-            psPowerOKWatchdogTimer.cancel();
+            powerOKWatchdogTimer.cancel();
             if (sioEnabled == true)
             {
                 sioPowerGoodWatchdogTimerStart();
@@ -1783,12 +1780,12 @@ static void powerStateWaitForPSPowerOK(const Event event)
             }
             break;
         }
-        case Event::psPowerOKWatchdogTimerExpired:
+        case Event::powerOKWatchdogTimerExpired:
             setPowerState(PowerState::off);
-            psPowerOKFailedLog();
+            powerOKFailedLog();
             break;
         case Event::sioPowerGoodAssert:
-            psPowerOKWatchdogTimer.cancel();
+            powerOKWatchdogTimer.cancel();
             setPowerState(PowerState::on);
             break;
         default:
@@ -1821,7 +1818,7 @@ static void powerStateOff(const Event event)
     logEvent(__FUNCTION__, event);
     switch (event)
     {
-        case Event::psPowerOKAssert:
+        case Event::powerOKAssert:
         {
             if (sioEnabled == true)
             {
@@ -1835,19 +1832,19 @@ static void powerStateOff(const Event event)
             break;
         }
         case Event::sioS5DeAssert:
-            psPowerOKWatchdogTimerStart();
-            setPowerState(PowerState::waitForPSPowerOK);
+            powerOKWatchdogTimerStart();
+            setPowerState(PowerState::waitForPowerOK);
             break;
         case Event::sioPowerGoodAssert:
             setPowerState(PowerState::on);
             break;
         case Event::powerButtonPressed:
-            psPowerOKWatchdogTimerStart();
-            setPowerState(PowerState::waitForPSPowerOK);
+            powerOKWatchdogTimerStart();
+            setPowerState(PowerState::waitForPowerOK);
             break;
         case Event::powerOnRequest:
-            psPowerOKWatchdogTimerStart();
-            setPowerState(PowerState::waitForPSPowerOK);
+            powerOKWatchdogTimerStart();
+            setPowerState(PowerState::waitForPowerOK);
             powerOn();
             break;
         default:
@@ -1861,7 +1858,7 @@ static void powerStateTransitionToOff(const Event event)
     logEvent(__FUNCTION__, event);
     switch (event)
     {
-        case Event::psPowerOKDeAssert:
+        case Event::powerOKDeAssert:
             // Cancel any GPIO assertions held during the transition
             gpioAssertTimer.cancel();
             setPowerState(PowerState::off);
@@ -1877,7 +1874,7 @@ static void powerStateGracefulTransitionToOff(const Event event)
     logEvent(__FUNCTION__, event);
     switch (event)
     {
-        case Event::psPowerOKDeAssert:
+        case Event::powerOKDeAssert:
             gracefulPowerOffTimer.cancel();
             setPowerState(PowerState::off);
             break;
@@ -1910,7 +1907,7 @@ static void powerStateCycleOff(const Event event)
     logEvent(__FUNCTION__, event);
     switch (event)
     {
-        case Event::psPowerOKAssert:
+        case Event::powerOKAssert:
         {
             powerCycleTimer.cancel();
             if (sioEnabled == true)
@@ -1926,17 +1923,17 @@ static void powerStateCycleOff(const Event event)
         }
         case Event::sioS5DeAssert:
             powerCycleTimer.cancel();
-            psPowerOKWatchdogTimerStart();
-            setPowerState(PowerState::waitForPSPowerOK);
+            powerOKWatchdogTimerStart();
+            setPowerState(PowerState::waitForPowerOK);
             break;
         case Event::powerButtonPressed:
             powerCycleTimer.cancel();
-            psPowerOKWatchdogTimerStart();
-            setPowerState(PowerState::waitForPSPowerOK);
+            powerOKWatchdogTimerStart();
+            setPowerState(PowerState::waitForPowerOK);
             break;
         case Event::powerCycleTimerExpired:
-            psPowerOKWatchdogTimerStart();
-            setPowerState(PowerState::waitForPSPowerOK);
+            powerOKWatchdogTimerStart();
+            setPowerState(PowerState::waitForPowerOK);
             powerOn();
             break;
         default:
@@ -1950,7 +1947,7 @@ static void powerStateTransitionToCycleOff(const Event event)
     logEvent(__FUNCTION__, event);
     switch (event)
     {
-        case Event::psPowerOKDeAssert:
+        case Event::powerOKDeAssert:
             // Cancel any GPIO assertions held during the transition
             gpioAssertTimer.cancel();
             setPowerState(PowerState::cycleOff);
@@ -1967,7 +1964,7 @@ static void powerStateGracefulTransitionToCycleOff(const Event event)
     logEvent(__FUNCTION__, event);
     switch (event)
     {
-        case Event::psPowerOKDeAssert:
+        case Event::powerOKDeAssert:
             gracefulPowerOffTimer.cancel();
             setPowerState(PowerState::cycleOff);
             powerCycleTimerStart();
@@ -2008,7 +2005,7 @@ static void powerStateCheckForWarmReset(const Event event)
         case Event::warmResetDetected:
             setPowerState(PowerState::on);
             break;
-        case Event::psPowerOKDeAssert:
+        case Event::powerOKDeAssert:
             warmResetCheckTimer.cancel();
             setPowerState(PowerState::off);
             // DC power is unexpectedly lost, beep
@@ -2020,11 +2017,11 @@ static void powerStateCheckForWarmReset(const Event event)
     }
 }
 
-static void psPowerOKHandler(bool state)
+static void powerOKHandler(bool state)
 {
     Event powerControlEvent = (state == powerOkConfig.polarity)
-                                  ? Event::psPowerOKAssert
-                                  : Event::psPowerOKDeAssert;
+                                  ? Event::powerOKAssert
+                                  : Event::powerOKDeAssert;
     sendPowerControlEvent(powerControlEvent);
 }
 
@@ -2770,11 +2767,11 @@ int main(int argc, char* argv[])
         lg2::info("SIO control GPIOs not defined, disable SIO support.");
     }
 
-    // Request PS_PWROK GPIO events
+    // Request power OK GPIO events
     if (powerOkConfig.type == ConfigType::GPIO)
     {
-        if (!requestGPIOEvents(powerOkConfig.lineName, psPowerOKHandler,
-                               psPowerOKLine, psPowerOKEvent))
+        if (!requestGPIOEvents(powerOkConfig.lineName, powerOKHandler,
+                               powerOKLine, powerOKEvent))
         {
             return -1;
         }
@@ -2782,7 +2779,7 @@ int main(int argc, char* argv[])
     else if (powerOkConfig.type == ConfigType::DBUS)
     {
         static sdbusplus::bus::match_t powerOkEventMonitor =
-            power_control::dbusGPIOMatcher(powerOkConfig, psPowerOKHandler);
+            power_control::dbusGPIOMatcher(powerOkConfig, powerOKHandler);
     }
     else
     {
@@ -2997,7 +2994,7 @@ int main(int argc, char* argv[])
 
     if (powerOkConfig.type == ConfigType::GPIO)
     {
-        if (psPowerOKLine.get_value() > 0 ||
+        if (powerOKLine.get_value() > 0 ||
             (sioEnabled &&
              (sioPowerGoodLine.get_value() == sioPwrGoodConfig.polarity)))
         {
