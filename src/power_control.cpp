@@ -1590,11 +1590,16 @@ static void currentHostStateMonitor()
         setRestartCause();
     }
 
+    std::string objectPath = "/xyz/openbmc_project/state/host" + node;
+
     static auto match = sdbusplus::bus::match_t(
         *conn,
         "type='signal',member='PropertiesChanged', "
         "interface='org.freedesktop.DBus.Properties', "
-        "arg0='xyz.openbmc_project.State.Host'",
+        "path='" +
+            objectPath +
+            "',"
+            "arg0='xyz.openbmc_project.State.Host'",
         [](sdbusplus::message_t& message) {
             std::string intfName;
             std::map<std::string, std::variant<std::string>> properties;
