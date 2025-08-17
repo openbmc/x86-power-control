@@ -27,6 +27,7 @@
 #include <nlohmann/json.hpp>
 #include <phosphor-logging/lg2.hpp>
 #include <sdbusplus/asio/object_server.hpp>
+#include <sdbusplus/asio/property.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -2703,14 +2704,22 @@ void reschedulePropertyRead(const ConfigData& configData)
             dBusRetryTimers.erase(configData.name);
             return;
         }
+        sdbusplus::asio::getProperty<bool>(
+            *conn, configData.dbusName, configData.path, configData.interface,
+            configData.lineName,
+            [&configData](boost::system::error_code ec, bool value) {
+                if (ec)
+                {
+                    lg2::error("Exception while reading {PROPERTY}: {WHAT}",
+                               "PROPERTY", configData.lineName, "WHAT",
+                               ec.message());
+                    reschedulePropertyRead(configData);
+                    return;
+                }
 
-        int property = getProperty(configData);
-
-        if (property >= 0)
-        {
-            setInitialValue(configData, (property > 0));
-            dBusRetryTimers.erase(configData.name);
-        }
+                setInitialValue(configData, value);
+                dBusRetryTimers.erase(configData.name);
+            });
     });
 }
 } // namespace power_control
