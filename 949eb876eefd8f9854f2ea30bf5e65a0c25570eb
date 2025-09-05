@@ -1,6 +1,7 @@
 {
   "comments": [
     {
+      "unresolved": true,
       "key": {
         "uuid": "9c3eebb3_95bc9d3b",
         "filename": "power-control-x86/src/power_control.cpp",
@@ -20,10 +21,10 @@
         "endChar": 22
       },
       "revId": "949eb876eefd8f9854f2ea30bf5e65a0c25570eb",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "af0f80bf_3d5b7c87",
         "filename": "power-control-x86/src/power_control.cpp",
@@ -43,8 +44,8 @@
         "endChar": 22
       },
       "revId": "949eb876eefd8f9854f2ea30bf5e65a0c25570eb",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
-  ]
+  ],
+  "submitRequirementResults": []
 }
