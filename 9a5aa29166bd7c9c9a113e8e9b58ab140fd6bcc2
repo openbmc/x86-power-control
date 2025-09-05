@@ -1,6 +1,7 @@
 {
   "comments": [
     {
+      "unresolved": true,
       "key": {
         "uuid": "734d42d0_63b467b1",
         "filename": "config/power-config-host0.json",
@@ -20,10 +21,10 @@
         "endChar": 25
       },
       "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "198346cf_9041c963",
         "filename": "config/power-config-host0.json",
@@ -44,10 +45,10 @@
         "endChar": 25
       },
       "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "b929b23c_7ec2ceb6",
         "filename": "src/power_control.cpp",
@@ -67,10 +68,10 @@
         "endChar": 45
       },
       "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "f25cc452_eeb01396",
         "filename": "src/power_control.cpp",
@@ -91,10 +92,10 @@
         "endChar": 45
       },
       "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "16f21739_bf4b5433",
         "filename": "src/power_control.cpp",
@@ -115,10 +116,10 @@
         "endChar": 45
       },
       "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "5a254443_4ed11b4a",
         "filename": "src/power_control.cpp",
@@ -139,10 +140,10 @@
         "endChar": 45
       },
       "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "3869324b_4678dcab",
         "filename": "src/power_control.cpp",
@@ -163,10 +164,10 @@
         "endChar": 45
       },
       "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "78d5b288_33677931",
         "filename": "src/power_control.cpp",
@@ -187,10 +188,10 @@
         "endChar": 45
       },
       "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "d8360ee3_c6493bc9",
         "filename": "src/power_control.cpp",
@@ -211,10 +212,10 @@
         "endChar": 45
       },
       "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "5745d9ac_2e0223db",
         "filename": "src/power_control.cpp",
@@ -235,10 +236,10 @@
         "endChar": 45
       },
       "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "b521be18_6aafa735",
         "filename": "src/power_control.cpp",
@@ -258,10 +259,10 @@
         "endChar": 60
       },
       "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "543dfbd7_b7cb7c65",
         "filename": "src/power_control.cpp",
@@ -281,10 +282,10 @@
         "endChar": 40
       },
       "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "3f8c37a1_f72d1c63",
         "filename": "src/power_control.cpp",
@@ -304,8 +305,8 @@
         "endChar": 61
       },
       "revId": "9a5aa29166bd7c9c9a113e8e9b58ab140fd6bcc2",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
-  ]
+  ],
+  "submitRequirementResults": []
 }
