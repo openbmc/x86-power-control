@@ -2940,6 +2940,7 @@ int main(int argc, char* argv[])
         hostMiscHandler);
 #endif
 
+    bool postCompleteConfigured = false;
     // Request POST_COMPLETE GPIO events
     if (postCompleteConfig.type == ConfigType::GPIO)
     {
@@ -2948,18 +2949,14 @@ int main(int argc, char* argv[])
         {
             return -1;
         }
+        postCompleteConfigured = true;
     }
     else if (postCompleteConfig.type == ConfigType::DBUS)
     {
         static sdbusplus::bus::match_t postCompleteEventMonitor =
             power_control::dbusGPIOMatcher(postCompleteConfig,
                                            postCompleteHandler);
-    }
-    else
-    {
-        lg2::error(
-            "postComplete name should be configured from json config file");
-        return -1;
+        postCompleteConfigured = true;
     }
 
     // initialize NMI_OUT GPIO.
@@ -3505,77 +3502,81 @@ int main(int argc, char* argv[])
         idButtonIface->initialize();
     }
 
-    // OS State Service
-    sdbusplus::asio::object_server osServer =
-        sdbusplus::asio::object_server(conn);
-
-    // OS State Interface
-    osIface = osServer.add_interface(
-        "/xyz/openbmc_project/state/host" + node,
-        "xyz.openbmc_project.State.OperatingSystem.Status");
-
-    // Get the initial OS state based on POST complete
-    //      Asserted, OS state is "Standby" (ready to boot)
-    //      De-Asserted, OS state is "Inactive"
-    OperatingSystemStateStage osState;
-    if (postCompleteConfig.type == ConfigType::GPIO)
+    if (postCompleteConfigured)
     {
-        osState = postCompleteLine.get_value() == postCompleteConfig.polarity
-                      ? OperatingSystemStateStage::Standby
-                      : OperatingSystemStateStage::Inactive;
+        OperatingSystemStateStage osState;
+        if (postCompleteConfig.type == ConfigType::GPIO)
+        {
+            osState =
+                postCompleteLine.get_value() == postCompleteConfig.polarity
+                    ? OperatingSystemStateStage::Standby
+                    : OperatingSystemStateStage::Inactive;
+        }
+        else
+        {
+            osState = getProperty(postCompleteConfig) > 0
+                          ? OperatingSystemStateStage::Standby
+                          : OperatingSystemStateStage::Inactive;
+        }
+
+        // OS State Service
+        sdbusplus::asio::object_server osServer =
+            sdbusplus::asio::object_server(conn);
+
+        // OS State Interface
+        osIface = osServer.add_interface(
+            "/xyz/openbmc_project/state/host" + node,
+            "xyz.openbmc_project.State.OperatingSystem.Status");
+
+        // Get the initial OS state based on POST complete
+        //      Asserted, OS state is "Standby" (ready to boot)
+        //      De-Asserted, OS state is "Inactive"
+
+        osIface->register_property(
+            "OperatingSystemState",
+            std::string(getOperatingSystemStateStage(osState)));
+
+        osIface->initialize();
+
+        // Restart Cause Service
+        sdbusplus::asio::object_server restartCauseServer =
+            sdbusplus::asio::object_server(conn);
+
+        // Restart Cause Interface
+        restartCauseIface = restartCauseServer.add_interface(
+            "/xyz/openbmc_project/control/host" + node + "/restart_cause",
+            "xyz.openbmc_project.Control.Host.RestartCause");
+
+        restartCauseIface->register_property(
+            "RestartCause",
+            std::string("xyz.openbmc_project.State.Host.RestartCause.Unknown"));
+
+        restartCauseIface->register_property(
+            "RequestedRestartCause",
+            std::string("xyz.openbmc_project.State.Host.RestartCause.Unknown"),
+            [](const std::string& requested, std::string& resp) {
+                if (requested ==
+                    "xyz.openbmc_project.State.Host.RestartCause.WatchdogTimer")
+                {
+                    addRestartCause(RestartCause::watchdog);
+                }
+                else
+                {
+                    throw std::invalid_argument(
+                        "Unrecognized RestartCause Request");
+                    return 0;
+                }
+
+                lg2::info("RestartCause requested: {RESTART_CAUSE}",
+                          "RESTART_CAUSE", requested);
+                resp = requested;
+                return 1;
+            });
+
+        restartCauseIface->initialize();
+
+        currentHostStateMonitor();
     }
-    else
-    {
-        osState = getProperty(postCompleteConfig) > 0
-                      ? OperatingSystemStateStage::Standby
-                      : OperatingSystemStateStage::Inactive;
-    }
-
-    osIface->register_property(
-        "OperatingSystemState",
-        std::string(getOperatingSystemStateStage(osState)));
-
-    osIface->initialize();
-
-    // Restart Cause Service
-    sdbusplus::asio::object_server restartCauseServer =
-        sdbusplus::asio::object_server(conn);
-
-    // Restart Cause Interface
-    restartCauseIface = restartCauseServer.add_interface(
-        "/xyz/openbmc_project/control/host" + node + "/restart_cause",
-        "xyz.openbmc_project.Control.Host.RestartCause");
-
-    restartCauseIface->register_property(
-        "RestartCause",
-        std::string("xyz.openbmc_project.State.Host.RestartCause.Unknown"));
-
-    restartCauseIface->register_property(
-        "RequestedRestartCause",
-        std::string("xyz.openbmc_project.State.Host.RestartCause.Unknown"),
-        [](const std::string& requested, std::string& resp) {
-            if (requested ==
-                "xyz.openbmc_project.State.Host.RestartCause.WatchdogTimer")
-            {
-                addRestartCause(RestartCause::watchdog);
-            }
-            else
-            {
-                throw std::invalid_argument(
-                    "Unrecognized RestartCause Request");
-                return 0;
-            }
-
-            lg2::info("RestartCause requested: {RESTART_CAUSE}",
-                      "RESTART_CAUSE", requested);
-            resp = requested;
-            return 1;
-        });
-
-    restartCauseIface->initialize();
-
-    currentHostStateMonitor();
-
     if (!hpmStbyEnConfig.lineName.empty())
     {
         // Set to indicate BMC's power control module is ready to take
