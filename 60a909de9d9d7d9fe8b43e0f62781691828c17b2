@@ -51,6 +51,24 @@
       "parentUuid": "95aae787_3b6290e9",
       "revId": "60a909de9d9d7d9fe8b43e0f62781691828c17b2",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1f3c561a_29a29379",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2945,
+      "author": {
+        "id": 1002504
+      },
+      "writtenOn": "2025-10-27T19:27:32Z",
+      "side": 1,
+      "message": "yeah it seems to be defined behavior, and the way that this particular enum was setup, for better or worse. IMO, it would be nicer to have something like an \"isPresent\" method, but I didn\u0027t want to go change the whole file as I don\u0027t have access to a fully featured intel platform.",
+      "parentUuid": "d511c113_b7144f1e",
+      "revId": "60a909de9d9d7d9fe8b43e0f62781691828c17b2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
