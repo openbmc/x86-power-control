@@ -2607,21 +2607,15 @@ int getProperty(const ConfigData& configData)
                       configData.lineName.c_str());
 
         auto reply = conn->call(method);
-        if (reply.is_method_error())
-        {
-            lg2::error(
-                "Error reading {PROPERTY} D-Bus property on interface {INTERFACE} and path {PATH}",
-                "PROPERTY", configData.lineName, "INTERFACE",
-                configData.interface, "PATH", configData.path);
-            return -1;
-        }
-
         reply.read(resp);
     }
     catch (const sdbusplus::exception_t& e)
     {
-        lg2::error("Exception while reading {PROPERTY}: {WHAT}", "PROPERTY",
-                   configData.lineName, "WHAT", e.what());
+        lg2::error(
+            "Error reading {PROPERTY} D-Bus property on interface {INTERFACE} and path {PATH}: {WHAT}",
+            "PROPERTY", configData.lineName, "INTERFACE", configData.interface,
+            "PATH", configData.path, "WHAT", e);
+
         reschedulePropertyRead(configData);
         return -1;
     }
