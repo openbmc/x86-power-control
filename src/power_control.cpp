@@ -249,6 +249,11 @@ static constexpr std::string_view getOperatingSystemStateStage(
 };
 static void setOperatingSystemState(const OperatingSystemStateStage stage)
 {
+    if (!osIface)
+    {
+        return;
+    }
+
     operatingSystemState = stage;
 #if IGNORE_SOFT_RESETS_DURING_POST
     // If POST complete has asserted set ignoreNextSoftReset to false to avoid
@@ -677,6 +682,10 @@ static void clearRestartCause()
 }
 static void setRestartCauseProperty(const std::string& cause)
 {
+    if (!restartCauseIface)
+    {
+        return;
+    }
     lg2::info("RestartCause set to {RESTART_CAUSE}", "RESTART_CAUSE", cause);
     restartCauseIface->set_property("RestartCause", cause);
 }
