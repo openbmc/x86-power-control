@@ -238,13 +238,10 @@ static constexpr std::string_view getOperatingSystemStateStage(
     {
         case OperatingSystemStateStage::Inactive:
             return "xyz.openbmc_project.State.OperatingSystem.Status.OSStatus.Inactive";
-            break;
         case OperatingSystemStateStage::Standby:
             return "xyz.openbmc_project.State.OperatingSystem.Status.OSStatus.Standby";
-            break;
         default:
             return "xyz.openbmc_project.State.OperatingSystem.Status.OSStatus.Inactive";
-            break;
     }
 };
 static void setOperatingSystemState(const OperatingSystemStateStage stage)
@@ -284,49 +281,48 @@ enum class PowerState
     checkForWarmReset,
 };
 static PowerState powerState;
-static std::string getPowerStateName(PowerState state)
+static constexpr std::string_view getPowerStateName(PowerState state)
 {
     switch (state)
     {
         case PowerState::on:
             return "On";
-            break;
         case PowerState::waitForPowerOK:
             return "Wait for Power OK";
-            break;
         case PowerState::waitForSIOPowerGood:
             return "Wait for SIO Power Good";
-            break;
         case PowerState::off:
             return "Off";
-            break;
         case PowerState::transitionToOff:
             return "Transition to Off";
-            break;
         case PowerState::gracefulTransitionToOff:
             return "Graceful Transition to Off";
-            break;
         case PowerState::cycleOff:
             return "Power Cycle Off";
-            break;
         case PowerState::transitionToCycleOff:
             return "Transition to Power Cycle Off";
-            break;
         case PowerState::gracefulTransitionToCycleOff:
             return "Graceful Transition to Power Cycle Off";
-            break;
         case PowerState::checkForWarmReset:
             return "Check for Warm Reset";
-            break;
-        default:
-            return "unknown state: " + std::to_string(static_cast<int>(state));
-            break;
     }
+    return {};
 }
 static void logStateTransition(const PowerState state)
 {
-    lg2::info("Host{HOST}: Moving to \"{STATE}\" state", "HOST", node, "STATE",
-              getPowerStateName(state));
+    std::string_view stateName = getPowerStateName(state);
+    if (stateName.empty())
+    {
+        lg2::error("Host{HOST}: Unknown power state: {STATE_INT}", 
+                   "HOST", node, 
+                   "STATE_INT", static_cast<int>(state));
+    }
+    else
+    {
+        lg2::info("Host{HOST}: Moving to \"{STATE}\" state", 
+                  "HOST", node, 
+                  "STATE", stateName);
+    }
 }
 
 enum class Event
@@ -355,88 +351,74 @@ enum class Event
     gracefulPowerCycleRequest,
     warmResetDetected,
 };
-static std::string getEventName(Event event)
+static constexpr std::string_view getEventName(Event event)
 {
     switch (event)
     {
         case Event::powerOKAssert:
             return "power OK assert";
-            break;
         case Event::powerOKDeAssert:
             return "power OK de-assert";
-            break;
         case Event::sioPowerGoodAssert:
             return "SIO power good assert";
-            break;
         case Event::sioPowerGoodDeAssert:
             return "SIO power good de-assert";
-            break;
         case Event::sioS5Assert:
             return "SIO S5 assert";
-            break;
         case Event::sioS5DeAssert:
             return "SIO S5 de-assert";
-            break;
         case Event::pltRstAssert:
             return "PLT_RST assert";
-            break;
         case Event::pltRstDeAssert:
             return "PLT_RST de-assert";
-            break;
         case Event::postCompleteAssert:
             return "POST Complete assert";
-            break;
         case Event::postCompleteDeAssert:
             return "POST Complete de-assert";
-            break;
         case Event::powerButtonPressed:
             return "power button pressed";
-            break;
         case Event::resetButtonPressed:
             return "reset button pressed";
-            break;
         case Event::powerCycleTimerExpired:
             return "power cycle timer expired";
-            break;
         case Event::powerOKWatchdogTimerExpired:
             return "power OK watchdog timer expired";
-            break;
         case Event::sioPowerGoodWatchdogTimerExpired:
             return "SIO power good watchdog timer expired";
-            break;
         case Event::gracefulPowerOffTimerExpired:
             return "graceful power-off timer expired";
-            break;
         case Event::powerOnRequest:
             return "power-on request";
-            break;
         case Event::powerOffRequest:
             return "power-off request";
-            break;
         case Event::powerCycleRequest:
             return "power-cycle request";
-            break;
         case Event::resetRequest:
             return "reset request";
-            break;
         case Event::gracefulPowerOffRequest:
             return "graceful power-off request";
-            break;
         case Event::gracefulPowerCycleRequest:
             return "graceful power-cycle request";
-            break;
         case Event::warmResetDetected:
             return "warm reset detected";
-            break;
-        default:
-            return "unknown event: " + std::to_string(static_cast<int>(event));
-            break;
     }
+    return {};
 }
 static void logEvent(const std::string_view stateHandler, const Event event)
 {
-    lg2::info("{STATE_HANDLER}: {EVENT} event received", "STATE_HANDLER",
-              stateHandler, "EVENT", getEventName(event));
+    std::string_view eventName = getEventName(event);
+    if (eventName.empty())
+    {
+        lg2::error("{STATE_HANDLER}: Unknown event received: {EVENT_INT}",
+                   "STATE_HANDLER", stateHandler,
+                   "EVENT_INT", static_cast<int>(event));
+    }
+    else
+    {
+        lg2::info("{STATE_HANDLER}: {EVENT} event received",
+                  "STATE_HANDLER", stateHandler,
+                  "EVENT", eventName);
+    }
 }
 
 // Power state handlers
@@ -457,37 +439,26 @@ static std::function<void(const Event)> getPowerStateHandler(PowerState state)
     {
         case PowerState::on:
             return powerStateOn;
-            break;
         case PowerState::waitForPowerOK:
             return powerStateWaitForPowerOK;
-            break;
         case PowerState::waitForSIOPowerGood:
             return powerStateWaitForSIOPowerGood;
-            break;
         case PowerState::off:
             return powerStateOff;
-            break;
         case PowerState::transitionToOff:
             return powerStateTransitionToOff;
-            break;
         case PowerState::gracefulTransitionToOff:
             return powerStateGracefulTransitionToOff;
-            break;
         case PowerState::cycleOff:
             return powerStateCycleOff;
-            break;
         case PowerState::transitionToCycleOff:
             return powerStateTransitionToCycleOff;
-            break;
         case PowerState::gracefulTransitionToCycleOff:
             return powerStateGracefulTransitionToCycleOff;
-            break;
         case PowerState::checkForWarmReset:
             return powerStateCheckForWarmReset;
-            break;
         default:
             return nullptr;
-            break;
     }
 };
 
@@ -525,7 +496,6 @@ static constexpr std::string_view getHostState(const PowerState state)
         case PowerState::gracefulTransitionToOff:
         case PowerState::gracefulTransitionToCycleOff:
             return "xyz.openbmc_project.State.Host.HostState.Running";
-            break;
         case PowerState::waitForPowerOK:
         case PowerState::waitForSIOPowerGood:
         case PowerState::off:
@@ -534,10 +504,8 @@ static constexpr std::string_view getHostState(const PowerState state)
         case PowerState::cycleOff:
         case PowerState::checkForWarmReset:
             return "xyz.openbmc_project.State.Host.HostState.Off";
-            break;
         default:
             return "";
-            break;
     }
 };
 static constexpr std::string_view getChassisState(const PowerState state)
@@ -551,16 +519,13 @@ static constexpr std::string_view getChassisState(const PowerState state)
         case PowerState::gracefulTransitionToCycleOff:
         case PowerState::checkForWarmReset:
             return "xyz.openbmc_project.State.Chassis.PowerState.On";
-            break;
         case PowerState::waitForPowerOK:
         case PowerState::waitForSIOPowerGood:
         case PowerState::off:
         case PowerState::cycleOff:
             return "xyz.openbmc_project.State.Chassis.PowerState.Off";
-            break;
         default:
             return "";
-            break;
     }
 };
 #ifdef CHASSIS_SYSTEM_RESET
@@ -576,13 +541,10 @@ static constexpr std::string_view getSlotState(const SlotPowerState state)
     {
         case SlotPowerState::on:
             return "xyz.openbmc_project.State.Chassis.PowerState.On";
-            break;
         case SlotPowerState::off:
             return "xyz.openbmc_project.State.Chassis.PowerState.Off";
-            break;
         default:
             return "";
-            break;
     }
 };
 static void setSlotPowerState(const SlotPowerState state)
@@ -646,28 +608,20 @@ static std::string getRestartCause(RestartCause cause)
     {
         case RestartCause::command:
             return "xyz.openbmc_project.State.Host.RestartCause.IpmiCommand";
-            break;
         case RestartCause::resetButton:
             return "xyz.openbmc_project.State.Host.RestartCause.ResetButton";
-            break;
         case RestartCause::powerButton:
             return "xyz.openbmc_project.State.Host.RestartCause.PowerButton";
-            break;
         case RestartCause::watchdog:
             return "xyz.openbmc_project.State.Host.RestartCause.WatchdogTimer";
-            break;
         case RestartCause::powerPolicyOn:
             return "xyz.openbmc_project.State.Host.RestartCause.PowerPolicyAlwaysOn";
-            break;
         case RestartCause::powerPolicyRestore:
             return "xyz.openbmc_project.State.Host.RestartCause.PowerPolicyPreviousState";
-            break;
         case RestartCause::softReset:
             return "xyz.openbmc_project.State.Host.RestartCause.SoftReset";
-            break;
         default:
             return "xyz.openbmc_project.State.Host.RestartCause.Unknown";
-            break;
     }
 }
 static void addRestartCause(const RestartCause cause)
