@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6c7631f3_441392d8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2026-01-20T18:59:52Z",
+      "side": 1,
+      "message": "Overall, the change looks good.  Please consider moving the change to remove the unreachable breaks to a separate commit.  It seems different enough that it could be isolated with its own commit message.\n\nYou will also need to be added to a ci-authorized group after signing or being added to a CLA, so CI will run.",
+      "revId": "98e13ef617181228312af47f23f6b13b6349bd62",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
