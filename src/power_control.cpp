@@ -281,7 +281,7 @@ enum class PowerState
     checkForWarmReset,
 };
 static PowerState powerState;
-static std::string getPowerStateName(PowerState state)
+static constexpr std::string_view getPowerStateName(PowerState state)
 {
     switch (state)
     {
@@ -305,14 +305,22 @@ static std::string getPowerStateName(PowerState state)
             return "Graceful Transition to Power Cycle Off";
         case PowerState::checkForWarmReset:
             return "Check for Warm Reset";
-        default:
-            return "unknown state: " + std::to_string(static_cast<int>(state));
     }
+    return {};
 }
 static void logStateTransition(const PowerState state)
 {
-    lg2::info("Host{HOST}: Moving to \"{STATE}\" state", "HOST", node, "STATE",
-              getPowerStateName(state));
+    std::string_view stateName = getPowerStateName(state);
+    if (stateName.empty())
+    {
+        lg2::error("Host{HOST}: Unknown power state: {STATE_INT}", "HOST", node,
+                   "STATE_INT", static_cast<int>(state));
+    }
+    else
+    {
+        lg2::info("Host{HOST}: Moving to \"{STATE}\" state", "HOST", node,
+                  "STATE", stateName);
+    }
 }
 
 enum class Event
@@ -341,7 +349,7 @@ enum class Event
     gracefulPowerCycleRequest,
     warmResetDetected,
 };
-static std::string getEventName(Event event)
+static constexpr std::string_view getEventName(Event event)
 {
     switch (event)
     {
@@ -391,14 +399,23 @@ static std::string getEventName(Event event)
             return "graceful power-cycle request";
         case Event::warmResetDetected:
             return "warm reset detected";
-        default:
-            return "unknown event: " + std::to_string(static_cast<int>(event));
     }
+    return {};
 }
 static void logEvent(const std::string_view stateHandler, const Event event)
 {
-    lg2::info("{STATE_HANDLER}: {EVENT} event received", "STATE_HANDLER",
-              stateHandler, "EVENT", getEventName(event));
+    std::string_view eventName = getEventName(event);
+    if (eventName.empty())
+    {
+        lg2::error("{STATE_HANDLER}: Unknown event received: {EVENT_INT}",
+                   "STATE_HANDLER", stateHandler, "EVENT_INT",
+                   static_cast<int>(event));
+    }
+    else
+    {
+        lg2::info("{STATE_HANDLER}: {EVENT} event received", "STATE_HANDLER",
+                  stateHandler, "EVENT", eventName);
+    }
 }
 
 // Power state handlers
