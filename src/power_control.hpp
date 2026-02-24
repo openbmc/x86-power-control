@@ -138,7 +138,7 @@ class PersistentState
     const int indentationSize = 2;
 
     /**
-     * @brief Covert parameter ID to name
+     * @brief Convert parameter ID to name
      *
      * Get the name corresponding to the given parameter.
      * String name only used by the manager internal to generate human-readable
