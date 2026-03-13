@@ -36,13 +36,20 @@ if get_option('button-passthrough').allowed()
     cpp_args += '-DUSE_BUTTON_PASSTHROUGH'
 endif
 
+boost = dependency(
+    'boost',
+    version: '>=1.88.0',
+    include_type: 'system',
+    fallback: 'boost-meson',
+)
+
 deps = [
     dependency('libgpiodcxx', default_options: ['bindings=cxx']),
     dependency('libsystemd'),
     dependency('sdbusplus'),
     dependency('phosphor-logging'),
     dependency('nlohmann_json', include_type: 'system'),
-    dependency('boost'),
+    boost,
 ]
 
 executable(
