@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "934285fc_52d892ea",
+        "filename": "subprojects/boost.wrap",
+        "patchSetId": 2
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2026-03-13T15:29:16Z",
+      "side": 1,
+      "message": "Maybe let\u0027s follow bmcweb and use the boostorg github source_url?\nhttps://github.com/openbmc/bmcweb/blob/master/subprojects/boost.wrap",
+      "revId": "68b5b387b82baa5e01c2c4014f26bb0ea4f54365",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3083a55a_19c9ee3f",
+        "filename": "subprojects/packagefiles/boost/meson.build",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2026-03-13T15:29:16Z",
+      "side": 1,
+      "message": "Do we still need this file?",
+      "revId": "68b5b387b82baa5e01c2c4014f26bb0ea4f54365",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
