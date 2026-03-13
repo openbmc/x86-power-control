@@ -3,3 +3,6 @@ subprojects/*
 !subprojects/*.wrap
 !subprojects/packagefiles
 subprojects/phosphor-dbus-interfaces.wrap
+subprojects/stdexec.wrap
+# meson auto generates a wrap redirect. Ignore it.
+subprojects/boost.wrap
