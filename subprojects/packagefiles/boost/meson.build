@@ -1,4 +1,4 @@
-project('boost', 'cpp', version: '1.84.0', license: 'Boost')
+project('boost', 'cpp', version: '1.86.0', license: 'Boost')
 
 boost_dep = declare_dependency(include_directories: include_directories('.'))
 
