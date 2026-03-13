@@ -32,7 +32,7 @@
         },
         {
             "Name": "PowerOk",
-            "LineName": "PS_PWROK",
+            "LineName": "FM_P3V3_SW_ENA",
             "Type": "GPIO",
             "Polarity": "ActiveHigh"
         },
