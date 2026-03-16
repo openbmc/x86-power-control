@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e5085b2_5fd427ab",
+        "filename": "config/power-config-host0.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2026-03-16T14:04:01Z",
+      "side": 1,
+      "message": "This is changing the default config that may be used by others, so we should notify others of this change.  Or if this can be moved to a platform-specific config, then we can leave the default as-is.",
+      "revId": "c9e0871f0549abed729e974de31f1c8912d5efb3",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
