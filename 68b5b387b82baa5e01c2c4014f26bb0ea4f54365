@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "eae8db71_4427a2a8",
+        "filename": "subprojects/boost.wrap",
+        "patchSetId": 2
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002774
+      },
+      "writtenOn": "2026-03-16T08:50:41Z",
+      "side": 1,
+      "message": "Switched to github source. However this would require to explicitly add source files as in bmcweb:\nhttps://github.com/openbmc/bmcweb/blob/f99bc45d579b751e693bd1655dfd623bd84475f8/meson.build#L384\n\nInstead followed a pattern from dbus-sensors:\nhttps://github.com/openbmc/dbus-sensors/commit/3b13725a3f8148a8f13032803763b26355d85f42",
+      "parentUuid": "934285fc_52d892ea",
+      "revId": "68b5b387b82baa5e01c2c4014f26bb0ea4f54365",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3083a55a_19c9ee3f",
         "filename": "subprojects/packagefiles/boost/meson.build",
         "patchSetId": 2
@@ -31,6 +49,24 @@
       "writtenOn": "2026-03-13T15:29:16Z",
       "side": 1,
       "message": "Do we still need this file?",
+      "revId": "68b5b387b82baa5e01c2c4014f26bb0ea4f54365",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ea140085_1d358971",
+        "filename": "subprojects/packagefiles/boost/meson.build",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002774
+      },
+      "writtenOn": "2026-03-16T08:50:41Z",
+      "side": 1,
+      "message": "Yes it is still needed. Boost does not use Meson as build system. Additionally we have to specify required modules.",
+      "parentUuid": "3083a55a_19c9ee3f",
       "revId": "68b5b387b82baa5e01c2c4014f26bb0ea4f54365",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
