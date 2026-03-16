@@ -36,6 +36,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ee46a6bb_45a8fb5c",
+        "filename": "subprojects/boost.wrap",
+        "patchSetId": 2
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2026-03-16T13:51:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eae8db71_4427a2a8",
+      "revId": "68b5b387b82baa5e01c2c4014f26bb0ea4f54365",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3083a55a_19c9ee3f",
@@ -67,6 +85,24 @@
       "side": 1,
       "message": "Yes it is still needed. Boost does not use Meson as build system. Additionally we have to specify required modules.",
       "parentUuid": "3083a55a_19c9ee3f",
+      "revId": "68b5b387b82baa5e01c2c4014f26bb0ea4f54365",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "baac2bad_f2ca6d1e",
+        "filename": "subprojects/packagefiles/boost/meson.build",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2026-03-16T13:51:45Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "ea140085_1d358971",
       "revId": "68b5b387b82baa5e01c2c4014f26bb0ea4f54365",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
