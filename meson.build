@@ -36,6 +36,9 @@ if get_option('button-passthrough').allowed()
     cpp_args += '-DUSE_BUTTON_PASSTHROUGH'
 endif
 
+# Set config file
+config_file = get_option('config-file')
+
 deps = [
     dependency('libgpiodcxx', default_options: ['bindings=cxx']),
     dependency('libsystemd'),
@@ -66,6 +69,7 @@ if systemd.found()
 endif
 
 install_data(
-    'config/power-config-host0.json',
+    'config/' + config_file + '.json',
     install_dir: '/usr/share/x86-power-control/',
+    rename: 'power-config-host0.json',
 )
