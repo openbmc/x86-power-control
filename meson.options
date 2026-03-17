@@ -28,3 +28,9 @@ option(
     value: 'disabled',
     description: 'Directly couple through power and reset buttons',
 )
+option(
+    'config-file',
+    type: 'string',
+    value: 'power-config-host0',
+    description: 'JSON configuration file to use for power control settings',
+)
