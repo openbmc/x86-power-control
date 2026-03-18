@@ -16,6 +16,24 @@
       "message": "To organize better, should we put these under an `intel` folder?",
       "revId": "cbf17d51c91c6427bbe5e1a105cff92470a3c903",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2a22c035_61634461",
+        "filename": "config/power-config-acrp.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002774
+      },
+      "writtenOn": "2026-03-18T10:23:30Z",
+      "side": 1,
+      "message": "Good point. Done",
+      "parentUuid": "f99c36fe_62422143",
+      "revId": "cbf17d51c91c6427bbe5e1a105cff92470a3c903",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
