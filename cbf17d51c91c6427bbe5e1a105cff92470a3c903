@@ -34,6 +34,24 @@
       "parentUuid": "f99c36fe_62422143",
       "revId": "cbf17d51c91c6427bbe5e1a105cff92470a3c903",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9e8c21e0_1fe9847d",
+        "filename": "config/power-config-acrp.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2026-04-01T15:40:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2a22c035_61634461",
+      "revId": "cbf17d51c91c6427bbe5e1a105cff92470a3c903",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
