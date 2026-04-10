@@ -86,6 +86,7 @@ static ConfigData sioPwrGoodConfig;
 static ConfigData sioOnControlConfig;
 static ConfigData sioS5Config;
 static ConfigData postCompleteConfig;
+static ConfigData platformResetConfig;
 static ConfigData powerButtonConfig;
 static ConfigData resetButtonConfig;
 static ConfigData idButtonConfig;
@@ -104,6 +105,7 @@ boost::container::flat_map<std::string, ConfigData*> powerSignalMap = {
     {"SioOnControl", &sioOnControlConfig},
     {"SIOS5", &sioS5Config},
     {"PostComplete", &postCompleteConfig},
+    {"PlatformReset", &platformResetConfig},
     {"PowerButton", &powerButtonConfig},
     {"ResetButton", &resetButtonConfig},
     {"IdButton", &idButtonConfig},
@@ -201,6 +203,8 @@ static gpiod::line idButtonLine;
 static boost::asio::posix::stream_descriptor idButtonEvent(io);
 static gpiod::line postCompleteLine;
 static boost::asio::posix::stream_descriptor postCompleteEvent(io);
+static gpiod::line PlatformResetLine;
+static boost::asio::posix::stream_descriptor platformResetEvent(io);
 static gpiod::line nmiOutLine;
 static gpiod::line slotPowerLine;
 
@@ -2234,50 +2238,19 @@ static void idButtonHandler(bool state)
     idButtonIface->set_property("ButtonPressed", asserted);
 }
 
-static void pltRstHandler(bool pltRst)
+[[maybe_unused]] static void platformResetHandler(bool state)
 {
-    if (pltRst)
+    bool asserted = state == platformResetConfig.polarity;
+    hostIface->set_property("PlatformReset", asserted);
+    if (asserted)
     {
-        sendPowerControlEvent(Event::pltRstDeAssert);
+        lg2::info("Platform reset asserted");
+        sendPowerControlEvent(Event::pltRstAssert);
     }
     else
     {
-        sendPowerControlEvent(Event::pltRstAssert);
-    }
-}
-
-[[maybe_unused]] static void hostMiscHandler(sdbusplus::message_t& msg)
-{
-    std::string interfaceName;
-    boost::container::flat_map<std::string, std::variant<bool>>
-        propertiesChanged;
-    try
-    {
-        msg.read(interfaceName, propertiesChanged);
-    }
-    catch (const std::exception& e)
-    {
-        lg2::error("Unable to read Host Misc status: {ERROR}", "ERROR", e);
-        return;
-    }
-    if (propertiesChanged.empty())
-    {
-        lg2::error("ERROR: Empty Host.Misc PropertiesChanged signal received");
-        return;
-    }
-
-    for (auto& [property, value] : propertiesChanged)
-    {
-        if (property == "ESpiPlatformReset")
-        {
-            bool* pltRst = std::get_if<bool>(&value);
-            if (pltRst == nullptr)
-            {
-                lg2::error("{PROPERTY} property invalid", "PROPERTY", property);
-                return;
-            }
-            pltRstHandler(*pltRst);
-        }
+        lg2::info("Platform reset de-asserted");
+        sendPowerControlEvent(Event::pltRstDeAssert);
     }
 }
 
@@ -2887,11 +2860,21 @@ int main(int argc, char* argv[])
     }
 
 #ifdef USE_PLT_RST
-    sdbusplus::bus::match_t pltRstMatch(
-        *conn,
-        "type='signal',interface='org.freedesktop.DBus.Properties',member='"
-        "PropertiesChanged',arg0='xyz.openbmc_project.State.Host.Misc'",
-        hostMiscHandler);
+    if (platformResetConfig.type == ConfigType::GPIO)
+    {
+        if (!requestGPIOEvents(platformResetConfig.lineName,
+                               platformResetHandler, PlatformResetLine,
+                               platformResetEvent))
+        {
+            return -1;
+        }
+    }
+    else if (platformResetConfig.type == ConfigType::DBUS)
+    {
+        static sdbusplus::bus::match_t platformResetEventMonitor =
+            power_control::dbusGPIOMatcher(platformResetConfig,
+                                           platformResetHandler);
+    }
 #endif
 
     bool postCompleteConfigured = false;
@@ -3090,7 +3073,9 @@ int main(int argc, char* argv[])
         });
     hostIface->register_property("CurrentHostState",
                                  std::string(getHostState(powerState)));
-
+#ifdef USE_PLT_RST
+    hostIface->register_property("PlatformReset", false);
+#endif
     hostIface->initialize();
 
     // Chassis Control Service
