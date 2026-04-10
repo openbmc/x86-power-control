@@ -16,6 +16,24 @@
       "message": "We don\u0027t need this property as it\u0027s not defined in PDI: https://github.com/openbmc/phosphor-dbus-interfaces/blob/master/yaml/xyz/openbmc_project/State/Host.interface.yaml",
       "revId": "a9f854801e1d41e1a080b53b6490cc17afd36eeb",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46b7393e_c8ef2f52",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3077,
+      "author": {
+        "id": 1002774
+      },
+      "writtenOn": "2026-04-10T14:18:16Z",
+      "side": 1,
+      "message": "Main goal is to react to Platform Reset. I missed fact that CurrentHostState property can be use for that. Thanks for pointing this out - removing property as it is not needed in that case",
+      "parentUuid": "599d76d5_b7cb612f",
+      "revId": "a9f854801e1d41e1a080b53b6490cc17afd36eeb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
