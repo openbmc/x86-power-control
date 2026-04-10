@@ -59,6 +59,12 @@
             "LineName": "SIO_S5",
             "Type": "GPIO",
             "Polarity": "ActiveLow"
+        },
+        {
+            "Name": "PlatformReset",
+            "LineName": "PLTRST_N",
+            "Type": "GPIO",
+            "Polarity": "ActiveLow"
         }
     ],
     "timing_configs": {
