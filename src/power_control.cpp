@@ -645,7 +645,7 @@ static void setRestartCauseProperty(const std::string& cause)
 static void resetACBootProperty()
 {
     if ((causeSet.contains(RestartCause::command)) ||
-        (causeSet.contains(RestartCause::softReset)))
+        ((causeSet.contains(RestartCause::softReset))&& ignoreNextSoftReset))
     {
         conn->async_method_call(
             [](boost::system::error_code ec) {
