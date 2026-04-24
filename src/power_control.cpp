@@ -2263,7 +2263,118 @@ static void postCompleteHandler(bool state)
     }
 }
 
-static int loadConfigValues()
+namespace
+{
+
+bool parseGPIOConfig(ConfigData& configData, const nlohmann::json& gpioConfig)
+{
+    auto lineNameIt = gpioConfig.find("LineName");
+    if (lineNameIt == gpioConfig.end())
+    {
+        lg2::error(
+            "The \'LineName\' field must be defined for GPIO configuration");
+        return false;
+    }
+    configData.lineName = lineNameIt->get<std::string>();
+
+    auto polarityIt = gpioConfig.find("Polarity");
+    if (polarityIt == gpioConfig.end())
+    {
+        lg2::error("Polarity field not found for {GPIO_NAME}", "GPIO_NAME",
+                   configData.lineName);
+        return false;
+    }
+    std::string polarity = polarityIt->get<std::string>();
+    if (polarity == "ActiveLow")
+    {
+        configData.polarity = false;
+    }
+    else if (polarity == "ActiveHigh")
+    {
+        configData.polarity = true;
+    }
+    else
+    {
+        lg2::error(
+            "Polarity defined but not properly setup. Please only ActiveHigh or ActiveLow. Currently set to {POLARITY}",
+            "POLARITY", polarity);
+        return false;
+    }
+    return true;
+}
+
+bool parseDBUSConfig(ConfigData& configData, const nlohmann::json& gpioConfig,
+                     const std::string& gpioName)
+{
+    // if dbus based gpio config is defined read and update the dbus
+    // params corresponding to the gpio config instance
+    for (auto& [key, dbusParamName] : dbusParams)
+    {
+        auto it = gpioConfig.find(dbusParamName);
+        if (it == gpioConfig.end())
+        {
+            lg2::error(
+                "The {DBUS_NAME} field must be defined for Dbus configuration ",
+                "DBUS_NAME", dbusParamName);
+            return false;
+        }
+        switch (key)
+        {
+            case DbusConfigType::name:
+                configData.dbusName = it->get<std::string>();
+                break;
+            case DbusConfigType::path:
+                configData.path = it->get<std::string>();
+                break;
+            case DbusConfigType::interface:
+                configData.interface = it->get<std::string>();
+                break;
+            case DbusConfigType::property:
+                configData.lineName = it->get<std::string>();
+                break;
+        }
+    }
+
+    // dbus-based inputs must be active-high.
+    configData.polarity = true;
+
+    // MatchRegex is optional
+    auto item = gpioConfig.find("MatchRegex");
+    if (item != gpioConfig.end())
+    {
+        try
+        {
+            configData.matchRegex = std::regex(*item);
+        }
+        catch (const std::regex_error& e)
+        {
+            lg2::error("Invalid MatchRegex for {NAME}: {ERR}", "NAME", gpioName,
+                       "ERR", e.what());
+            return false;
+        }
+    }
+    return true;
+}
+
+void parseTimerConfig(const nlohmann::json& timers)
+{
+    // read and store the timer values from json config to Timer Map
+    for (auto& [key, timerValue] : TimerMap)
+    {
+        timerValue = timers.value(key, timerValue);
+    }
+}
+
+void parseEventConfig(const nlohmann::json& jsonData)
+{
+    auto events = jsonData.find("event_configs");
+    if (events != jsonData.end() && events->is_object())
+    {
+        nmiWhenPoweredOff = events->value("NMIWhenPoweredOff", true);
+    }
+}
+
+int loadConfigValues()
 {
     const std::string configFilePath =
         "/usr/share/x86-power-control/power-config-host" + power_control::node +
@@ -2282,14 +2393,11 @@ static int loadConfigValues()
         lg2::error("Power config readings JSON parser failure");
         return -1;
     }
-    auto gpios = jsonData["gpio_configs"];
-    auto timers = jsonData["timing_configs"];
 
-    ConfigData* tempGpioData;
-
-    for (nlohmann::json& gpioConfig : gpios)
+    for (nlohmann::json& gpioConfig : jsonData["gpio_configs"])
     {
-        if (!gpioConfig.contains("Name"))
+        auto nameIt = gpioConfig.find("Name");
+        if (nameIt == gpioConfig.end())
         {
             lg2::error("The 'Name' field must be defined in Json file");
             return -1;
@@ -2297,7 +2405,7 @@ static int loadConfigValues()
 
         // Iterate through the powersignal map to check if the gpio json config
         // entry is valid
-        std::string gpioName = gpioConfig["Name"];
+        std::string gpioName = nameIt->get<std::string>();
         auto signalMapIter = powerSignalMap.find(gpioName);
         if (signalMapIter == powerSignalMap.end())
         {
@@ -2310,16 +2418,17 @@ static int loadConfigValues()
         // assign the power signal name to the corresponding structure reference
         // from map then fillup the structure with coressponding json config
         // value
-        tempGpioData = signalMapIter->second;
+        ConfigData* tempGpioData = signalMapIter->second;
         tempGpioData->name = gpioName;
 
-        if (!gpioConfig.contains("Type"))
+        auto typeIt = gpioConfig.find("Type");
+        if (typeIt == gpioConfig.end())
         {
             lg2::error("The \'Type\' field must be defined in Json file");
             return -1;
         }
 
-        std::string signalType = gpioConfig["Type"];
+        std::string signalType = typeIt->get<std::string>();
         if (signalType == "GPIO")
         {
             tempGpioData->type = ConfigType::GPIO;
@@ -2337,104 +2446,27 @@ static int loadConfigValues()
 
         if (tempGpioData->type == ConfigType::GPIO)
         {
-            if (gpioConfig.contains("LineName"))
+            if (!parseGPIOConfig(*tempGpioData, gpioConfig))
             {
-                tempGpioData->lineName = gpioConfig["LineName"];
-            }
-            else
-            {
-                lg2::error(
-                    "The \'LineName\' field must be defined for GPIO configuration");
-                return -1;
-            }
-            if (gpioConfig.contains("Polarity"))
-            {
-                std::string polarity = gpioConfig["Polarity"];
-                if (polarity == "ActiveLow")
-                {
-                    tempGpioData->polarity = false;
-                }
-                else if (polarity == "ActiveHigh")
-                {
-                    tempGpioData->polarity = true;
-                }
-                else
-                {
-                    lg2::error(
-                        "Polarity defined but not properly setup. Please only ActiveHigh or ActiveLow. Currently set to {POLARITY}",
-                        "POLARITY", polarity);
-                    return -1;
-                }
-            }
-            else
-            {
-                lg2::error("Polarity field not found for {GPIO_NAME}",
-                           "GPIO_NAME", tempGpioData->lineName);
                 return -1;
             }
         }
         else
         {
-            // if dbus based gpio config is defined read and update the dbus
-            // params corresponding to the gpio config instance
-            for (auto& [key, dbusParamName] : dbusParams)
+            if (!parseDBUSConfig(*tempGpioData, gpioConfig, gpioName))
             {
-                if (!gpioConfig.contains(dbusParamName))
-                {
-                    lg2::error(
-                        "The {DBUS_NAME} field must be defined for Dbus configuration ",
-                        "DBUS_NAME", dbusParamName);
-                    return -1;
-                }
-            }
-            tempGpioData->dbusName =
-                gpioConfig[dbusParams[DbusConfigType::name]];
-            tempGpioData->path = gpioConfig[dbusParams[DbusConfigType::path]];
-            tempGpioData->interface =
-                gpioConfig[dbusParams[DbusConfigType::interface]];
-            tempGpioData->lineName =
-                gpioConfig[dbusParams[DbusConfigType::property]];
-
-            // dbus-based inputs must be active-high.
-            tempGpioData->polarity = true;
-
-            // MatchRegex is optional
-            auto item = gpioConfig.find("MatchRegex");
-            if (item != gpioConfig.end())
-            {
-                try
-                {
-                    tempGpioData->matchRegex = std::regex(*item);
-                }
-                catch (const std::regex_error& e)
-                {
-                    lg2::error("Invalid MatchRegex for {NAME}: {ERR}", "NAME",
-                               gpioName, "ERR", e.what());
-                    return -1;
-                }
+                return -1;
             }
         }
     }
 
-    // read and store the timer values from json config to Timer Map
-    for (auto& [key, timerValue] : TimerMap)
-    {
-        if (timers.contains(key.c_str()))
-        {
-            timerValue = timers[key.c_str()];
-        }
-    }
-
-    // If "events_configs" key is not in json config, fallback to null
-    auto events = jsonData.value("event_configs",
-                                 nlohmann::json(nlohmann::json::value_t::null));
-    if (events.is_object())
-    {
-        nmiWhenPoweredOff = events.value("NMIWhenPoweredOff", true);
-    }
+    parseTimerConfig(jsonData["timing_configs"]);
+    parseEventConfig(jsonData);
 
     return 0;
 }
+
+} // namespace
 
 template <typename T>
 static std::optional<T> getMessageValue(sdbusplus::message_t& msg,
