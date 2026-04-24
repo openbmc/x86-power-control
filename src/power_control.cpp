@@ -29,6 +29,7 @@
 #include <sdbusplus/asio/object_server.hpp>
 #include <sdbusplus/asio/property.hpp>
 
+#include <chrono>
 #include <filesystem>
 #include <fstream>
 #include <optional>
@@ -210,7 +211,7 @@ static gpiod::line slotPowerLine;
 
 static constexpr uint8_t beepPowerFail = 8;
 
-static void beep(const uint8_t& beepPriority)
+static void beep(uint8_t beepPriority)
 {
     lg2::info("Beep with priority: {BEEP_PRIORITY}", "BEEP_PRIORITY",
               beepPriority);
@@ -477,16 +478,10 @@ static void sendPowerControlEvent(const Event event)
 
 static uint64_t getCurrentTimeMs()
 {
-    struct timespec time = {};
-
-    if (clock_gettime(CLOCK_REALTIME, &time) < 0)
-    {
-        return 0;
-    }
-    uint64_t currentTimeMs = static_cast<uint64_t>(time.tv_sec) * 1000;
-    currentTimeMs += static_cast<uint64_t>(time.tv_nsec) / 1000 / 1000;
-
-    return currentTimeMs;
+    return static_cast<uint64_t>(
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch())
+            .count());
 }
 
 static constexpr std::string_view getHostState(const PowerState state)
@@ -853,7 +848,7 @@ void PersistentState::saveState()
     appStateStream << stateData.dump(indentationSize);
 }
 
-static constexpr const char* setingsService = "xyz.openbmc_project.Settings";
+static constexpr const char* settingsService = "xyz.openbmc_project.Settings";
 static constexpr const char* powerRestorePolicyIface =
     "xyz.openbmc_project.Control.Power.RestorePolicy";
 #ifdef USE_ACBOOT
@@ -919,18 +914,18 @@ void PowerRestoreController::run()
             *conn,
             match_rules::interfacesAdded() +
                 match_rules::argNpath(0, powerRestorePolicyObject) +
-                match_rules::sender(setingsService),
+                match_rules::sender(settingsService),
             powerRestoreConfigHandler, this);
 #ifdef USE_ACBOOT
         matches.emplace_back(*conn,
                              match_rules::interfacesAdded() +
                                  match_rules::argNpath(0, powerACBootObject) +
-                                 match_rules::sender(setingsService),
+                                 match_rules::sender(settingsService),
                              powerRestoreConfigHandler, this);
         matches.emplace_back(*conn,
                              match_rules::propertiesChanged(powerACBootObject,
                                                             powerACBootIface) +
-                                 match_rules::sender(setingsService),
+                                 match_rules::sender(settingsService),
                              powerRestoreConfigHandler, this);
 #endif // USE_ACBOOT
     }
@@ -945,7 +940,7 @@ void PowerRestoreController::run()
             }
             setProperties(properties);
         },
-        setingsService, powerRestorePolicyObject,
+        settingsService, powerRestorePolicyObject,
         "org.freedesktop.DBus.Properties", "GetAll", powerRestorePolicyIface);
 
 #ifdef USE_ACBOOT
@@ -959,7 +954,7 @@ void PowerRestoreController::run()
             }
             setProperties(properties);
         },
-        setingsService, powerACBootObject, "org.freedesktop.DBus.Properties",
+        settingsService, powerACBootObject, "org.freedesktop.DBus.Properties",
         "GetAll", powerACBootIface);
 #endif
 }
@@ -1168,7 +1163,7 @@ static bool requestGPIOEvents(
     return true;
 }
 
-static bool setGPIOOutput(const std::string& name, const int value,
+static bool setGPIOOutput(const std::string& name, bool value,
                           gpiod::line& gpioLine)
 {
     // Find the GPIO line
@@ -1198,7 +1193,7 @@ static bool setGPIOOutput(const std::string& name, const int value,
 }
 
 static int setMaskedGPIOOutputForMs(gpiod::line& maskedGPIOLine,
-                                    const std::string& name, const int value,
+                                    const std::string& name, bool value,
                                     const int durationMs)
 {
     // Set the masked GPIO line to the specified value
@@ -1225,7 +1220,7 @@ static int setMaskedGPIOOutputForMs(gpiod::line& maskedGPIOLine,
     return 0;
 }
 
-static int setGPIOOutputForMs(const ConfigData& config, const int value,
+static int setGPIOOutputForMs(const ConfigData& config, bool value,
                               const int durationMs)
 {
     // If the requested GPIO is masked, use the mask line to set the output
@@ -2114,7 +2109,7 @@ static void nmiSetEnableProperty(bool value)
 
 static void nmiReset(void)
 {
-    const static constexpr int nmiOutPulseTimeMs = 200;
+    constexpr int nmiOutPulseTimeMs = 200;
 
     lg2::info("NMI out action");
     nmiOutLine.set_value(nmiOutConfig.polarity);
@@ -3189,7 +3184,7 @@ int main(int argc, char* argv[])
 
     if (!slotPowerConfig.lineName.empty())
     {
-        if (!setGPIOOutput(slotPowerConfig.lineName, 1, slotPowerLine))
+        if (!setGPIOOutput(slotPowerConfig.lineName, true, slotPowerLine))
         {
             return -1;
         }
