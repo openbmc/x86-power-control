@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "24691c79_897ee8d0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2026-04-24T14:00:05Z",
+      "side": 1,
+      "message": "In addition to compile, it would be good to do a basic power on/off test to make sure the primary functionality still works correctly.",
+      "revId": "6aa9888495a4525cfa8e864f76f2317730422e0d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
