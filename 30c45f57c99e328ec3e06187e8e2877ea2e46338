@@ -85,6 +85,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fb2923e1_99e0306c",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2408,
+      "author": {
+        "id": 1002774
+      },
+      "writtenOn": "2026-04-27T10:33:03Z",
+      "side": 1,
+      "message": "Verified with corrupted config file  - provided signalType as int in json. \nService did not terminated",
+      "parentUuid": "63033ad6_fa878e82",
+      "revId": "30c45f57c99e328ec3e06187e8e2877ea2e46338",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1e7e9585_59514d15",
         "filename": "src/power_control.cpp",
         "patchSetId": 2
