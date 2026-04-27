@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f693ed75_4613ca5d",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2401,
+      "author": {
+        "id": 1002774
+      },
+      "writtenOn": "2026-04-27T10:27:05Z",
+      "side": 1,
+      "message": "with `contain()` + `operator[]` to assign value we perform double-lookup. \nWith iterator we perform only one lookup. \n\nI don\u0027t think compiler will optimize the first approach - even with `-O3`.\nSee: \nhttps://godbolt.org/z/dT9qTsGed",
+      "parentUuid": "01702a20_58a0e41a",
+      "range": {
+        "startLine": 2399,
+        "startChar": 0,
+        "endLine": 2401,
+        "endChar": 0
+      },
+      "revId": "30c45f57c99e328ec3e06187e8e2877ea2e46338",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fffb8c18_c873a68d",
         "filename": "src/power_control.cpp",
         "patchSetId": 2
@@ -43,6 +67,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "63033ad6_fa878e82",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2408,
+      "author": {
+        "id": 1002774
+      },
+      "writtenOn": "2026-04-27T10:27:05Z",
+      "side": 1,
+      "message": "I was thinking about adding some method to validate the provided config (especially for dbus) but since it is load in runtime i don\u0027t see much value - if it\u0027s wrong the service will exit anyway..\n\nIn such case the user is responsible for providing the correct config data - but handling this gracefully rather than termination is better approach. Will change it, however isn\u0027t the existing solution will also fail in such case? \n\nUpdated: \nThe nlohmann json does not contain `get_if` - used `get_ptr`:\nhttps://json.nlohmann.me/api/basic_json/get_ptr/",
+      "parentUuid": "fffb8c18_c873a68d",
+      "revId": "30c45f57c99e328ec3e06187e8e2877ea2e46338",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1e7e9585_59514d15",
         "filename": "src/power_control.cpp",
         "patchSetId": 2
@@ -54,6 +96,24 @@
       "writtenOn": "2026-04-24T14:26:51Z",
       "side": 1,
       "message": "Same here.  We should use `std::get_if` to avoid a throw if that\u0027s what is being called here.",
+      "revId": "30c45f57c99e328ec3e06187e8e2877ea2e46338",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "73c8d3ac_ff7fac79",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2431,
+      "author": {
+        "id": 1002774
+      },
+      "writtenOn": "2026-04-27T10:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1e7e9585_59514d15",
       "revId": "30c45f57c99e328ec3e06187e8e2877ea2e46338",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
