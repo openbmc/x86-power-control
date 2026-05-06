@@ -48,6 +48,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1e2c272f_8fb5c96c",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2401,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2026-05-06T21:26:40Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "f693ed75_4613ca5d",
+      "range": {
+        "startLine": 2399,
+        "startChar": 0,
+        "endLine": 2401,
+        "endChar": 0
+      },
+      "revId": "30c45f57c99e328ec3e06187e8e2877ea2e46338",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fffb8c18_c873a68d",
@@ -101,6 +125,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a2b434d7_21b078d9",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2408,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2026-05-06T21:26:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fb2923e1_99e0306c",
+      "revId": "30c45f57c99e328ec3e06187e8e2877ea2e46338",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1e7e9585_59514d15",
@@ -132,6 +174,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "1e7e9585_59514d15",
+      "revId": "30c45f57c99e328ec3e06187e8e2877ea2e46338",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6b3d349b_ed9c7121",
+        "filename": "src/power_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2431,
+      "author": {
+        "id": 1000276
+      },
+      "writtenOn": "2026-05-06T21:26:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "73c8d3ac_ff7fac79",
       "revId": "30c45f57c99e328ec3e06187e8e2877ea2e46338",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
