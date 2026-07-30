@@ -33,7 +33,6 @@
 
 owners:
 - jason.m.bills@linux.intel.com
-- wangkuiying.wky@alibaba-inc.com 
 
 reviewers:
 
@@ -43,6 +42,3 @@ openbmc:
 - name: Jason Bills
   email: jason.m.bills@linux.intel.com
   discord: jmbills
-- name: Kuiying Wang
-  email: wangkuiying.wky@alibaba-inc.com
-  discord: Kwin
