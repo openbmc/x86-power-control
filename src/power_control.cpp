@@ -603,7 +603,7 @@ static std::string getRestartCause(RestartCause cause)
     switch (cause)
     {
         case RestartCause::command:
-            return "xyz.openbmc_project.State.Host.RestartCause.IpmiCommand";
+            return "xyz.openbmc_project.State.Host.RestartCause.RemoteCommand";
         case RestartCause::resetButton:
             return "xyz.openbmc_project.State.Host.RestartCause.ResetButton";
         case RestartCause::powerButton:
@@ -632,12 +632,12 @@ static void clearRestartCause()
 }
 static void setRestartCauseProperty(const std::string& cause)
 {
-    if (!restartCauseIface)
+    if (!hostIface)
     {
         return;
     }
     lg2::info("RestartCause set to {RESTART_CAUSE}", "RESTART_CAUSE", cause);
-    restartCauseIface->set_property("RestartCause", cause);
+    hostIface->set_property("RestartCause", cause);
 }
 
 #ifdef USE_ACBOOT
@@ -3137,6 +3137,10 @@ int main(int argc, char* argv[])
     hostIface->register_property("CurrentHostState",
                                  std::string(getHostState(powerState)));
 
+    hostIface->register_property(
+        "RestartCause",
+        std::string("xyz.openbmc_project.State.Host.RestartCause.Unknown"));
+
     hostIface->initialize();
 
     // Chassis Control Service
@@ -3546,10 +3550,6 @@ int main(int argc, char* argv[])
         restartCauseIface = restartCauseServer.add_interface(
             "/xyz/openbmc_project/control/host" + node + "/restart_cause",
             "xyz.openbmc_project.Control.Host.RestartCause");
-
-        restartCauseIface->register_property(
-            "RestartCause",
-            std::string("xyz.openbmc_project.State.Host.RestartCause.Unknown"));
 
         restartCauseIface->register_property(
             "RequestedRestartCause",
