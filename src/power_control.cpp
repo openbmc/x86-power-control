@@ -148,7 +148,7 @@ boost::container::flat_map<std::string, int> TimerMap = {
     {"ForceOffPulseMs", 15000},
     {"ResetPulseMs", 500},
     {"PowerCycleMs", 5000},
-    {"SioPowerGoodWatchdogMs", 1000},
+    {"SioPowerGoodWatchdogMs", 12000},
     {"PowerOKWatchdogMs", 8000},
     {"GracefulPowerOffS", (5 * 60)},
     {"WarmResetCheckMs", 500},

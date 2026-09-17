@@ -84,7 +84,7 @@
         "ForceOffPulseMs": 30000,
         "ResetPulseMs": 500,
         "PowerCycleMs": 5000,
-        "SioPowerGoodWatchdogMs": 1000,
+        "SioPowerGoodWatchdogMs": 12000,
         "PowerOKWatchdogMs": 8000,
         "GracefulPowerOffS": 300,
         "WarmResetCheckMs": 500,
