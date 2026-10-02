@@ -66,6 +66,10 @@ executable(
     install_dir: get_option('bindir'),
 )
 
+if get_option('tests').allowed()
+    subdir('tests')
+endif
+
 systemd = dependency('systemd')
 if systemd.found()
     install_data(
