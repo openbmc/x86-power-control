@@ -125,8 +125,12 @@ boost::container::flat_map<std::string, int> TimerMap = {
     {"SlotPowerCycleMs", 200},
     {"DbusGetPropertyRetry", 1000}};
 
+// This map contains all event config values that are to be read from json
+// config
+boost::container::flat_map<std::string, bool> eventConfigMap = {
+    {"NMIWhenPoweredOff", true}};
+
 static bool nmiEnabled = true;
-static bool nmiWhenPoweredOff = true;
 static bool sioEnabled = true;
 
 // Timers
@@ -2173,7 +2177,7 @@ static void setNmiSource()
 static void nmiButtonHandler(bool state)
 {
     // Don't handle event if host not running and config doesn't force it
-    if (!nmiWhenPoweredOff &&
+    if (!eventConfigMap["NMIWhenPoweredOff"] &&
         getHostState(powerState) !=
             "xyz.openbmc_project.State.Host.HostState.Running")
     {
@@ -2455,8 +2459,7 @@ int main(int argc, char* argv[])
     conn = std::make_shared<sdbusplus::asio::connection>(io);
 
     // Load GPIO's through json config file
-    if (loadConfigValues(node, powerSignalMap, TimerMap, nmiWhenPoweredOff) ==
-        -1)
+    if (loadConfigValues(node, powerSignalMap, TimerMap, eventConfigMap) == -1)
     {
         lg2::error("Host{NODE}: Error in Parsing...", "NODE", node);
     }
