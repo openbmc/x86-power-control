@@ -57,6 +57,7 @@ deps = [
 
 executable(
     'power-control',
+    'src/config_parser.cpp',
     'src/power_control.cpp',
     include_directories: include_directories('src'),
     cpp_args: cpp_args,
