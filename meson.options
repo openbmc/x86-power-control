@@ -34,3 +34,9 @@ option(
     value: 'power-config-host0',
     description: 'JSON configuration file to use for power control settings',
 )
+option(
+    'tests',
+    type: 'feature',
+    value: 'enabled',
+    description: 'Build the unit tests',
+)
