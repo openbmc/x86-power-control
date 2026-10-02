@@ -54,13 +54,13 @@ struct ConfigData
  * @param node - host node identifier used to locate the config file
  * @param powerSignalMap - map of signal names to the ConfigData to populate
  * @param timerMap - timer values populated from the "timing_configs" section
- * @param nmiWhenPoweredOff - populated from the "event_configs" section
+ * @param eventConfigMap - values populated from the "event_configs" section
  * @return 0 on success, -1 on failure
  */
 int loadConfigValues(
     const std::string& node,
     const boost::container::flat_map<std::string, ConfigData*>& powerSignalMap,
     boost::container::flat_map<std::string, int>& timerMap,
-    bool& nmiWhenPoweredOff);
+    boost::container::flat_map<std::string, bool>& eventConfigMap);
 
 } // namespace power_control

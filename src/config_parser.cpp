@@ -167,12 +167,18 @@ void parseTimerConfig(const nlohmann::json& timers,
     }
 }
 
-void parseEventConfig(const nlohmann::json& jsonData, bool& nmiWhenPoweredOff)
+void parseEventConfig(const nlohmann::json& jsonData,
+                      boost::container::flat_map<std::string, bool>& eventMap)
 {
     auto events = jsonData.find("event_configs");
-    if (events != jsonData.end() && events->is_object())
+    if (events == jsonData.end() || !events->is_object())
     {
-        nmiWhenPoweredOff = events->value("NMIWhenPoweredOff", true);
+        return;
+    }
+    // read and store the event values from json config to event config map
+    for (auto& [key, value] : eventMap)
+    {
+        value = events->value(key, value);
     }
 }
 
@@ -182,7 +188,7 @@ int loadConfigValues(
     const std::string& node,
     const boost::container::flat_map<std::string, ConfigData*>& powerSignalMap,
     boost::container::flat_map<std::string, int>& timerMap,
-    bool& nmiWhenPoweredOff)
+    boost::container::flat_map<std::string, bool>& eventConfigMap)
 {
     const std::string configFilePath =
         "/usr/share/x86-power-control/power-config-host" + node + ".json";
@@ -280,7 +286,8 @@ int loadConfigValues(
     }
 
     parseTimerConfig(jsonData["timing_configs"], timerMap);
-    parseEventConfig(jsonData, nmiWhenPoweredOff);
+    // optional section
+    parseEventConfig(jsonData, eventConfigMap);
 
     return 0;
 }
