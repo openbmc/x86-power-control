@@ -6,6 +6,7 @@
 #include <boost/container/flat_map.hpp>
 #include <nlohmann/json.hpp>
 
+#include <filesystem>
 #include <optional>
 #include <regex>
 #include <string>
@@ -34,18 +35,18 @@ struct ConfigData
 /**
  * @brief Load and parse the power-control JSON configuration file.
  *
- * Reads the per-host JSON config file and populates the signal configuration
- * entries referenced by @p powerSignalMap, together with the timer and event
- * settings.
+ * Opens @p configFile, parses its JSON content and populates the signal, timer
+ * and event settings. The caller provides the path, so the file-location policy
+ * stays with the caller and tests can point at their own file.
  *
- * @param node - host node identifier used to locate the config file
+ * @param configFile - path to the JSON configuration file
  * @param powerSignalMap - map of signal names to the ConfigData to populate
  * @param timerMap - timer values populated from the "timing_configs" section
  * @param eventConfigMap - values populated from the "event_configs" section
  * @return 0 on success, -1 on failure
  */
 int loadConfigValues(
-    const std::string& node,
+    const std::filesystem::path& configFile,
     const boost::container::flat_map<std::string, ConfigData*>& powerSignalMap,
     boost::container::flat_map<std::string, int>& timerMap,
     boost::container::flat_map<std::string, bool>& eventConfigMap);
