@@ -5,6 +5,7 @@
 
 #include <phosphor-logging/lg2.hpp>
 
+#include <filesystem>
 #include <fstream>
 #include <string>
 
@@ -154,53 +155,27 @@ void parseTimerConfig(const nlohmann::json& timers,
     }
 }
 
-void parseEventConfig(const nlohmann::json& jsonData,
+void parseEventConfig(const nlohmann::json& events,
                       boost::container::flat_map<std::string, bool>& eventMap)
 {
-    auto events = jsonData.find("event_configs");
-    if (events == jsonData.end() || !events->is_object())
-    {
-        return;
-    }
     // read and store the event values from json config to event config map
     for (auto& [key, value] : eventMap)
     {
-        value = events->value(key, value);
+        value = events.value(key, value);
     }
 }
 
-} // namespace
-
-int loadConfigValues(
-    const std::string& node,
-    const boost::container::flat_map<std::string, ConfigData*>& powerSignalMap,
-    boost::container::flat_map<std::string, int>& timerMap,
-    boost::container::flat_map<std::string, bool>& eventConfigMap)
+bool parseGpioConfigs(
+    const nlohmann::json& gpioConfigs,
+    const boost::container::flat_map<std::string, ConfigData*>& powerSignalMap)
 {
-    const std::string configFilePath =
-        "/usr/share/x86-power-control/power-config-host" + node + ".json";
-    std::ifstream configFile(configFilePath.c_str());
-    if (!configFile.is_open())
-    {
-        lg2::error("loadConfigValues: Cannot open config path \'{PATH}\'",
-                   "PATH", configFilePath);
-        return -1;
-    }
-    auto jsonData = nlohmann::json::parse(configFile, nullptr, true, true);
-
-    if (jsonData.is_discarded())
-    {
-        lg2::error("Power config readings JSON parser failure");
-        return -1;
-    }
-
-    for (nlohmann::json& gpioConfig : jsonData["gpio_configs"])
+    for (const nlohmann::json& gpioConfig : gpioConfigs)
     {
         auto nameIt = gpioConfig.find("Name");
         if (nameIt == gpioConfig.end())
         {
             lg2::error("The 'Name' field must be defined in Json file");
-            return -1;
+            return false;
         }
 
         // Iterate through the powersignal map to check if the gpio json config
@@ -209,7 +184,7 @@ int loadConfigValues(
         if (namePtr == nullptr)
         {
             lg2::error("The 'Name' field must be a string");
-            return -1;
+            return false;
         }
         std::string gpioName = *namePtr;
         auto signalMapIter = powerSignalMap.find(gpioName);
@@ -218,7 +193,7 @@ int loadConfigValues(
             lg2::error(
                 "{GPIO_NAME} is not a recognized power-control signal name",
                 "GPIO_NAME", gpioName);
-            return -1;
+            return false;
         }
 
         // assign the power signal name to the corresponding structure reference
@@ -231,14 +206,14 @@ int loadConfigValues(
         if (typeIt == gpioConfig.end())
         {
             lg2::error("The \'Type\' field must be defined in Json file");
-            return -1;
+            return false;
         }
 
         const std::string* typePtr = typeIt->get_ptr<const std::string*>();
         if (typePtr == nullptr)
         {
             lg2::error("The \'Type\' field must be a string");
-            return -1;
+            return false;
         }
         std::string signalType = *typePtr;
         if (signalType == "GPIO")
@@ -253,28 +228,69 @@ int loadConfigValues(
         {
             lg2::error("{TYPE} is not a recognized power-control signal type",
                        "TYPE", signalType);
-            return -1;
+            return false;
         }
 
         if (tempGpioData->type == ConfigType::GPIO)
         {
             if (!parseGPIOConfig(*tempGpioData, gpioConfig))
             {
-                return -1;
+                return false;
             }
         }
         else
         {
             if (!parseDBUSConfig(*tempGpioData, gpioConfig, gpioName))
             {
-                return -1;
+                return false;
             }
         }
     }
+    return true;
+}
 
-    parseTimerConfig(jsonData["timing_configs"], timerMap);
-    // optional section
-    parseEventConfig(jsonData, eventConfigMap);
+} // namespace
+
+int loadConfigValues(
+    const std::filesystem::path& configFile,
+    const boost::container::flat_map<std::string, ConfigData*>& powerSignalMap,
+    boost::container::flat_map<std::string, int>& timerMap,
+    boost::container::flat_map<std::string, bool>& eventConfigMap)
+{
+    std::ifstream configStream(configFile);
+    if (!configStream.is_open())
+    {
+        lg2::error("loadConfigValues: Cannot open config path \'{PATH}\'",
+                   "PATH", configFile.string());
+        return -1;
+    }
+    auto jsonData = nlohmann::json::parse(configStream, nullptr, true, true);
+    if (jsonData.is_discarded())
+    {
+        lg2::error("Power config readings JSON parser failure");
+        return -1;
+    }
+
+    auto gpioConfigs = jsonData.find("gpio_configs");
+    if (gpioConfigs != jsonData.end())
+    {
+        if (!parseGpioConfigs(*gpioConfigs, powerSignalMap))
+        {
+            return -1;
+        }
+    }
+
+    auto timingConfigs = jsonData.find("timing_configs");
+    if (timingConfigs != jsonData.end())
+    {
+        parseTimerConfig(*timingConfigs, timerMap);
+    }
+
+    auto eventConfigs = jsonData.find("event_configs");
+    if (eventConfigs != jsonData.end())
+    {
+        parseEventConfig(*eventConfigs, eventConfigMap);
+    }
 
     return 0;
 }
