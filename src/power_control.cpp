@@ -2460,7 +2460,10 @@ int main(int argc, char* argv[])
     conn = std::make_shared<sdbusplus::asio::connection>(io);
 
     // Load GPIO's through json config file
-    if (loadConfigValues(node, powerSignalMap, TimerMap, eventConfigMap) == -1)
+    const std::filesystem::path configFilePath =
+        "/usr/share/x86-power-control/power-config-host" + node + ".json";
+    if (loadConfigValues(configFilePath, powerSignalMap, TimerMap,
+                         eventConfigMap) == -1)
     {
         lg2::error("Host{NODE}: Error in Parsing...", "NODE", node);
     }
