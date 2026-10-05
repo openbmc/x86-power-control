@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c29ea73_559f9fd6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002774
+      },
+      "writtenOn": "2026-10-05T08:01:31Z",
+      "side": 1,
+      "message": "nit: You can add \"Config:\" prefix",
+      "revId": "7c5cd690886101cd8c3be35573a86a6f85dc1bcf",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
