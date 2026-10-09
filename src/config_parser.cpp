@@ -145,14 +145,22 @@ bool parseDBUSConfig(ConfigData& configData, const nlohmann::json& gpioConfig,
     return true;
 }
 
-void parseTimerConfig(const nlohmann::json& timers,
+bool parseTimerConfig(const nlohmann::json& timers,
                       boost::container::flat_map<std::string, int>& timerMap)
 {
     // read and store the timer values from json config to Timer Map
     for (auto& [key, timerValue] : timerMap)
     {
-        timerValue = timers.value(key, timerValue);
+        int value = timers.value(key, timerValue);
+        if (value < 0)
+        {
+            lg2::error("Timer {NAME} must not be negative: {VALUE}", "NAME",
+                       key, "VALUE", value);
+            return false;
+        }
+        timerValue = value;
     }
+    return true;
 }
 
 void parseEventConfig(const nlohmann::json& events,
@@ -283,7 +291,10 @@ int loadConfigValues(
     auto timingConfigs = jsonData.find("timing_configs");
     if (timingConfigs != jsonData.end())
     {
-        parseTimerConfig(*timingConfigs, timerMap);
+        if (!parseTimerConfig(*timingConfigs, timerMap))
+        {
+            return -1;
+        }
     }
 
     auto eventConfigs = jsonData.find("event_configs");

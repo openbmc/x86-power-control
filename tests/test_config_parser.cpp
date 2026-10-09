@@ -119,6 +119,13 @@ TEST_F(ConfigParserTest, TimerOverridesDefault)
     EXPECT_EQ(timerMap["PowerCycleMs"], 5000);
 }
 
+TEST_F(ConfigParserTest, TimerNegatvieValueDefault)
+{
+    nlohmann::json data =
+        nlohmann::json::parse(R"({"timing_configs": {"PowerPulseMs": -333}})");
+    EXPECT_EQ(parse(data), -1);
+}
+
 TEST_F(ConfigParserTest, EventConfigOverridesDefault)
 {
     nlohmann::json data = nlohmann::json::parse(
