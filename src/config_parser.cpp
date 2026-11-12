@@ -205,7 +205,7 @@ bool parseGpioConfigs(
         }
 
         // assign the power signal name to the corresponding structure reference
-        // from map then fillup the structure with coressponding json config
+        // from map then fillup the structure with corresponding json config
         // value
         ConfigData* tempGpioData = signalMapIter->second;
         tempGpioData->name = gpioName;

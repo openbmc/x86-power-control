@@ -1585,7 +1585,7 @@ static void currentHostStateMonitor()
                 // when power state is changed to OFF. This resulted in
                 // 'OperatingSystemState' to stay at 'Standby', even though
                 // system is OFF. Set 'OperatingSystemState' to 'Inactive'
-                // if HostState is trurned to OFF.
+                // if HostState is turned to OFF.
                 setOperatingSystemState(OperatingSystemStateStage::Inactive);
 
                 // Set the restart cause set for this restart
